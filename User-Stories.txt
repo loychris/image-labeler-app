@@ -1,0 +1,43 @@
+Die annotierten Bilder dienen als Trainingsdaten für Mustererkennung. Ziel ist
+es, Gegenstände auf nicht annotierten Bildern automatisch zu erkennen.
+
+Mit der Handykamera:
+
+Wildkräutersammler: Pflanzen bestimmen
+
+Fremdsprachenlerner / Auslandsreisende: Alltagsgegenstände benennen
+
+Sehbehinderte: Hindernisse erkennen, ohne Hilfe einkaufen
+
+
+Machine vision:
+
+Bergungsroboter/ unterirdisch oder unter Wasser eingesetzte Baumaschinen:
+Gegenstände und ihre Eigenschaften erkennen (Gewicht, Material,
+Oberflächenbeschaffenheit)
+
+
+Bildarchive:
+
+zeitliche Einordnung von Bildern anhand von z.B. Mode, Alltagsgegenständen, historischen
+Orten oder Personen
+
+
+------------------------------------------
+=> Anforderungen:
+
+1. Unterschiedliche Bildsammlungen für unterschiedliche Nutzergruppen
+
+2. Der Initiator einer Bildsammlung hat Administratorrechte und legt die Art der Objekte fest (z.B.
+Pflanzen, Menschen, Tiere, Gebäude... ) und welche Bestandteile 
+(z.B. Körperteile) sowie Eigenschaften (z.B. Material, Zustand) benannt, beschrieben oder beziffert werden und
+welche dieser Eingabemöglichkeiten verpflichtend oder optional sind.
+
+3. Ein gewöhnlicher Nutzer kann nicht über diese Vorgaben hinausgehen, aber er
+darf optionale Eingabemöglichkeiten ungenutzt lassen (weil z.B. nicht jeder
+den botanischen Namen der Pflanze weiß, aber Blatt, Blüte und Stängel
+unterscheiden kann)
+
+4. Der Administrator darf Nutzer aus der Gruppe ausschließen
+
+5. ...
