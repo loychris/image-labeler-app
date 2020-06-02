@@ -41,3 +41,19 @@ unterscheiden kann)
 4. Der Administrator darf Nutzer aus der Gruppe ausschließen
 
 5. ...
+
+
+#########################################################
+User Stories fürs Google Spreadsheet
+
+
+As a user I want to submit ideas for new categories and labels (after having
+labeled a minimum number of pictures in all or at least X categories)
+As a user I want to see other users ideas for new categories
+As a user I want to select a potential new category out of the list
+As a user I want to submit the selected category in order to vote for it
+As a user I want to gain a new vote for every Y images I label
+As a user I want to upload images to be labeled in a category of my choice (as a reward for labeling many many images?)
+As a paying customer I want to define new categories and labels
+As a paying customer I want to authenticate (e.g. by entering a code I
+received via email)
