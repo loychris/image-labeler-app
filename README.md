@@ -28,3 +28,9 @@ As a user I can lookup the highscore of labelrs.
 As a user I can unlock achievements for challenges.  
 As a user I can see the achievements I unlocked and the progress of the achevements I didn't unlock yet.    
 
+## Time per week  
+7 * 8h * = 56h
+first sprint 60% learning frameworks
+56h * 40% = 26h of of work
+
+
