@@ -3,10 +3,11 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser')
 const cors = require("cors");
-const mongoose = require("mongoose");
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+require("./db/mongoose");
+
+const indexRouter = require('./routers/index');
+const usersRouter = require('./routers/users');
 
 
 var app = express();
@@ -40,16 +41,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-console.log("trying to connect to the db...");
-mongoose
-  .connect(
-    "mongodb+srv://chris:57NDc3sDIHvBHA7v@cluster0-q2oo3.mongodb.net/test?retryWrites=true&w=majority",
-    { useNewUrlParser: true, useUnifiedTopology: true }
-  )
-  .then(() => {
-    console.log("Connected to db");
-    app.listen(port);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+app.listen(port);
