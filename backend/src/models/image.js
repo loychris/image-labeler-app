@@ -7,9 +7,24 @@ const imageSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  owner: {
+    type: String,
+    required: true,
+  },
   img: {
-    data: Buffer,
-    contentType: String,
+    type: Buffer,
     maxlength: 10000000
   },
+  label: {
+    type: [String],
+    required: true,
+  },
+  correctLabel: {
+    type: [Number]//[#yes, #no]
+  }
+
 });
+
+const Image = mongoose.model('Image', imageSchema);
+
+module.exports = Image;

@@ -4,27 +4,31 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
-    name:{
-        type:String,
+    id: {
+        type: String,
+        required: true,
+    },
+    name: {
+        type: String,
         required: true,
         trim: true
     },
-    email:{
+    email: {
         type: String,
         unique: true,
         required: true,
         //cleaning unnecessary spaces
-        trim: true ,
+        trim: true,
         lowercase: true,
         validate(value) {
-            if(!(validator.isEmail(value))){
+            if (!(validator.isEmail(value))) {
                 throw new Error('Email is unvalid')
             }
         }
     },
-    password:{
-        type : String,
-        trim : true,
+    password: {
+        type: String,
+        trim: true,
         required: true,
         minlength: 7
     },
@@ -36,9 +40,9 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
-userSchema.methods.generateAuthToken = async function(){
+userSchema.methods.generateAuthToken = async function () {
     const user = this;
-    const token = jwt.sign({_id: user._id.toString() }, 'xxlablerxx')
+    const token = jwt.sign({ _id: user._id.toString() }, 'xxlablerxx')
 
     user.tokens = user.tokens.concat({ token })
 
@@ -49,7 +53,7 @@ userSchema.methods.generateAuthToken = async function(){
 
 userSchema.statics.findByCredentials = async (email, password) => {
 
-    const user = await User.findOne({email})
+    const user = await User.findOne({ email })
 
     if (!user) { throw new Error('Unable to log in'); }
 
@@ -60,10 +64,37 @@ userSchema.statics.findByCredentials = async (email, password) => {
     return user;
 }
 
-// Hash the password before saving (update/create user)
-userSchema.pre('save', async function(next){
+//returns query object of all users
+userSchema.statics.getAllUsers = async () => {
+
+    const users = await User.find();
+
+    if (!users) { throw new Error('No users') };
+
+    return users;
+}
+
+userSchema.statics.getUserById = async (id) => {
+
+    const user = await User.findOne(id);
+
+    if (!user) { throw new Error('user not found') };
+
+    return user;
+}
+
+userSchema.updateUser = async (name, email, password) => {
     const user = this;
-    if(user.isModified('password')){
+    if (name) { this.name = name };
+    if (email) { this.email = email };
+    if (password) { this.password = password };
+    await this.save;
+}
+
+// Hash the password before saving (update/create user)
+userSchema.pre('save', async function (next) {
+    const user = this;
+    if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8);
     }
     next();
