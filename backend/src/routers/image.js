@@ -26,7 +26,7 @@ router.post('/upload',auth ,upload.single('image') ,async (req, res, next) => {
     labels: []
   })
   await img.save();
-  res.status(201).send({img, msg: 'image added successfully'});
+  res.status(201).send({ msg: 'image added successfully'});
 
 }, (error, req, res, next) => {
   res.status(415).send({error: "Non valid file type"})
@@ -38,17 +38,16 @@ router.patch('/images/:id', auth, async (req, res) => {
 
   try{
 
-    console.log({_id:req.params.id, owner: req.user._id})
-
-    const image =await Image.findOne({_id:req.params.id, owner: req.user._id})
+    const image = await Image.findOne({_id:req.params.id, owner: req.user._id})
 
     if(!image){ return res.status(401).send({error: 'No image with this ID was found'}) }
+
     if(updates.length === 0 ){ return res.status(400).send({error: 'No updates'}) }
 
-    console.log(req.body[updates])
 
-    req.body[updates].forEach( update => image.labels.push({label: update, votes:[true]}))
-    
+
+    req.body[updates].forEach( update => image.labels.push({label: update, votes: [true]}))
+
     await image.save();
     res.status(200).send(image);
 
