@@ -34,9 +34,36 @@ router.post('/login', async (req, res) => {
 })
 
 router.get('/users', async (req, res) => {
-    res.send(User.getAllUsers());
+
+    try {
+        const user = await User.find();
+        if (!user) { throw new Error('No users') }
+        res.send(user)
+    } catch (e) {
+        res.status(404).send()
+    }
 })
 
+router.patch('/update_profile', async (req, res) => {
+    try {
+        const user = User.getUserById(req.body.Id);
+        //authorization fehlt ! TODO
+        user.updateProfileSelf(req.body.name, req.body.email, req.body.password);
+        res.status(204).send();
+    } catch (e) {
+        res.status(401).send();
+    }
+})
 
+router.delete('/delete_profile', async (req, res) => {
+    try {
+        const user = User.getUserById(req.body.Id);
+        //authorization fehlt! TODO
+        User.deleteUserById(req.body.Id);
+        res.status(204).send();
+    } catch (e) {
+        res.status(401).send();
+    }
+})
 
 module.exports = router;
