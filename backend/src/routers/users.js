@@ -55,7 +55,8 @@ router.post('/logoutall', auth, async (req, res) => {
     }catch (e){
         res.status(500).send()
     }
-
 })
+
+
 
 module.exports = router;

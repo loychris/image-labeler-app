@@ -9,8 +9,8 @@ const imageSchema = new mongoose.Schema({
         required: true,
         type: Buffer
     },
-    lables: [{
-        lable: { type: String, required: true },
+    labels: [{
+        label: { type: String, required: true },
         votes:[{ type: Boolean }]
     }]
 
