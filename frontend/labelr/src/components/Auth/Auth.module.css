@@ -1,0 +1,21 @@
+.login{
+    position: absolute;
+    margin-left: auto;
+    width: 500px; 
+    height: 800px; 
+    border: 1px solid red; 
+}
+
+.loginSignup, .userOptions {
+    width: 100%;
+    border: 1px solid blue; 
+    display: flex; 
+}
+
+.userType h3 {
+    width: inherit; 
+}
+
+.active {
+    border-bottom: 3px solid #444444;
+}
