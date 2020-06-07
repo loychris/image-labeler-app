@@ -45,7 +45,7 @@ router.get('/users', async (req, res) => {
 
 router.get('/user/:id', async (req, res) => {
     try {
-        const user = User.getUserById(req.body.Id);
+        const user = User.findOne(req.body.Id);
         res.send(user);
     } catch{
         res.status(404).send();
@@ -54,9 +54,13 @@ router.get('/user/:id', async (req, res) => {
 
 router.patch('/update_profile', async (req, res) => {
     try {
-        const user = User.getUserById(req.body.Id);
+        const user = req.user
         //authorization fehlt ! TODO
-        user.updateProfileSelf(req.body.name, req.body.email, req.body.password);
+
+        if (req.body.id) { user.id = req.user.id };
+        if (req.user.name) { user.name = req.user.name };
+        if (req.user.email) { user.email = req.user.email };
+
         res.status(204).send();
     } catch (e) {
         res.status(401).send();
@@ -65,9 +69,9 @@ router.patch('/update_profile', async (req, res) => {
 
 router.delete('/delete_profile', async (req, res) => {
     try {
-        const user = User.getUserById(req.body.Id);
+        const user = User.findOne({ id: req.user.Id });
         //authorization fehlt! TODO
-        User.deleteUserById(req.body.Id);
+        User.deleteOne({ id: user.Id });
         res.status(204).send();
     } catch (e) {
         res.status(401).send();

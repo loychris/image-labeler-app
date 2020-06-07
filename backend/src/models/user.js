@@ -64,39 +64,6 @@ userSchema.statics.findByCredentials = async (email, password) => {
     return user;
 }
 
-//returns query object of all users
-userSchema.statics.getAllUsers = async () => {
-
-    const users = await User.find();
-
-    if (!users) { throw new Error('No users') };
-
-    return users;
-}
-
-userSchema.statics.getUserById = async (id) => {
-
-    const user = await User.findOne({ id });
-
-    if (!user) { throw new Error('user not found') };
-
-    return user;
-}
-
-userSchema.statics.deleteUserById = async (id) => {//vieleicht sollte man dies synchron machen ?
-    const user = User.getUserById(id);
-    if (!user) { throw new Error('User does not exist') };
-    User.deleteOne({ id });
-}
-
-userSchema.updateProfileSelf = async (name, email, password) => {
-    const user = this;
-    if (name != user.name) { this.name = name };
-    if (email != user.email) { this.email = email };
-    if (password != user.password) { this.password = password };
-    await this.save;
-}
-
 // Hash the password before saving (update/create user)
 userSchema.pre('save', async function (next) {
     const user = this;

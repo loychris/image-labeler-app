@@ -10,15 +10,15 @@ const upload = multer({
   limits: {
     fileSize: 10000000    // 10mb
   },
-  fileFilter(req, file, callback){
-    if(!file.originalname.match(/\.(jpg|jpeg|png)$/)){
-      return callback( new Error('Non valid file type'))
+  fileFilter(req, file, callback) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      return callback(new Error('Non valid file type'))
     }
     callback(undefined, true);
   }
 })
 
-router.post('/upload',auth ,upload.single('image') ,async (req, res, next) => {
+router.post('/upload', auth, upload.single('image'), async (req, res, next) => {
 
   const img = new Image({
     data: req.file.buffer,
@@ -26,11 +26,11 @@ router.post('/upload',auth ,upload.single('image') ,async (req, res, next) => {
     lables: []
   })
   await img.save();
-  res.status(201).send({ msg: 'image added successfully'});
+  res.status(201).send({ msg: 'image added successfully' });
 
 
 }, (error, req, res, next) => {
-  res.status(415).send({error: "Non valid file type"})
+  res.status(415).send({ error: "Non valid file type" })
 })
 
 
@@ -38,22 +38,22 @@ router.patch('/images/:id', auth, async (req, res) => {
 
   const updates = Object.keys(req.body);
 
-  try{
+  try {
 
-    const image = await Image.findOne({_id:req.params.id, owner: req.user._id})
+    const image = await Image.findOne({ _id: req.params.id, owner: req.user._id })
 
-    if(!image){ return res.status(401).send({error: 'No image with this ID was found'}) }
+    if (!image) { return res.status(401).send({ error: 'No image with this ID was found' }) }
 
-    if(updates.length === 0 ){ return res.status(400).send({error: 'No updates'}) }
+    if (updates.length === 0) { return res.status(400).send({ error: 'No updates' }) }
 
 
 
-    req.body[updates].forEach( update => image.labels.push({label: update, votes: [true]}))
+    req.body[updates].forEach(update => image.labels.push({ label: update, votes: [true] }))
 
     await image.save();
     res.status(200).send(image);
 
-  }catch (e) {
+  } catch (e) {
     res.status(500).send(e.message)
   }
 
@@ -63,12 +63,12 @@ router.patch('/images/:id', auth, async (req, res) => {
 router.get('/labels', async (req, res) => {
   try {
     const images = await Image.find()
-    const labels = images.map(image=>image.labels)
+    const labels = images.map(image => image.labels)
 
     console.log(labels);
-    res.status(200).send(images)
+    res.status(200).send(labels)
   }
-  catch(e){
+  catch (e) {
     res.status(500).send(e)
   }
 })
