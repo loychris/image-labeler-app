@@ -43,6 +43,15 @@ router.get('/users', async (req, res) => {
     }
 })
 
+router.get('/user/:id', async (req, res) => {
+    try {
+        const user = User.getUserById(req.body.Id);
+        res.send(user);
+    } catch{
+        res.status(404).send();
+    }
+})
+
 router.patch('/update_profile', async (req, res) => {
     try {
         const user = User.getUserById(req.body.Id);
