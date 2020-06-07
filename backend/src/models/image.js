@@ -1,27 +1,19 @@
 const mongoose = require('mongoose');
-const express = require('express');
 
 const imageSchema = new mongoose.Schema({
-  id: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  owner: {
-    type: String,
-    required: true,
-  },
-  img: {
-    type: Buffer,
-    maxlength: 10000000
-  },
-  label: {
-    type: [String],
-    required: true,
-  },
-  correctLabel: {
-    type: [Number]//[#yes, #no]
-  }
+    owner: {
+        type: String,
+        required: true,
+    },
+    data:{
+        required: true,
+        type: Buffer
+    },
+    labels: [{
+        label: { type: String, required: true },
+        votes: [{ type: Boolean }]
+
+    }]
 
 });
 

@@ -5,7 +5,7 @@ const cors = require("cors");
 
 require("./db/mongoose");
 
-const indexRouter = require('./routers/index');
+const indexRouter = require('./routers/image');
 const usersRouter = require('./routers/users');
 
 

@@ -1,13 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/user");
-
+const User = require('../models/user');
 const auth = require('../middleware/auth')
 
 
-router.get('/', auth, async (req, res) => {
-    res.send('msg')
-})
+router.get('/me', auth, async (req, res) => {
+    res.send(req.user)
+});
 
 router.post('/', async (req, res) => {
 
@@ -64,6 +63,32 @@ router.delete('/delete_profile', async (req, res) => {
     } catch (e) {
         res.status(401).send();
     }
+})
+
+router.post('/logout', auth, async (req, res) => {
+
+    try {
+        req.user.tokens = req.user.tokens.filter(token => token.token !== req.token)
+        await req.user.save();
+        res.send({ msg: "Logout successfully" })
+
+    } catch (e) {
+        res.status(500).send()
+    }
+
+})
+
+router.post('/logoutall', auth, async (req, res) => {
+
+    try {
+        req.user.tokens = [];
+        await req.user.save();
+        res.send({ msg: "Logout from all devices successfully, all registered tokens have been removed" })
+
+    } catch (e) {
+        res.status(500).send()
+    }
+
 })
 
 module.exports = router;
