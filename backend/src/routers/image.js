@@ -34,7 +34,7 @@ router.post('/upload',auth ,upload.single('image') ,async (req, res, next) => {
 })
 
 
-router.patch('/images/:id', auth, async (req, res) => {
+router.patch('/images/:id', auth, async (req, res, next) => {
 
   const updates = Object.keys(req.body);
 
@@ -60,7 +60,7 @@ router.patch('/images/:id', auth, async (req, res) => {
 })
 
 
-router.get('/labels', async (req, res) => {
+router.get('/labels', async (req, res, next) => {
   try {
     const images = await Image.find()
     const labels = images.map(image=>image.labels)
@@ -84,6 +84,7 @@ router.get('/images', async (req, res) => {
   catch(e){
     res.status(500).send(e);
   }
+})
 
 
 router.get('/users/:id/images', async (req, res) => {
@@ -95,6 +96,7 @@ router.get('/users/:id/images', async (req, res) => {
   catch(e){
     res.status(500).send(e);
   }
+})
 
 
 router.get('labels/', async (req,res) => {
@@ -106,5 +108,32 @@ router.get('labels/', async (req,res) => {
   catch(e){
     res.status(500).send(e);
   }
+})
+
+
+router.get('images/:id', async (req, res, next) => {
+  const id = req.params.id;
+  let image;
+  try {
+    image = await Image.findById(id, () => console.log("image found"));
+    res.status(200).send(image);
+  }
+  catch(e){
+    res.status(500).send(e);
+  }
+})
+
+
+router.delete('images/:id', async (req, res) => {
+  const id = req.params.id;
+  let image;
+  try {
+    image = await Image.findByIdAndDelete(id, () => console.log("image deleted"));
+  }
+  catch(e){
+    res.status(500).send(e);
+  }
+})
+
 
 module.exports = router;
