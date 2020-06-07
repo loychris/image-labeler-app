@@ -19,7 +19,7 @@ class Login extends Component {
                 <input type='text'/>
                 <label>password</label>
                 <input type='text'/>
-            </form>
+            </form> 
         )
     }
 
@@ -95,24 +95,25 @@ class Login extends Component {
 
     render(){
 
-        let form;
+        let inputs;
 
         if(this.state.userType === 'user'){
             if(this.state.currentlyShowing === 'login'){
-                form = this.getUserLoginForm();
+                inputs = this.getUserLoginForm();
             } else {
-                form = this.getUserSignupForm(); 
+                inputs = this.getUserSignupForm(); 
             }
         } else {
             if(this.state.currentlyShowing === 'login'){
-                form = this.getUploaderLoginForm();
+                inputs = this.getUploaderLoginForm();
             }else {
-                form = this.getUploaderSignupForm();
+                inputs = this.getUploaderSignupForm();
             }
         }
 
+        const styleClasses = [classes.login];
         return(    
-            <div className={classes.login}>
+            <div className={styleClasses.join(' ')}>
                 <div className={classes.userOptions}>
                     <AuthTab 
                         active={this.state.userType === 'user'}
@@ -133,7 +134,10 @@ class Login extends Component {
                         value = {'Signup'} 
                         clicked = {this.switchToSignup}/>
                 </div>
-                {form}
+                <form>
+                    {inputs}
+                </form>
+
             </div>
         )
     }
