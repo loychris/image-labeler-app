@@ -73,4 +73,38 @@ router.get('/labels', async (req, res) => {
   }
 })
 
+
+router.get('/images', async (req, res) => {
+  let images;
+  try {
+    images = await Image.find({});
+    console.log(images);
+    res.status(200).send(images);
+  }
+  catch(e){
+    res.status(500).send(e);
+  }
+
+
+router.get('/users/:id/images', async (req, res) => {
+  try {
+    const images = await Image.find({owner: req.user._id})
+    console.log(images);
+    res.status(200).send(images);
+  }
+  catch(e){
+    res.status(500).send(e);
+  }
+
+
+router.get('labels/', async (req,res) => {
+  try {
+    const images = await Image.find({label: req.params.labels.label};
+    console.log(images);
+    res.status(200).send(images);
+  }
+  catch(e){
+    res.status(500).send(e);
+  }
+
 module.exports = router;
