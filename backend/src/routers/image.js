@@ -23,14 +23,16 @@ router.post('/upload',auth ,upload.single('image') ,async (req, res, next) => {
   const img = new Image({
     data: req.file.buffer,
     owner: req.user._id,
-    labels: []
+    lables: []
   })
   await img.save();
   res.status(201).send({ msg: 'image added successfully'});
 
+
 }, (error, req, res, next) => {
   res.status(415).send({error: "Non valid file type"})
 })
+
 
 router.patch('/images/:id', auth, async (req, res) => {
 
