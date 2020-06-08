@@ -34,7 +34,7 @@ router.post('/upload',auth ,upload.single('image') ,async (req, res, next) => {
 })
 
 
-router.patch('/images/:id', auth, async (req, res, next) => {
+router.patch('/images/:id', auth, async (req, res ) => {
 
   const updates = Object.keys(req.body);
 
@@ -59,21 +59,21 @@ router.patch('/images/:id', auth, async (req, res, next) => {
 
 })
 
-
+// Get all labels
 router.get('/labels', async (req, res, next) => {
   try {
     const images = await Image.find();
     const labels = images.map(image=>image.labels);
 
     console.log(labels);
-    res.status(200).send(images);
+    res.status(200).send(labels);
   }
   catch(e){
     res.status(500).send(e);
   }
 })
 
-
+// Get all images
 router.get('/images', async (req, res) => {
   let images;
   try {
@@ -86,8 +86,8 @@ router.get('/images', async (req, res) => {
   }
 })
 
-
-router.get('/users/:id/images', async (req, res) => {
+// Get all images by user id
+router.get('/users/:id/images', auth, async (req, res) => {
   try {
     const images = await Image.find({owner: req.user._id});
     console.log(images);
@@ -99,6 +99,7 @@ router.get('/users/:id/images', async (req, res) => {
 })
 
 
+// Get all images by label
 router.get('labels/', async (req,res) => {
   try {
     const images = await Image.find({label: req.params.labels.label};
@@ -111,6 +112,7 @@ router.get('labels/', async (req,res) => {
 })
 
 
+// Get a single image by id
 router.get('images/:id', async (req, res, next) => {
   const id = req.params.id;
   let image;
@@ -124,12 +126,14 @@ router.get('images/:id', async (req, res, next) => {
 })
 
 
-router.delete('images/:id', async (req, res) => {
+// Delete an image
+router.delete('images/:id', auth, async (req, res) => {
   const id = req.params.id;
   let image;
   try {
-    image = await Image.findByIdAndDelete(id, () => console.log("image deleted"));
+    image = await Image.findOneAndDelete({_id:req.params.id, owner: req.user._id}, () => console.log("image deleted"));
   }
+    if(!image){ return res.status(401).send({error: 'No image with this ID was found'}) };
   catch(e){
     res.status(500).send(e);
   }
