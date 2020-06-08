@@ -35,9 +35,9 @@ router.post('/login', async (req, res) => {
 router.get('/users', async (req, res) => {
 
     try {
-        const user = await User.find();
+        const users = await User.find();
         if (!user) { throw new Error('No users') }
-        res.send(user)
+        res.status(200).send(users)
     } catch (e) {
         res.status(404).send()
     }
@@ -53,7 +53,7 @@ router.get('/user/:id', async (req, res) => {
     }
 })
 
-router.patch('/user/:id', async (req, res) => {
+router.patch('/users/:id', auth ,async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.params.id });
         if (!user) { throw new Error('user not found') };
@@ -70,7 +70,7 @@ router.patch('/user/:id', async (req, res) => {
     }
 })
 
-router.delete('/user/:id', async (req, res) => {
+router.delete('/users/:id', auth ,async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.params.Id });
         //authorization fehlt! TODO
@@ -78,7 +78,7 @@ router.delete('/user/:id', async (req, res) => {
         await user.save();
         res.status(204).send("deleten complete");
     } catch (e) {
-        res.status(401).send();
+        res.status(500).send();
     }
 })
 
@@ -87,7 +87,7 @@ router.post('/logout', auth, async (req, res) => {
     try {
         req.user.tokens = req.user.tokens.filter(token => token.token !== req.token)
         await req.user.save();
-        res.send({ msg: "Logout successfully" })
+        res.status(200).send({ msg: "Logout successfully" })
 
     } catch (e) {
         res.status(500).send()
@@ -100,7 +100,7 @@ router.post('/logoutall', auth, async (req, res) => {
     try {
         req.user.tokens = [];
         await req.user.save();
-        res.send({ msg: "Logout from all devices successfully, all registered tokens have been removed" })
+        res.status(200).send({ msg: "Logout from all devices successfully, all registered tokens have been removed" })
 
     } catch (e) {
         res.status(500).send()
