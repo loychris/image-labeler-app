@@ -27,8 +27,8 @@ class Overview extends Component {
         const catPreviews = this.state.categories.map(c => {
             return(
                 <Col xs={4} md={3} key={c.name}>
-                    <Link to={c.route}>
-                        <CatPreview {...c}/>
+                    <Link to={`imageQueue/${c.name}`}>
+                        <CatPreview {...c} setCategory={this.props.setCategory}/>
                     </Link>
                 </Col>
             )
