@@ -43,23 +43,26 @@ router.get('/users', async (req, res) => {
     }
 })
 
-router.get('/user/:id', async (req, res) => {
+router.get('/users/:id', async (req, res) => {
     try {
-        const user = User.findOne(req.body.Id);
-        res.send(user);
+        const user = User.findOne({ id: req.params.id });
+        if (!user) { throw new Error('user not found') };
+        res.send(user);//mögliches problem ? -- sende user profile inklusive daten wie tokens und passwort ..
     } catch{
         res.status(404).send();
     }
 })
 
-router.patch('/update_profile', async (req, res) => {
+router.patch('/users/:id', async (req, res) => {
     try {
-        const user = req.user
+        const user = User.findOne({ id: req.params.id });
+        if (!user) { throw new Error('user not found') };
         //authorization fehlt ! TODO
 
-        if (req.body.id) { user.id = req.user.id };
-        if (req.user.name) { user.name = req.user.name };
-        if (req.user.email) { user.email = req.user.email };
+        if (req.body.id) { user.id = req.body.id };
+        if (req.body.name) { user.name = req.body.name };
+        if (req.body.email) { user.email = req.body.email };
+        await save(user);
 
         res.status(204).send();
     } catch (e) {
@@ -67,9 +70,9 @@ router.patch('/update_profile', async (req, res) => {
     }
 })
 
-router.delete('/delete_profile', async (req, res) => {
+router.delete('/users/:id', async (req, res) => {
     try {
-        const user = User.findOne({ id: req.user.Id });
+        const user = User.findOne({ id: req.params.Id });
         //authorization fehlt! TODO
         User.deleteOne({ id: user.Id });
         res.status(204).send();
