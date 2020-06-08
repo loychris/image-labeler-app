@@ -1,0 +1,25 @@
+.login{
+    position: absolute;
+    margin-left: auto;
+    width: 500px; 
+    height: 800px; 
+    background-color: yellow;
+    left: 50%;
+    margin-left: -250px; 
+    margin-top: -400px; 
+    top: 50%;
+}
+
+.hidden{
+    transform: translate3d(0, -100vh, 0);
+}
+
+.loginSignup, .userOptions {
+    width: 100%;
+    border: 1px solid blue; 
+    display: flex; 
+    justify-content: space-around;
+
+    
+}
+
