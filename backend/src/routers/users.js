@@ -43,39 +43,40 @@ router.get('/users', async (req, res) => {
     }
 })
 
-router.get('/users/:id', async (req, res) => {
+router.get('/user/:id', async (req, res) => {
     try {
-        const user = await User.findOne({ id: req.params.id });
+        const user = await User.findOne({ _id: req.params.id });
         if (!user) { throw new Error('user not found') };
-        res.send(user);//mögliches problem ? -- sende user profile inklusive daten wie tokens und passwort ..
+        res.status(200).send(user);//mögliches problem ? -- sende user profile inklusive daten wie tokens und passwort ..
     } catch{
         res.status(404).send();
     }
 })
 
-router.patch('/users/:id', async (req, res) => {
+router.patch('/user/:id', async (req, res) => {
     try {
-        const user = await User.findOne({ id: req.params.id });
+        const user = await User.findOne({ _id: req.params.id });
         if (!user) { throw new Error('user not found') };
         //authorization fehlt ! TODO
 
         if (req.body.id) { user.id = req.body.id };
         if (req.body.name) { user.name = req.body.name };
         if (req.body.email) { user.email = req.body.email };
-        await save(user);
+        await user.save();
 
-        res.status(204).send();
+        res.status(204).send(user);
     } catch (e) {
-        res.status(401).send();
+        res.status(401).send("something went wrong");
     }
 })
 
-router.delete('/users/:id', async (req, res) => {
+router.delete('/user/:id', async (req, res) => {
     try {
-        const user = await User.findOne({ id: req.params.Id });
+        const user = await User.findOne({ _id: req.params.Id });
         //authorization fehlt! TODO
-        await User.deleteOne({ id: user.Id });
-        res.status(204).send();
+        await User.deleteOne({ _id: user._id });
+        await user.save();
+        res.status(204).send("deleten complete");
     } catch (e) {
         res.status(401).send();
     }
