@@ -9,8 +9,6 @@ router.get('/me', auth, async (req, res) => { res.send(req.user) });
 router.post('/', async (req, res) => {
 
     const user = new User(req.body);
-
-    console.log(user)
     try {
         const token = await user.generateAuthToken();
         await user.save();
@@ -22,10 +20,11 @@ router.post('/', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
+
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password);
         const token = await user.generateAuthToken();
-        res.send({ user, token });
+        res.status(200).send({ user, token });
     } catch (e) {
         res.status(400).send();
     }
@@ -64,7 +63,7 @@ router.patch('/:id', auth ,async (req, res) => {
         if (isValidOperation) {
             updates.forEach(update => user[update] = req.body[update]);
             await user.save();
-            res.status(204).send(user);
+            res.status(201).send(user);
         } else{
             res.status(400).send({error:'unvalid field'})
         }
