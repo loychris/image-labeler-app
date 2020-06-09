@@ -58,7 +58,7 @@ router.patch('/images/:id', auth, async (req, res) => {
 })
 
 // Get all labels
-router.get('/labels',auth, async (req, res, next) => {
+router.get('/labels',auth, async (req, res ) => {
     try {
         const images = await Image.find();
         const labels = images.map(image => image.labels);
@@ -95,7 +95,7 @@ router.get('/users/:id/images', auth, async (req, res) => {
 
 
 // Get all images by label
-router.get('labels/', async (req, res) => {
+router.get('images/:labels.label', async (req, res) => {
     try {
         const images = await Image.find({label: req.params.labels.label});
         console.log(images);
@@ -133,6 +133,26 @@ router.delete('images/:id', auth, async (req, res) => {
         }
     } catch (e) {
         res.status(500).send(e);
+    }
+})
+
+
+// Vote for image
+router.post('images/:id', async (req, res) => {
+    const id = req.params.id;
+    const vote = req.body;
+    console.log("body", req.body);
+    let image;
+    try {
+	image = await Image.findOne({_id: req.params.id});
+        if (!image) {
+            return res.status(401).send({error: 'No image with this ID was found'})
+        }
+	image.labels.votes.push(vote);
+	await image.save();
+	console.log("vote appended");
+    } catch (e) {
+	res.status(500).send(e);
     }
 })
 
