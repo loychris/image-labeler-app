@@ -4,9 +4,7 @@ const User = require('../models/user');
 const auth = require('../middleware/auth')
 
 
-router.get('/me', auth, async (req, res) => {
-    res.send(req.user)
-});
+router.get('/me', auth, async (req, res) => { res.send(req.user) });
 
 router.post('/', async (req, res) => {
 
@@ -36,20 +34,20 @@ router.get('/users', async (req, res) => {
 
     try {
         const users = await User.find();
-        if (!user) { throw new Error('No users') }
+        if (!users) { res.status(404).send() }
         res.status(200).send(users)
     } catch (e) {
-        res.status(404).send()
+        res.status(500).send()
     }
 })
 
 router.get('/users/:id', async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.params.id });
-        if (!user) { throw new Error('user not found') };
+        if (!user) {  res.status(404).send("User was not found"); };
         res.status(200).send(user);//mögliches problem ? -- sende user profile inklusive daten wie tokens und passwort ..
-    } catch{
-        res.status(404).send();
+    } catch (e) {
+        res.status(500).send(e);
     }
 })
 
