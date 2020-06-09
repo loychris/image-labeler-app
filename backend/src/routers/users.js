@@ -30,7 +30,7 @@ router.post('/login', async (req, res) => {
     }
 })
 
-router.get('/users', async (req, res) => {
+router.get('/', async (req, res) => {
 
     try {
         const users = await User.find();
@@ -41,7 +41,7 @@ router.get('/users', async (req, res) => {
     }
 })
 
-router.get('/users/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.params.id });
         if (!user) {  res.status(404).send("User was not found"); };
@@ -51,7 +51,7 @@ router.get('/users/:id', async (req, res) => {
     }
 })
 
-router.patch('/users/:id', auth ,async (req, res) => {
+router.patch('/:id', auth ,async (req, res) => {
 
     const allowUpdates = ['name', 'email', 'password'];
     const updates = Object.keys(req.body);
