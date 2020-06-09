@@ -23,13 +23,6 @@ class App extends Component {
   }
 
   render(){
-    const imageQueue = this.state.currentCategory ? 
-      <Route 
-        path= '/imageQueue'
-        render={() => {
-          return <ImageQueue category={this.state.currentCategory}/>
-        }}/> : null
-
     return (
       <div className="App">
         <Route 
@@ -43,12 +36,14 @@ class App extends Component {
           render={ () => {
             return <Overview setCategory={this.setCurrentCategory}/>
           }}/>
-        {imageQueue}
+        <Route 
+        path= '/imageQueue'
+        render={() => {
+          return <ImageQueue category={this.state.currentCategory}/>
+        }}/>
         <Route 
           path='/imageQueue' 
-          render={() => {
-            return <BackButton resetCategory={this.resetCurrentCategory}/>
-          }}/>
+          component={BackButton}/>
       </div>
     );
   }

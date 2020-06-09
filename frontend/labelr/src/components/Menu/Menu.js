@@ -22,12 +22,13 @@ class Menu extends Component {
     render() {
         
         const styleClasses = [classes.menu]; 
-        if(this.state.expanded === true) styleClasses.push(classes.expanded)
-        else styleClasses.push(classes.collapsed)
-        
+        if(this.state.expanded === true){
+            styleClasses.push(classes.expanded); 
+        } else {
+            styleClasses.push(classes.collapsed);
+        }
         const collapseButton = this.state.expanded ? <button onClick={this.collapse}>Collapse Menu</button> : null
         const expandButton = !this.state.expanded ? <button onClick={this.expnad}>Menu</button> : null
-
         const menuItemsExpanded = this.state.expanded ? 
             <div>
                 <h1>MENU</h1>
@@ -35,13 +36,10 @@ class Menu extends Component {
                 <Link to='/login'>LOGIN</Link>
                 {/*  ^^^^^^ Nur Dummy Content bisher um Links zu testen. Menu hier befüllen */}
             </div> : null; 
-
         const menuItemsCollapsed = !this.state.expanded ? 
             <div>
                 {/* Hier nur icons der Menu optionen */}
             </div> : null;
-
-
 
         return(
             <div className={styleClasses.join(' ')}>
