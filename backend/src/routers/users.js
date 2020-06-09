@@ -43,7 +43,7 @@ router.get('/users', async (req, res) => {
     }
 })
 
-router.get('/user/:id', async (req, res) => {
+router.get('/users/:id', async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.params.id });
         if (!user) { throw new Error('user not found') };
@@ -54,31 +54,34 @@ router.get('/user/:id', async (req, res) => {
 })
 
 router.patch('/users/:id', auth ,async (req, res) => {
+
+    const allowUpdates = ['name', 'email', 'password'];
+    const updates = Object.keys(req.body);
+    const isValidOperation = updates.every( (update) => allowUpdates.includes(update));
+
     try {
-        const user = await User.findOne({ _id: req.params.id });
-        if (!user) { throw new Error('user not found') };
-        //authorization fehlt ! TODO
+        const user = await req.user;
 
-        if (req.body.id) { user.id = req.body.id };
-        if (req.body.name) { user.name = req.body.name };
-        if (req.body.email) { user.email = req.body.email };
-        await user.save();
-
-        res.status(204).send(user);
+        if (isValidOperation) {
+            updates.forEach(update => user[update] = req.body[update]);
+            await user.save();
+            res.status(204).send(user);
+        } else{
+            res.status(400).send({error:'unvalid field'})
+        }
     } catch (e) {
-        res.status(401).send("something went wrong");
+        res.status(500).send(e)
+
     }
 })
 
 router.delete('/users/:id', auth ,async (req, res) => {
     try {
-        const user = await User.findOne({ _id: req.params.Id });
-        //authorization fehlt! TODO
-        await User.deleteOne({ _id: user._id });
-        await user.save();
-        res.status(204).send("deleten complete");
+        await req.user.remove()
+        res.status(201).send(req.user)
+
     } catch (e) {
-        res.status(500).send();
+        res.status(500).send(e);
     }
 })
 
