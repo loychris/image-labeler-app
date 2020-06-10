@@ -7,9 +7,11 @@ class CatPreview extends Component {
 
     render(){
         return(
-            <div className={classes.catPreview} onClick={() => this.props.setCategory(this.props.name)}>
-                <h3>{this.props.name}</h3>
-            </div>
+            <li className={classes.catPreview}>
+                <a href={`imageQueue/${this.props.name}`} className={classes.thumbnail}>
+                <img src= 'https://dummyimage.com/260x200/000/fff' alt= {this.props.name} />
+                </a>
+            </li>
             
         )
     }

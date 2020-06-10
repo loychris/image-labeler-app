@@ -59,16 +59,8 @@ class Overview extends Component {
             <div className={classes.overview}>
                 <h2>Categories</h2>
                     <ul className={classes.thumbnails}>
-                <Container>
-                        {this.state.categories.map(c => {
-                            return(
-                                <li className={classes.categories}>
-                                    <a href={`imageQueue/${c.name}`} className={classes.thumbnail}>
-                                    <img src= 'https://dummyimage.com/260x200/000/fff' alt= {c.name} />
-                                    </a>
-                                </li>
-                            )
-                        })}
+                <Container className={classes.container}>
+                    {catPreviews}
                 </Container>
                 </ul>
             </div>
