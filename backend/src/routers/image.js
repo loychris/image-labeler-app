@@ -12,7 +12,6 @@ const upload = multer({
     fileSize: 10000000    // 10mb
   },
   fileFilter(req, file, callback) {
-    console.log(file.originalname);
     if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
       return callback(new Error('Non valid file type'))
     }
@@ -43,12 +42,9 @@ router.get('/labels', async (req, res) => {
 // Get image by label
 router.get('/images/:label', async (req, res) => {
 
-  console.log(1);
   try {
     const imageList = [];
-    console.log(2);
     const images = await Image.find({})
-    console.log(3);
     images.map(image => {
       const labelsList = image.labels.map(label => label.label);
       return labelsList.includes(req.params.label) ? imageList.push(image) : false
@@ -63,7 +59,6 @@ router.get('/images/:label', async (req, res) => {
 router.get('/images', async (req, res) => {
   try {
     const images = await Image.find();
-    console.log(images);
     if(!images){
       res.status(404).send('No images found');
     }
@@ -148,7 +143,6 @@ router.post('/images/:id', auth,async (req, res) => {
 
   const vote = req.body.vote;
   const user = req.user;
-  console.log(user);
 
   try {
     const image = await Image.findOne({_id: req.params.id});
@@ -209,7 +203,6 @@ router.delete('/images/:id', auth, async (req, res) => {
       _id: req.params.id,
       owner: req.user._id
     });
-    console.log(image);
     if (!image) { return res.status(401).send({error: 'No image with this ID was found'}) }
     await image.save();
     res.status(201).send({msg:"Image deleted"});
