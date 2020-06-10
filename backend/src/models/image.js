@@ -10,7 +10,7 @@ const imageSchema = new mongoose.Schema({
         type: Buffer
     },
     labels: [{
-        label: { type: String, required: true },
+        label: { type: String, required: true, unique: true },
         votes: [{ type: Boolean }]
 
     }]
