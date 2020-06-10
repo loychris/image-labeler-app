@@ -11,7 +11,7 @@ class Menu extends Component {
         expanded: true
     }
 
-    expand = () => {
+    expnad = () => {
         this.setState({expanded: true})
     }
 
@@ -28,7 +28,7 @@ class Menu extends Component {
             styleClasses.push(classes.collapsed);
         }
         const collapseButton = this.state.expanded ? <button onClick={this.collapse}>Collapse Menu</button> : null
-        const expandButton = !this.state.expanded ? <button onClick={this.expand}>Menu</button> : null
+        const expandButton = !this.state.expanded ? <button onClick={this.expnad}>Menu</button> : null
         const menuItemsExpanded = this.state.expanded ? 
             <div>
                 <h1>MENU</h1>

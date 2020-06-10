@@ -18,14 +18,11 @@ class App extends Component {
     this.setState({currentCategory: category});
   }
 
-  resetCurrentCategory = () => {
-    this.setState({currentCategory: null});
-  }
-
   render(){
     return (
       <div className="App">
         <Route 
+          
           exact 
           path='/login' 
           component={Auth}/>

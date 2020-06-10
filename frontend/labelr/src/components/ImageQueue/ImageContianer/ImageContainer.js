@@ -17,13 +17,9 @@ class ImageContainer extends Component {
         if(this.props.pos > 1){
             styleClasses.push(classes.moveBack);
         }
-
         const inlineStyles = {zIndex: 10-this.props.pos}
-
         return(
             <div style={inlineStyles} className={styleClasses.join(' ')}>
-                <p>show: {this.props.show}</p>
-                <p>id: {this.props.id}</p>
                 <img className={classes.pic} src={this.props.pic} alt=''/>
             </div>
         )
