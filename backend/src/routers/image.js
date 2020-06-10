@@ -7,154 +7,70 @@ const auth = require('../middleware/auth')
 const Image = require('../models/image')
 
 const upload = multer({
-    limits: {
-        fileSize: 10000000    // 10mb
-    },
-    fileFilter(req, file, callback) {
-        if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-            return callback(new Error('Non valid file type'));
-        }
-        callback(undefined, true);
+  limits: {
+    fileSize: 10000000    // 10mb
+  },
+  fileFilter(req, file, callback) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      return callback(new Error('Non valid file type'))
     }
+    callback(undefined, true);
+  }
 })
 
 router.post('/upload', auth, upload.single('image'), async (req, res, next) => {
 
-    const img = new Image({
-        data: req.file.buffer,
-        owner: req.user._id,
-        lables: []
-    })
-    await img.save();
-    res.status(201).send({msg: 'image added successfully'});
+  const img = new Image({
+    data: req.file.buffer,
+    owner: req.user._id,
+    lables: []
+  })
+  await img.save();
+  res.status(201).send({ msg: 'image added successfully' });
 
 
 }, (error, req, res, next) => {
-    res.status(415).send({error: "Non valid file type"});
+  res.status(415).send({ error: "Non valid file type" })
 })
 
 
 router.patch('/images/:id', auth, async (req, res) => {
 
-    const updates = Object.keys(req.body);
+  const updates = Object.keys(req.body);
 
-    try {
+  try {
 
-        const image = await Image.findOne({_id: req.params.id, owner: req.user._id});
+    const image = await Image.findOne({ _id: req.params.id, owner: req.user._id })
 
-        if (!image) { return res.status(401).send({error: 'No image with this ID was found'}) }
+    if (!image) { return res.status(401).send({ error: 'No image with this ID was found' }) }
 
-        if (updates.length === 0) { return res.status(400).send({error: 'No updates'}) }
+    if (updates.length === 0) { return res.status(400).send({ error: 'No updates' }) }
 
-        req.body[updates].forEach(update => image.labels.push({label: update, votes: [true]}));
 
-        await image.save();
-        res.status(200).send(image);
 
-    } catch (e) {
-        res.status(500).send(e.message);
-    }
+    req.body[updates].forEach(update => image.labels.push({ label: update, votes: [true] }))
+
+    await image.save();
+    res.status(200).send(image);
+
+  } catch (e) {
+    res.status(500).send(e.message)
+  }
 
 })
 
-// Get all labels
-router.get('/labels',auth, async (req, res ) => {
-    try {
-        const images = await Image.find();
-        const labels = images.map(image => image.labels);
 
-        console.log(labels);
-        res.status(200).send(labels);
-    } catch (e) {
-        res.status(500).send(e);
-    }
+router.get('/labels', async (req, res) => {
+  try {
+    const images = await Image.find()
+    const labels = images.map(image => image.labels)
+
+    console.log(labels);
+    res.status(200).send(labels)
+  }
+  catch (e) {
+    res.status(500).send(e)
+  }
 })
-
-// Get all images
-router.get('/images', async (req, res) => {
-    let images;
-    try {
-        images = await Image.find({});
-        console.log(images);
-        res.status(200).send(images);
-    } catch (e) {
-        res.status(500).send(e);
-    }
-})
-
-// Get all images by user id
-router.get('/users/:id/images', auth, async (req, res) => {
-    try {
-        const images = await Image.find({owner: req.user._id});
-        console.log(images);
-        res.status(200).send(images);
-    } catch (e) {
-        res.status(500).send(e);
-    }
-})
-
-
-// Get all images by label
-router.get('images/:labels.label', async (req, res) => {
-    try {
-        const images = await Image.find({label: req.params.labels.label});
-        console.log(images);
-        res.status(200).send(images);
-    } catch (e) {
-        res.status(500).send(e);
-    }
-})
-
-
-// Get a single image by id
-router.get('images/:id', async (req, res, next) => {
-    const id = req.params.id;
-    let image;
-    try {
-        image = await Image.findById(id, () => console.log("image found"));
-        res.status(200).send(image);
-    } catch (e) {
-        res.status(500).send(e);
-    }
-})
-
-
-// Delete an image
-router.delete('images/:id', auth, async (req, res) => {
-    const id = req.params.id;
-    let image;
-    try {
-        image = await Image.findOneAndDelete({
-            _id: req.params.id,
-            owner: req.user._id
-        }, () => console.log("image deleted"));
-        if (!image) {
-            return res.status(401).send({error: 'No image with this ID was found'})
-        }
-    } catch (e) {
-        res.status(500).send(e);
-    }
-})
-
-
-// Vote for image
-router.post('images/:id', async (req, res) => {
-    const id = req.params.id;
-    const vote = req.body;
-    console.log("body", req.body);
-    let image;
-    try {
-	image = await Image.findOne({_id: req.params.id});
-        if (!image) {
-            return res.status(401).send({error: 'No image with this ID was found'})
-        }
-	image.labels.votes.push(vote);
-	await image.save();
-	console.log("vote appended");
-    } catch (e) {
-	res.status(500).send(e);
-    }
-})
-
 
 module.exports = router;
