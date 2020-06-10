@@ -6,7 +6,6 @@ import Auth from './components/Auth/Auth';
 import Menu from './components/Menu/Menu';
 import Overview from './components/Overview/Overview';
 import ImageQueue from './components/ImageQueue/ImageQueue';
-import BackButton from './components/BackButton/BackButton';
 
 class App extends Component {
 
@@ -38,9 +37,6 @@ class App extends Component {
         render={() => {
           return <ImageQueue category={this.state.currentCategory}/>
         }}/>
-        <Route 
-          path='/imageQueue' 
-          component={BackButton}/>
       </div>
     );
   }
