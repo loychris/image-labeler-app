@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import ImageContainer from './ImageContianer/ImageContainer';
 
 import classes from './ImageQueue.module.css'; 
+import arrow from './arrow.png';
 
 import pic0 from './DummyImages/Cars/0.png';
 import pic1 from './DummyImages/Cars/1.png';
@@ -141,19 +142,25 @@ class ImageQueue extends Component {
 
         return(
             <div className={classes.imageQueue}>
-                <h1>Is there {this.props.category} in this picture?</h1> 
+                <h1>Is there a {this.props.category} in this picture?</h1> 
                 {imageContainers}
                 <div 
                     className={leftButtonClasses.join(' ')} 
                     onClick={() => this.labelFirst("left")}>
                     {this.getButtonBackgroundSVG('left')}
-                    <div className={classes.mobileYesButton}>Yes</div>
+                    <div className={classes.mobileYesButton}>
+                        <img src={arrow} alt='' className={classes.arrowLeft}/> 
+                        Yes
+                    </div>
                 </div>
                 <div 
                     className={rightButtonClasses.join(' ')} 
                     onClick={() => this.labelFirst("right")}>
                     {this.getButtonBackgroundSVG('right')}
-                    <div className={classes.mobileNoButton}>No</div>
+                    <div className={classes.mobileNoButton}>
+                        <img src={arrow} alt='' className={classes.arrowRight}/> 
+                        No
+                    </div>
                 </div> 
             </div>
         )

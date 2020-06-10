@@ -59,19 +59,43 @@
         display: none;
     }
 
+    h1 {
+        margin-top: 100px; 
+    }
+
     .leftButton, .rightButton {
-        width: 49%;
+        width: 48vw;
         height: 80px;
         color: white; 
-        bottom: 0px;
+        bottom: 1vw;
         position: fixed;
-        font-size: 30px; 
+        font-size: 30pt;
+        padding-top: 25px;  
         background-color: #413E4D; 
+        border-radius: 9px;
+        display: flex; 
+        justify-content: center;
     }
+
+    .arrowLeft {
+        position: absolute;
+        left: 10%;
+        top: 30px; 
+        height: 40px; 
+    }
+
+    .arrowRight{
+        position: absolute;
+        right: 10%;
+        top: 30px; 
+        height: 40px; 
+        transform: rotate(180deg);
+    }
+
     .leftButton {
-        left: 0px; 
+        left: 1vw; 
     }
     .rightButton {
-        right: 0px; 
+        right: 1vw; 
     }
 }
