@@ -12,12 +12,12 @@ class Overview extends Component {
     state = {
         categories: [
             {name: 'Cars', route: '/cars'},
-            {name: 'Categorie 2', route: '/cat2'},
-            {name: 'Categorie 3', route: '/cat3'},
-            {name: 'Categorie 4', route: '/cat4'},
-            {name: 'Categorie 5', route: '/cat5'},
-            {name: 'Categorie 6', route: '/cat6'},
-            {name: 'Categorie 7', route: '/cat7'}
+            {name: 'Categorie2', route: '/cat2'},
+            {name: 'Categorie3', route: '/cat3'},
+            {name: 'Categorie4', route: '/cat4'},
+            {name: 'Categorie5', route: '/cat5'},
+            {name: 'Categorie6', route: '/cat6'},
+            {name: 'Categorie7', route: '/cat7'}
         ]
     }
 
@@ -27,8 +27,8 @@ class Overview extends Component {
         const catPreviews = this.state.categories.map(c => {
             return(
                 <Col xs={4} md={3} key={c.name}>
-                    <Link to={c.route}>
-                        <CatPreview {...c}/>
+                    <Link to={`imageQueue/${c.name}`}>
+                        <CatPreview {...c} setCategory={this.props.setCategory}/>
                     </Link>
                 </Col>
             )
