@@ -31,14 +31,14 @@ class Menu extends Component {
         // const collapseButton = this.state.expanded ? <button onClick={this.collapse}>Collapse Menu</button> : null
         const collapseButton = this.state.expanded ? <Button variant="primary" onClick={this.collapse}>Collapse Menu</Button> : null
         // const expandButton = !this.state.expanded ? <button onClick={this.expand}>Menu</button> : null
-        const expandButton = !this.state.expanded ? <Button variant="secondary" onClick={this.expand}>Menu</Button> : null
+        const expandButton = !this.state.expanded ? <Button variant="primary" onClick={this.expand}>Menu</Button> : null
         const menuItemsExpanded = this.state.expanded ? 
             <div>
                 <h1>MENU</h1>
                 <Link to='/'>HOME</Link><br/>
                 <Link to='/login'>LOGIN</Link><br/>
-                <Button variant="success">Success</Button>{' '}
                 {/*  ^^^^^^ Nur Dummy Content bisher um Links zu testen. Menu hier befüllen */}
+                <Button variant="secondary" >Link</Button>{' '}
             </div> : null; 
         const menuItemsCollapsed = !this.state.expanded ? 
             <div>
@@ -47,7 +47,7 @@ class Menu extends Component {
 
         return(
             <div className={styleClasses.join(' ')}>
-                {collapseButton}
+                {collapseButton} 
                 {expandButton}
                 {menuItemsExpanded}
                 {menuItemsCollapsed}
