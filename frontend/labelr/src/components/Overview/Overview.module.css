@@ -1,6 +1,6 @@
 .wrapper {
     height: 100%;
-    width: calc(100% - 200px);
+    margin-left: 200px;
 }
 
 .overview {
