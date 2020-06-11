@@ -1,6 +1,7 @@
 .overview {
-    border: 1px solid green; 
-
+    border: 1px solid black; 
+    height: 1000px;
+    width: 1000px;
 }
 
 .container {

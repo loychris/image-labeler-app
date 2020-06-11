@@ -65,7 +65,6 @@ class Overview extends Component {
                 </ul>
             </div>
         )
-        // {catPreviews}
     }
 }
 
