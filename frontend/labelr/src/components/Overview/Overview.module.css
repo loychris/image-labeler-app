@@ -5,6 +5,7 @@
 }
 
 .container {
-    list-style-type: none;
     display: flex;
+    flex-wrap: wrap;
+    list-style-type:none;
   }

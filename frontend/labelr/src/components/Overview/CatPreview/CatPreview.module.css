@@ -1,20 +1,4 @@
 
-
-  /* .catPreview {
-    display: flex;
-    flex-wrap: wrap;
-    background-color: grey;
-    list-style-type:none;
-    height: 500px;
-  } */
-
-
-  .thumbnail {
-    width: 260px;
-    height: 200px;
+ div.Overview_container__30um-.container > div {
     margin: 40px;
-    text-align: center;
-    line-height: 75px;
-    font-size: 30px;
-    display: flexbox;
   }
