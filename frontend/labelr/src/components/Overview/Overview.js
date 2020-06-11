@@ -37,22 +37,22 @@ class Overview extends Component {
             { name: 'Bicycle', route: '/cat2', src: img1 },
             { name: 'Books', route: '/cat3', src: img2 },
             { name: 'Cars', route: '/cat4', src: img3 },
-            // { name: 'Cats', route: '/cat5', src: img4 },
-            // { name: 'Dogs', route: '/cat6', src: img5 },
-            // { name: 'Eyes', route: '/cat7', src: img6 },
-            // { name: 'Footballs', route: '/cat8', src: img7 },
-            // { name: 'Guitars', route: '/cat9', src: img8 },
-            // { name: 'Food', route: '/cat10', src: img9 },
-            // { name: 'Bridges', route: '/cat11', src: img10 },
-            // { name: 'Phones', route: '/cat12', src: img11 },
-            // { name: 'Boats', route: '/cat13', src: img12 },
-            // { name: 'Shoes', route: '/cat14', src: img13 },
-            // { name: 'Traffic Lights', route: '/cat15', src: img14 },
-            // { name: 'Trains', route: '/cat16', src: img15 },
-            // { name: 'Trees', route: '/cat17', src: img16 },
-            // { name: 'Humans', route: '/cat18', src: img17 },
-            // { name: 'Cash', route: '/cat19', src: img18 },
-            // { name: 'Lamps', route: '/cat20', src: img19 },
+            { name: 'Cats', route: '/cat5', src: img4 },
+            { name: 'Dogs', route: '/cat6', src: img5 },
+            { name: 'Eyes', route: '/cat7', src: img6 },
+            { name: 'Footballs', route: '/cat8', src: img7 },
+            { name: 'Guitars', route: '/cat9', src: img8 },
+            { name: 'Food', route: '/cat10', src: img9 },
+            { name: 'Bridges', route: '/cat11', src: img10 },
+            { name: 'Phones', route: '/cat12', src: img11 },
+            { name: 'Boats', route: '/cat13', src: img12 },
+            { name: 'Shoes', route: '/cat14', src: img13 },
+            { name: 'Traffic Lights', route: '/cat15', src: img14 },
+            { name: 'Trains', route: '/cat16', src: img15 },
+            { name: 'Trees', route: '/cat17', src: img16 },
+            { name: 'Humans', route: '/cat18', src: img17 },
+            { name: 'Cash', route: '/cat19', src: img18 },
+            { name: 'Lamps', route: '/cat20', src: img19 },
         ]
     }
 
@@ -76,19 +76,19 @@ class Overview extends Component {
         return (
             <div className={classes.wrapper}>
                 <div className={classes.overview}>
-                    <h2>Categories</h2>
+                    <h2>Select a Categorie</h2>
                 </div>
                 <div className={classes.contentWrapper}>
                     <div className={classes.content}>
-                        <Container>
+                        {/* <Container>
                             <Row>
                                 <Col sm={3} ></Col>
                                 <Col sm={3} ></Col>
                                 <Col sm={3} ></Col>
-                                <Col sm={3} ></Col>
-                                {/* {catPreviews} */}
-                            </Row>
-                        </Container>
+                                <Col sm={3} ></Col> */}
+                                {catPreviews}
+                            {/* </Row>
+                        </Container> */}
                     </div>
                 </div>
             </div>

@@ -11,6 +11,7 @@ class CatPreview extends Component {
             <div className={classes.catPreview}>
                 <a className={classes.thumbnail}>
                     <img src={this.props.src} alt={this.props.name} />
+                    <span className={classes.caption}>{this.props.name}</span>
                 </a>
             </div>
 
