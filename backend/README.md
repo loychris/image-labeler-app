@@ -182,7 +182,7 @@ Routes for creating, updating and removing an image
 
 #### Get all existing images
 ```javascript
-var requestOptions = { method: 'GET', redirect: 'follow'};
+const requestOptions = { method: 'GET', redirect: 'follow'};
 
 fetch("localhost:3000/images", requestOptions)
   .then(response => response.text())
@@ -193,9 +193,9 @@ fetch("localhost:3000/images", requestOptions)
 
 - Return all existing labels without duplicates
 ```javascript
-var request = require("request");
+const request = require("request");
 
-var options = { method: 'GET', url: 'http://localhost:3000/labels',
+const options = { method: 'GET', url: 'http://localhost:3000/labels',
   headers:    { 'cache-control': 'no-cache' } };
 
 request(options, function (error, response, body) {
@@ -207,7 +207,7 @@ request(options, function (error, response, body) {
 #### Get images with specific label
 -	Get and image with given label
 ```javascript
-var requestOptions = { method: 'GET',  redirect: 'follow'};
+const requestOptions = { method: 'GET',  redirect: 'follow'};
 
 fetch("localhost:3000/images/:label", requestOptions)
   .then(response => response.text())
@@ -219,7 +219,7 @@ fetch("localhost:3000/images/:label", requestOptions)
 - User keep list of already labeled images ID, all the returned images are not existing in this list, after an image has been labeled by the user, the ID of the image will be added to the list of the IDs, so it will not show up for the user again.
 - In case there are no n images, return 400 at the moment. Next sprint we will modify it so it will return the rest .
 ```javascript
-var requestOptions = { method: 'GET',  redirect: 'follow'};
+const requestOptions = { method: 'GET',  redirect: 'follow'};
 
 fetch("localhost:3000/images/next/:n", requestOptions)
   .then(response => response.text())
@@ -230,7 +230,7 @@ fetch("localhost:3000/images/next/:n", requestOptions)
 #### Get next image (singular)
 -	Same as next n images, but singular
 ```javascript
-var requestOptions = {  method: 'GET',  redirect: 'follow'};
+const requestOptions = {  method: 'GET',  redirect: 'follow'};
 
 fetch("localhost:3000/images/next", requestOptions)
   .then(response => response.text())
@@ -245,10 +245,10 @@ fetch("localhost:3000/images/next", requestOptions)
 -	Work with Postman.
 -	Still might be difficult to integrate to front-end, will be adjusted and tested when the front will be ready.
 ```javascript
-var fs = require("fs");
-var request = require("request");
+const fs = require("fs");
+const request = require("request");
 
-var options = { method: 'POST',
+const options = { method: 'POST',
   url: 'http://localhost:3000/upload',
   headers:
    { 'cache-control': 'no-cache',
@@ -272,12 +272,12 @@ request(options, function (error, response, body) {
 #### Update an existing file by ID
 -	At the moment can edit all fields, will modify to our need as soon as we will integrate with front end.
 ```javascript
-var myHeaders = new Headers();
+const myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
 
-var raw = JSON.stringify({"labels":["label6"]});
+const raw = JSON.stringify({"labels":["label6"]});
 
-var requestOptions = { method: 'PATCH',  headers: myHeaders, body: raw, redirect: 'follow'};
+const requestOptions = { method: 'PATCH',  headers: myHeaders, body: raw, redirect: 'follow'};
 
 fetch("localhost:3000/images/5ee0e26612ae90262dcb9b03", requestOptions)
   .then(response => response.text())
@@ -289,7 +289,7 @@ fetch("localhost:3000/images/5ee0e26612ae90262dcb9b03", requestOptions)
 ### DELETE Routes
 #### Delete an existing file by ID
 ```javascript
-var requestOptions = { method: 'DELETE', redirect: 'follow' };
+const requestOptions = { method: 'DELETE', redirect: 'follow' };
 
 fetch("localhost:3000/images/:imageID", requestOptions)
   .then(response => response.text())
