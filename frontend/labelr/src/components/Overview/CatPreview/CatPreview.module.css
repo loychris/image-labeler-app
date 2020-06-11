@@ -1,4 +1,7 @@
-
- div.Overview_container__30um-.container > div {
-    margin: 40px;
-  }
+.catPreview {
+    margin: 20px;
+    background-color: grey;
+    width: calc(100% / 4);
+    padding-bottom: 100%;
+    display: flex;
+}

@@ -1,11 +1,31 @@
-.overview {
-    border: 1px solid black; 
-    height: 1000px;
-    width: 1000px;
+.wrapper {
+    height: 100%;
+    width: calc(100% - 200px);
 }
 
-.container {
+.overview {
+    width: 100%;
+}
+
+.contentWrapper {
+    height: 100%;
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
-    list-style-type:none;
-  }
+    list-style-type: none;
+}
+
+.content {
+    height: 100%;
+    width: 100%;
+    margin: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none;
+}
+
+.categories {
+    height: 100px;
+    width: 100px;
+}
+
