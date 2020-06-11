@@ -5,8 +5,17 @@
     height: 250px;
     display: block;
     border-radius: 12%;
-    box-shadow: 6px 6px 31px 0px rgba(0,0,0,0.59);
+    box-shadow: 5px 5px 15px rgb(0,0,0,0.9);
+    transition: 0.5s ease;
 }
+
+.catPreview:hover {
+    transform: scale(1.05);
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.6);
+}
+
+
+
 
 img{
     margin-top: 50px;

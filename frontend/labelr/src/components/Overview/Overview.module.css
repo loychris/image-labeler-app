@@ -1,6 +1,6 @@
 .wrapper {
     height: 100%;
-    width: calc(100% - 200px);
+    margin-left: 200px;
 }
 
 .overview {
@@ -32,4 +32,8 @@
 h2 {
     font-family: monospace;
     font-size: 40px;
+}
+
+a {
+    text-decoration: none;
 }
