@@ -1,0 +1,18 @@
+.authTab {
+    text-align: center;
+    padding: 10px 40px; 
+    margin-left: 10px; 
+    margin-right: 10px; 
+    min-width: 100px; 
+}
+
+
+.active {
+    border-bottom: 3px solid #444444;
+    font-weight: 700;
+}
+
+.inactive {
+
+}
+

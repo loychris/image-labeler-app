@@ -1,0 +1,19 @@
+.menu {
+    background-color: red;
+    position: fixed;
+    left: 0px; 
+    bottom: 0px; 
+    top: 0px; 
+}
+
+.expanded {
+    width: 200px; 
+}
+
+.collapsed {
+    width: 50px; 
+}
+
+.menu h1 {
+    color: #ffffff;
+}
