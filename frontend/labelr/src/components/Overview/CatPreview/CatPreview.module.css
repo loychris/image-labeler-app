@@ -1,4 +1,23 @@
 .catPreview {
-    height: 200px;
-    background-color: blue;
+    margin: 60px;
+    background-color: white;
+    width: 250px;
+    height: 250px;
+    display: block;
+    border-radius: 12%;
+    box-shadow: 6px 6px 31px 0px rgba(0,0,0,0.59);
+}
+
+img{
+    margin-top: 50px;
+}
+
+.caption{
+    color: black;
+    font-family: monospace;
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 15px;
+    display: block;
 }
