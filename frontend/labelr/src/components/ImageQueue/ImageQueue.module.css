@@ -24,6 +24,7 @@
 }
 
 .backArrow{
+    margin-top: 0; 
     height: 30px;
     margin-right: 15px; 
 }
@@ -115,6 +116,7 @@
         height: 40px; 
         top: 50%;
         left: 15%; 
+        margin-top: 0px; 
         transform: translate(0, -50%); 
     }
 
@@ -123,6 +125,7 @@
         height: 40px; 
         top: 50%;
         right: 15%; 
+        margin-top: 0px;
         transform: translate(0, -50%); 
     }
 

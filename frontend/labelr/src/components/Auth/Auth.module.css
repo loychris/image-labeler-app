@@ -1,13 +1,20 @@
 .login{
-    position: absolute;
+    position: fixed;
     margin-left: auto;
-    width: 500px; 
-    height: 800px; 
-    background-color: yellow;
+    width: 400px; 
+    height: 600px; 
+    background-color: #f5f5f5;
     left: 50%;
-    margin-left: -250px; 
-    margin-top: -400px; 
+    transform: translate(-50%, -50%); 
     top: 50%;
+    border-radius: 20px; 
+    box-shadow: 0px 5px 50px #000000;
+    z-index: 100;
+    padding: 20px; 
+}
+
+.login > input[type=submit] {
+    background-color: red;
 }
 
 .hidden{
@@ -15,11 +22,58 @@
 }
 
 .loginSignup, .userOptions {
+    text-align: left;
     width: 100%;
-    border: 1px solid blue; 
     display: flex; 
     justify-content: space-around;
-
-    
+    border-bottom: 1px solid #444444;
 }
 
+.backDrop {
+    position: fixed;
+    height: 100vh;
+    width: 100vw; 
+    opacity: 0.7;
+    background-color: #000000;
+    left: 0;
+    top: 0;
+    z-index: 90;
+}
+
+input[type=submit]{
+    position: absolute;
+    bottom: 30px; 
+    right: 30px;
+    color: #ffffff;
+    background: #413E4D;
+    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    cursor: pointer; 
+    padding: 10px 50px; 
+    font-size: 16pt; 
+    border: none;
+}
+
+.form {
+    padding-top: 25px; 
+}
+
+.form input[type=text]{
+    height: 40px;
+    font-size: 15pt; 
+    padding: 3px 15px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0px 3px 5px rgb(0,0,0,0.5);
+    margin-bottom: 15px;
+    margin-top: 5px; 
+}
+
+.form label {
+    margin-top: 20px; 
+    text-align: left;
+}
+
+.form h3 {
+    font-size: 20pt;
+}

@@ -29,3 +29,12 @@
     border-radius: 9px; 
     width: 400px; 
 }
+
+@media (max-width: 500px) {
+    .imageContainer{
+        width: 80vw;
+    }
+    .pic {
+        width: 100%; 
+    }
+}
