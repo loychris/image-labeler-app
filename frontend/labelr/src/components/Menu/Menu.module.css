@@ -1,7 +1,57 @@
-.menu {
+ul.topnav {
+    background-color: #413E4D;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: monospace;
+    font-size: 16pt;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    color: #ffffff;
+    display: inline-block;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover:not(.userLink) {
+    background-color: #f5f5f5;
+    color: #413E4D;
+}
+
+li.user {
+    float: right;
+    color: lightgrey;
+}
+
+.drpdnContent {
+    display: none;
+    position: absolute;
+    background-color: #413E4D;
+}
+
+li.drpdn {
+    display: inline-block;
+}
+
+.drpdnContent a {
+    display: block;
+}
+
+li.drpdn:hover .drpdnContent {
+    display: block;
+}
+
+/* .menu {
     background-color: red;
     position: fixed;
-    right: 0px; 
+    left: 0px; 
     bottom: 0px; 
     top: 0px; 
 }
@@ -16,4 +66,4 @@
 
 .menu h1 {
     color: #ffffff;
-}
+} */
