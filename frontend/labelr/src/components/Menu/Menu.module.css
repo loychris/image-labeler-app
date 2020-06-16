@@ -1,12 +1,12 @@
-.navbar {
+/* .navbar {
     background-color: #413E4D;
 }
 
 .navbarbrand {
     background-color: lightsalmon;
-}
+} */
 
-/* ul.topnav {
+ul.topnav {
     background-color: #413E4D;
     list-style-type: none;
     margin: 0;
@@ -38,23 +38,23 @@ li.user {
     color: lightgrey;
 }
 
-.drpdnContent {
+.dropdownContent {
     display: none;
     position: absolute;
     background-color: #413E4D;
 }
 
-li.drpdn {
+li.dropdown {
     display: inline-block;
 }
 
-.drpdnContent a {
+.dropdownContent a {
     display: block;
 }
 
-li.drpdn:hover .drpdnContent {
+li.dropdown:hover .dropdownContent {
     display: block;
-} */
+}
 
 /* .menu {
     background-color: red;
