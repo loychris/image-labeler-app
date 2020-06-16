@@ -1,6 +1,5 @@
 .wrapper {
     height: 100%;
-    margin-left: 200px;
 }
 
 .overview {
@@ -18,7 +17,7 @@
 .content {
     height: 100%;
     width: 100%;
-    margin: 40px;
+    margin: 30px;
     display: flex;
     flex-wrap: wrap;
     list-style-type: none;
@@ -29,11 +28,25 @@
     width: 100px;
 }
 
-h2 {
+.overview h2 {
     font-family: monospace;
     font-size: 40px;
+    padding-top: 50px;
 }
 
 a {
     text-decoration: none;
+}
+
+.column{
+    max-width: 20% !important;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.catContent {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
 }
