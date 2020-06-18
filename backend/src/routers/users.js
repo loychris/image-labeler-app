@@ -29,7 +29,10 @@ router.get('/:id', async (req, res) => {
 })
 
 // Get my account
-router.get('/me', auth, async (req, res) => { res.send(req.user) });
+router.get('/me', auth, async (req, res) => {
+    console.log('123');
+    res.status(200).send(req.user)
+});
 
 
 // ------------------------ POST ROUTES ------------------------
@@ -113,6 +116,19 @@ router.patch('/:id', auth ,async (req, res) => {
     }
 })
 
+// Clear fetchedImagesId list
+router.patch('/:id/clearfetched', auth, async (req,res) => {
+    try {
+        const user = req.user;
+        user.fetchedImagesID = [];
+        await user.save();
+        res.status(200);
+    }catch (e) {
+        res.status(500).send(e);
+    }
+})
+
+
 // ------------------------ DELETE ROUTES ------------------------
 // Delete user by id
 router.delete('/:id', auth ,async (req, res) => {
@@ -124,6 +140,7 @@ router.delete('/:id', auth ,async (req, res) => {
         res.status(500).send(e);
     }
 })
+
 
 
 module.exports = router;

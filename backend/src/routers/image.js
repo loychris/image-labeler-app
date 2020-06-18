@@ -99,24 +99,68 @@ router.get('/images/next/:n', auth, async  (req, res) => {
 
 } )
 
-// Get next Imgae - only images that the user did not voted for yet
-router.get('/images/next', auth, async  (req, res) => {
+
+// Get next n Images IDS - only images that the user did not voted for yet
+router.get('/images/next/:n/:label/id', auth, async  (req, res) => {
 
   const labeledImagesID = req.user.labeledImagesID; // images the user already have been labeled
+  const fetchedImagesID = req.user.fetchedImagesID; // images the user already have been labeled
+  const n = req.params.n;
+  const label = req.params.label;
 
   try {
     let images = await Image.find()
-    images = images.map( image => !labeledImagesID.includes(image._id) && image  )
+
+    images = images.map( image =>
+        !labeledImagesID.includes(image._id) &&
+        fetchedImagesID.includes(image._id) &&
+        image._id  )
+
+    images = images.map( image => {
+      const labelist = image.labels.map(itam => itam.label)
+      if (labelist.includes(label)){ return image}
+    })
 
     if (!images){ res.status(400).send('no images found'); }
 
-    if (images.length < 1){ res.status(400).send(`There was no images`) }
+    if (images.length < n){ res.status(200).send(images) }
+
+    res.status(200).send(images.slice(0,n));
+
+  } catch (e) {
+    res.status(500).send(e)
+  }
+
+} )
+
+
+
+// Get next Imgae - only images that the user did not voted for yet
+router.get('/images/next/id/:label', auth, async  (req, res) => {
+
+  const labeledImagesID = req.user.labeledImagesID; // images the user already have been labeled
+  const fetchedImagesID = req.user.fetchedImagesID;
+  const label = req.params.label;
+
+  try {
+    let images = await Image.find()
+
+    images = images.map( image =>
+        !labeledImagesID.includes(image._id) &&
+        fetchedImagesID.includes(image._id) &&
+        image._id  )
+
+    images = images.map( image => {
+      const labelist = image.labels.map(itam => itam.label)
+      if (labelist.includes(label)){ return image}
+    })
+
+    if (!images){ res.status(400).send('no images found'); }
 
     res.status(200).send(images.slice(0,1));
   } catch (e) {
     res.status(500).send(e)
   }
-
 } )
 
 

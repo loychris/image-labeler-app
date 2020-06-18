@@ -153,6 +153,26 @@ fetch("localhost:3000/users/:userID", requestOptions)
   .catch(error => console.log('error', error));
 ```
 
+		#### Clear users fetchedImagesID
+```javascript
+onst myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+
+const requestOptions = {
+		method: 'PATCH',
+		headers: myHeaders,
+		body: raw,
+		redirect: 'follow'
+		};
+
+		fetch("localhost:3000/users/:userID/clearfetched", requestOptions)
+		.then(response => response.text())
+		.then(result => console.log(result))
+		.catch(error => console.log('error', error));
+		```
+
+
+
 ### DELETE Routes
 
 #### Delete user ID
@@ -226,6 +246,31 @@ fetch("localhost:3000/images/next/:n", requestOptions)
   .then(result => console.log(result))
   .catch(error => console.log('error', error));
 ```
+#### Get list of next n images id with specific label
+- Get the next n ids of images that the user did not labeled yet.
+- User keep list of already labeled images ID, all the returned images are not existing in this list, after an image has been labeled by the user, the ID of the image will be added to the list of the IDs, so it will not show up for the user again.
+- In case there are no n images, return 400 at the moment. Next sprint we will modify it so it will return the rest .
+```javascript
+var requestOptions = { method: 'GET',  redirect: 'follow'};
+
+fetch("localhost:3000/images/next/:n/:label/id", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+```
+#### Get next image id  with specific label
+- Get the next image id of images that the user did not labeled yet.
+- User keep list of already labeled images ID, all the returned images are not existing in this list, after an image has been labeled by the user, the ID of the image will be added to the list of the IDs, so it will not show up for the user again.
+- In case there are no n images, return 400 at the moment. Next sprint we will modify it so it will return the rest .
+```javascript
+var requestOptions = { method: 'GET',  redirect: 'follow'};
+
+fetch("localhost:3000/images/next/id/:label", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+```
+
 
 #### Get next image (singular)
 -	Same as next n images, but singular

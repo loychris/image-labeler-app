@@ -26,6 +26,6 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 
-
-
 app.listen(port);
+
+module.exports = app;
