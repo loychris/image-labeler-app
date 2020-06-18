@@ -153,7 +153,7 @@ fetch("localhost:3000/users/:userID", requestOptions)
   .catch(error => console.log('error', error));
 ```
 
-		#### Clear users fetchedImagesID
+#### Clear users fetchedImagesID
 ```javascript
 onst myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
