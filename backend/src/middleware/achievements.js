@@ -140,7 +140,7 @@ const achievements = async (req, res, next) => {
     }
 
     if (acheivements.length > 0 ){
-        req.user.achievements.concat(acheivements);
+        req.user.acheivements.concat(acheivements);
         res.newAchievments = acheivements;
         await req.user.save();
     }

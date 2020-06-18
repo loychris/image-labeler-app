@@ -279,7 +279,7 @@ var raw = JSON.stringify({"labels":["label6"]});
 
 var requestOptions = { method: 'PATCH',  headers: myHeaders, body: raw, redirect: 'follow'};
 
-fetch("localhost:3000/images/5ee0e26612ae90262dcb9b03", requestOptions)
+fetch("localhost:3000/images/:imageID", requestOptions)
   .then(response => response.text())
   .then(result => console.log(result))
   .catch(error => console.log('error', error));
