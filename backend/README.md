@@ -159,17 +159,17 @@ onst myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
 
 const requestOptions = {
-		method: 'PATCH',
-		headers: myHeaders,
-		body: raw,
-		redirect: 'follow'
-		};
+	method: 'PATCH',
+	headers: myHeaders,
+	body: raw,
+	redirect: 'follow'
+};
 
-		fetch("localhost:3000/users/:userID/clearfetched", requestOptions)
-		.then(response => response.text())
-		.then(result => console.log(result))
-		.catch(error => console.log('error', error));
-		```
+fetch("localhost:3000/users/:userID/clearfetched", requestOptions)
+	.then(response => response.text())
+	.then(result => console.log(result))
+	.catch(error => console.log('error', error));
+```
 
 
 
