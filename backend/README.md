@@ -303,7 +303,12 @@ var options = { method: 'POST',
       { value: 'fs.createReadStream("imgRoute")',
         options:
          { filename: 'imgRoute',
-           contentType: null } } } };
+           contentType: null 
+           label: 'label'     
+         } 
+      } 
+    } 
+};
 
 request(options, function (error, response, body) {
   if (error) throw new Error(error);
@@ -312,6 +317,27 @@ request(options, function (error, response, body) {
 });
 
 ```
+#### Vote for an image
+```javascript
+var request = require("request");
+
+var options = { method: 'POST',
+  url: 'http://localhost:3000/images/:imgID',
+  headers: 
+   { 'cache-control': 'no-cache',
+     Authorization: 'Bearer token',
+     'Content-Type': 'application/json' },
+  body: { vote: false, label: 'LABEL' },
+  json: true };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+```
+
+
 
 ### PATCH Routes
 #### Update an existing file by ID

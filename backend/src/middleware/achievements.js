@@ -4,17 +4,19 @@ const moment = require('moment');
 
 const achievements = async (req, res, next) => {
 
-    const today = moment().subtract(10, 'days').calendar();
-    const thisWeek = moment().add(-7, 'days').calendar();
+    const today = moment().format('L');
+    const thisWeek = moment().subtract(7, 'days').calendar();
 
     const newCount = req.user.labeledImagesID.length+1;
 
     const labeledToday = req.user.labeledImagesID.filter(
-        image => moment(image.timestamp) === moment(today)).length + 1;
+        image =>  moment(image.timestamp).format('L') === moment(today).format('L')).length + 1;
 
     const labeledThisWeek = req.user.labeledImagesID.filter(
-        image => moment(image.timestamp) >= moment(thisWeek)
-            && moment(image.timestamp) < moment(today)).length + 1;
+        image => {
+            return ((moment(image.timestamp).format('L') >= moment(thisWeek).format('L')
+                && moment(image.timestamp).format('L') <= moment(today).format('L')))
+        }).length + 1;
 
     const registeredAt = req.user.createdAt;
 
@@ -137,13 +139,16 @@ const achievements = async (req, res, next) => {
             }
             acheivements.push(achievement);
             break;
+        default:
+            break;
     }
 
     if (acheivements.length > 0 ){
-        req.user.acheivements.concat(acheivements);
+        req.user.achievements = req.user.achievements.concat(acheivements);
         res.newAchievments = acheivements;
         await req.user.save();
     }
-
     next();
 }
+
+module.exports = achievements;

@@ -1,9 +1,11 @@
 const express = require('express');
 const multer = require('multer');
+const moment = require('moment');
 
 const router = express.Router();
 
 const auth = require('../middleware/auth')
+const achievements = require('../middleware/achievements')
 const Image = require('../models/image')
 
 // CONFIGURE UPLOADE FILES
@@ -169,10 +171,11 @@ router.get('/images/next/id/:label', auth, async  (req, res) => {
 
 // Upload a new image
 router.post('/upload', auth, upload.single('image'), async (req, res) => {
+  console.log(req.body.label);
   const img = new Image({
     data: req.file.buffer,
     owner: req.user._id,
-    lables: []
+    labels: [{label:req.body.label, votes:[true]}]
   })
   await img.save();
 
@@ -183,7 +186,7 @@ router.post('/upload', auth, upload.single('image'), async (req, res) => {
 })
 
 // Vote for image
-router.post('/images/:id', auth,async (req, res) => {
+router.post('/images/:id',auth, achievements,async (req, res) => {
 
   const vote = req.body.vote;
   const user = req.user;
@@ -193,13 +196,16 @@ router.post('/images/:id', auth,async (req, res) => {
     if (!image) {
       return res.status(401).send({error: 'No image with this ID was found'})
     }
+
     image.labels.map(label => {
       if (label.label === req.body.label){
+
         if (user.labeledImagesID.includes(req.params.id)){
           res.status(400).send("Already voted for this picture");
         }
+
         label.votes.push(vote);
-        user.labeledImagesID.push(req.params.id);
+        user.labeledImagesID.push({imageID: req.params.id, timestamp: moment().format('L')});
       }
     });
 
