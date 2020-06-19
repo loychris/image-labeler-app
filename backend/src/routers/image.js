@@ -95,7 +95,7 @@ router.get('/images/next/:n', auth, async  (req, res) => {
 
     if (!images){ res.status(400).send('no images found'); }
 
-    if (images.length < n){ res.status(400).send(`There was no ${n} images`) }
+    if (images.length < n){ res.status(200).send(images.slice(0,images.length)); }
 
     res.status(200).send(images.slice(0,n));
   } catch (e) {
@@ -110,12 +110,12 @@ router.get('/images/next', auth, async  (req, res) => {
   const labeledImagesID = req.user.labeledImagesID; // images the user already have been labeled
 
   try {
-    let images = await Image.find()
-    images = images.map( image => !labeledImagesID.includes(image._id) && image  )
-
+    let images = await Image.find();
+    images = images.map( image => !labeledImagesID.includes(image._id) && image  );
+    console.log(images);
     if (!images){ res.status(400).send('no images found'); }
 
-    if (images.length < 1){ res.status(400).send(`There was no images`) }
+    if (!images.length){ res.status(400).send(`There was no images`); }
 
     res.status(200).send(images.slice(0,1));
   } catch (e) {
