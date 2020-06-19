@@ -126,22 +126,6 @@ router.get('/images/next', auth, async  (req, res) => {
 } )
 
 
-// Get top n rating users with most labeled images
-router.get('/users/highscores/:n', async (req, res) => {
-    const n = req.params.n;
-    
-    try {
-	let users = await User.find();
-	if (!users) { res.status(400).send('no users found');}
-	
-	users.sort((a,b) => parseFloat(b.labeledImagesID.length) - parseFloat(a.labeledImagesID.length));
-	if (users.length < n) { res.status(200).send(users.slice(0,user.length));}
-        res.status(200).send(users.slice(0, n)); // sends back whole user objects -> needs to be changed
-    } catch(e) {
-	res(500).send(e);
-    }
-} )
-    
 
 // ------------------------ POST ROUTES ------------------------
 
