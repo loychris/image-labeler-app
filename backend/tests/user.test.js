@@ -6,9 +6,9 @@ const request = require('supertest');
 beforeEach(setupDatabase);
 
 test('Should login user', async () => {
-    const response = await request(app).post('/login').send({
-        email: uploader.email,
-        password: uploader.password
+    await request(app).post('/users/login').send({
+        email: labler.email,
+        password: labler.password
     }).expect(200);
 })
 
