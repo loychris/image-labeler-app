@@ -1,88 +1,84 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-// import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
-import classes from './Menu.module.css';
+import React, { Component } from "react";
+import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+// import classes from "./Menu.module.css";
 
 class Menu extends Component {
+  state = {
+    loggedInAsUser: false,
+    loggedInAsUploader: true,
+    userName: "Testuser One",
+  };
 
-    render() {
-        return(
-            // <Navbar /*className={classes.navbar}*/ bg="light" expand="lg">
-            //     <Navbar.Brand  href="/">Labelr</Navbar.Brand>
-            //     <Navbar.Toggle className={classes.navbarbrand} aria-controls="basic-navbar-nav" />
-            //     <Navbar.Collapse id="basic-navbar-nav">
-            //     <Nav className="mr-auto">
-            //         <Nav.Link href="/login">Login</Nav.Link>
-            //         <NavDropdown title="Show" id="basic-nav-dropdown">
-            //             <NavDropdown.Item href="/">User's achievments</NavDropdown.Item>
-            //             <NavDropdown.Divider />
-            //             <NavDropdown.Item href="/">Recently uploaded images</NavDropdown.Item>
-            //         </NavDropdown>
-            //     </Nav>
-            //     </Navbar.Collapse>
-            //     <Navbar.Collapse className="justify-content-end">
-            //         <Navbar.Text>Signed in as: <a href="/">Testuser One</a></Navbar.Text>
-            //     </Navbar.Collapse>
-            // </Navbar>
-
-            <ul className={classes.topnav}>
-                <li><Link to='/'>Home</Link></li>
-                <li><Link to='/login'>Login</Link></li>
-                <li className={classes.dropdown}>
-                    <Link to='/' className={classes.dropdown}>Show &#9660;</Link>
-                    <div className={classes.dropdownContent}>
-                        <Link to='/'>Latest uploads</Link>
-                        <Link to='/'>Most active user</Link>
-                    </div>
-                </li>
-                <li className={classes.user}>Logged in as:<Link className={classes.userLink} to='/'>Testuser One</Link></li>
-            </ul>
-        )
+  /*
+  Show Link to Login/Register if user is not logged in
+  */
+  renderLoginSignup() {
+    if (!this.state.loggedInAsUser && !this.state.loggedInAsUploader) {
+      return <Nav.Link href="/login">Login/Signup</Nav.Link>;
     }
+  }
 
-    // state = {
-    //     expanded: true
-    // }
+  /*
+  Show User's Menu if user or uploader is logged in
+  */
+  renderUserMenu() {
+    if (this.state.loggedInAsUser || this.state.loggedInAsUploader) {
+      return (
+        <NavDropdown
+          alignRight
+          title={this.state.userName}
+          id="collasible-nav-dropdown"
+        >
+          <NavDropdown.Item href="">User Profile</NavDropdown.Item>
+          <NavDropdown.Item href="">Achievements</NavDropdown.Item>
+          <NavDropdown.Divider />
+          <NavDropdown.Item hrerf="">Delete Account</NavDropdown.Item>
+          <NavDropdown.Divider />
+          <NavDropdown.Item hrerf="">Logout</NavDropdown.Item>
+        </NavDropdown>
+      );
+    }
+  }
 
-    // expnad = () => {
-    //     this.setState({expanded: true})
-    // }
+  /*
+  Show Upload Link if uploader is logged in
+  */
+  renderLoggedInAsUploader() {
+    if (this.state.loggedInAsUploader) {
+      return <Nav.Link href="">Upload new Pictures</Nav.Link>;
+    }
+  }
 
-    // collapse = () => {
-    //     this.setState({expanded: false})
-    // }
+  /*
+  Show dropdown menu with last uploaded pictures, last labeled pictures and most active users
+  */
+  renderShowCurrentActivities() {
+    if (this.state.loggedInAsUser || this.state.loggedInAsUploader) {
+      return (
+        <NavDropdown title="Latest activities" id="collasible-nav-dropdown">
+          <NavDropdown.Item href="">Last uploaded pictures</NavDropdown.Item>
+          <NavDropdown.Item href="">Last labeled pictures</NavDropdown.Item>
+          <NavDropdown.Item hrerf="">Most active users</NavDropdown.Item>
+        </NavDropdown>
+      );
+    }
+  }
 
-    // render() {
-        
-    //     const styleClasses = [classes.menu]; 
-    //     if(this.state.expanded === true){
-    //         styleClasses.push(classes.expanded); 
-    //     } else {
-    //         styleClasses.push(classes.collapsed);
-    //     }
-    //     const collapseButton = this.state.expanded ? <button onClick={this.collapse}>Collapse Menu</button> : null
-    //     const expandButton = !this.state.expanded ? <button onClick={this.expnad}>Menu</button> : null
-    //     const menuItemsExpanded = this.state.expanded ? 
-    //         <div>
-    //             <h1>MENU</h1>
-    //             <Link to='/'>HOME</Link><br/>
-    //             <Link to='/login'>LOGIN</Link>
-    //             {/*  ^^^^^^ Nur Dummy Content bisher um Links zu testen. Menu hier befüllen */}
-    //         </div> : null; 
-    //     const menuItemsCollapsed = !this.state.expanded ? 
-    //         <div>
-    //             {/* Hier nur icons der Menu optionen */}
-    //         </div> : null;
-
-    //     return(
-    //         <div className={styleClasses.join(' ')}>
-    //             {collapseButton}
-    //             {expandButton}
-    //             {menuItemsExpanded}
-    //             {menuItemsCollapsed}
-    //         </div>
-    //     )
-    // }
+  render() {
+    return (
+      <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark">
+        <Navbar.Brand href="/">Labelr</Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="mr-auto">
+            {this.renderLoginSignup()} {this.renderShowCurrentActivities()}
+            {this.renderLoggedInAsUploader()}
+          </Nav>
+          <Nav>{this.renderUserMenu()}</Nav>
+        </Navbar.Collapse>
+      </Navbar>
+    );
+  }
 }
 
 export default Menu;
