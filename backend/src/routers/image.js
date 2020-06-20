@@ -102,70 +102,6 @@ router.get('/images/next/:n', auth, async  (req, res) => {
 } )
 
 
-// Get next n Images IDS - only images that the user did not voted for yet
-router.get('/images/next/:n/:label/id', auth, async  (req, res) => {
-
-  const labeledImagesID = req.user.labeledImagesID; // images the user already have been labeled
-  const fetchedImagesID = req.user.fetchedImagesID; // images the user already have been labeled
-  const n = req.params.n;
-  const label = req.params.label;
-
-  try {
-    let images = await Image.find()
-
-    images = images.map( image =>
-        !labeledImagesID.includes(image._id) &&
-        fetchedImagesID.includes(image._id) &&
-        image._id  )
-
-    images = images.map( image => {
-      const labelist = image.labels.map(itam => itam.label)
-      if (labelist.includes(label)){ return image}
-    })
-
-    if (!images){ res.status(400).send('no images found'); }
-
-    if (images.length < n){ res.status(200).send(images) }
-
-    res.status(200).send(images.slice(0,n));
-
-  } catch (e) {
-    res.status(500).send(e)
-  }
-
-} )
-
-
-
-// Get next Imgae - only images that the user did not voted for yet
-router.get('/images/next/id/:label', auth, async  (req, res) => {
-
-  const labeledImagesID = req.user.labeledImagesID; // images the user already have been labeled
-  const fetchedImagesID = req.user.fetchedImagesID;
-  const label = req.params.label;
-
-  try {
-    let images = await Image.find()
-
-    images = images.map( image =>
-        !labeledImagesID.includes(image._id) &&
-        fetchedImagesID.includes(image._id) &&
-        image._id  )
-
-    images = images.map( image => {
-      const labelist = image.labels.map(itam => itam.label)
-      if (labelist.includes(label)){ return image}
-    })
-
-    if (!images){ res.status(400).send('no images found'); }
-
-    res.status(200).send(images.slice(0,1));
-  } catch (e) {
-    res.status(500).send(e)
-  }
-} )
-
-
 
 // ------------------------ POST ROUTES ------------------------
 
@@ -209,6 +145,7 @@ router.post('/images/:id',auth, achievements,async (req, res) => {
       }
     });
 
+    user.counter = user.counter + 1;
     await image.save();
     await user.save();
     res.status(205).send(image.labels)
@@ -217,6 +154,75 @@ router.post('/images/:id',auth, achievements,async (req, res) => {
   }
 })
 
+// Get next n Images IDS - only images that the user did not voted for yet
+router.post('/images/next/:n/id', auth, async  (req, res) => {
+
+  const labeledImagesID = req.user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
+  let fetchedImagesID = req.user.fetchedImagesID;
+  const label = req.body.label;
+  const n = req.params.n;
+
+  try {
+    let toReturn = []
+    let images = await Image.find({"labels.label" : label})
+
+    // IMGS which have not been fetched or labeled by user return id and labels
+    images.forEach( image => {
+      if (!labeledImagesID.includes(image._id) && !fetchedImagesID.includes(image._id)){
+        toReturn.push(image._id)
+      }
+    })
+
+    if (toReturn.length < 1){ res.status(400).send('no images found'); }
+    else{
+      if (toReturn.length > n){toReturn = toReturn.slice(0,n)}
+      req.user.fetchedImagesID = req.user.fetchedImagesID.concat(toReturn)
+      await req.user.save();
+      console.log(req.user.fetchedImagesID);
+      res.status(200).send(toReturn);
+    }
+
+
+  } catch (e) {
+    res.status(500).send(e)
+  }
+
+} )
+
+// Get next Imgae - only images that the user did not voted for yet
+router.post('/images/next/id', auth, async  (req, res) => {
+
+  const labeledImagesID = req.user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
+  let fetchedImagesID = req.user.fetchedImagesID;
+  const label = req.body.label;
+  console.log(req.user.fetchedImagesID);
+
+  try {
+
+    const toReturn = []
+    let images = await Image.find({"labels.label" : label})
+
+    // IMGS which have not been fetched or labeled by user return id and labels
+    images.forEach( image => {
+      if (!labeledImagesID.includes(image._id) && !fetchedImagesID.includes(image._id)){
+        toReturn.push(image._id)
+      }
+    })
+
+    if (toReturn.length < 1){ res.status(400).send('no images found'); }
+    else{
+      const image = toReturn.pop();
+      console.log(image)
+      req.user.fetchedImagesID.push(image)
+      await req.user.save();
+      console.log(req.user.fetchedImagesID);
+      res.status(200).send(image);
+    }
+
+  } catch (e) {
+    res.status(500).send(e)
+  }
+} )
 
 // ------------------------ PATCH ROUTES ------------------------
 

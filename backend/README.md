@@ -246,18 +246,9 @@ fetch("localhost:3000/images/next/:n", requestOptions)
   .then(result => console.log(result))
   .catch(error => console.log('error', error));
 ```
-#### Get list of next n images id with specific label
-- Get the next n ids of images that the user did not labeled yet.
-- User keep list of already labeled images ID, all the returned images are not existing in this list, after an image has been labeled by the user, the ID of the image will be added to the list of the IDs, so it will not show up for the user again.
-- In case there are no n images, return 400 at the moment. Next sprint we will modify it so it will return the rest .
-```javascript
-var requestOptions = { method: 'GET',  redirect: 'follow'};
 
-fetch("localhost:3000/images/next/:n/:label/id", requestOptions)
-  .then(response => response.text())
-  .then(result => console.log(result))
-  .catch(error => console.log('error', error));
-```
+
+
 #### Get next image id  with specific label
 - Get the next image id of images that the user did not labeled yet.
 - User keep list of already labeled images ID, all the returned images are not existing in this list, after an image has been labeled by the user, the ID of the image will be added to the list of the IDs, so it will not show up for the user again.
@@ -317,11 +308,60 @@ request(options, function (error, response, body) {
 });
 
 ```
-#### Vote for an image
-```javascript
-var request = require("request");
 
-var options = { method: 'POST',
+#### Get next n images IDs
+- Get the next n images that the user did not labeled yet.
+- The images will be added to users fetched images id list
+- The images are only images will the given label (inside the req body)
+```javascript
+const request = require("request");
+
+const options = { method: 'POST',
+  url: 'http://127.0.0.1:3000/images/next/:n/id',
+  headers: 
+   { 'cache-control': 'no-cache',
+     Authorization: 'Bearer token',
+     'Content-Type': 'application/json' },
+  body: { label: 'label' },
+  json: true };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+
+```
+#### Get next image ID
+- Get the next image that the user did not labeled yet.
+- The image id will be added to users fetched images id list
+- The image has the given label (inside the req body)
+```javascript
+const request = require("request");
+
+const options = { method: 'POST',
+  url: 'http://127.0.0.1:3000/images/next/id',
+  headers: 
+   {'cache-control': 'no-cache',
+     Authorization: 'Bearer token',
+     'Content-Type': 'application/json' },
+  body: { label: 'label' },
+  json: true };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+
+```
+
+#### Vote for an image
+- Add the id to the labeledImgaesId in user obj.
+```javascript
+const request = require("request");
+
+const options = { method: 'POST',
   url: 'http://localhost:3000/images/:imgID',
   headers: 
    { 'cache-control': 'no-cache',
@@ -343,12 +383,12 @@ request(options, function (error, response, body) {
 #### Update an existing file by ID
 -	At the moment can edit all fields, will modify to our need as soon as we will integrate with front end.
 ```javascript
-var myHeaders = new Headers();
+const myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
 
-var raw = JSON.stringify({"labels":["label6"]});
+const raw = JSON.stringify({"labels":["label6"]});
 
-var requestOptions = { method: 'PATCH',  headers: myHeaders, body: raw, redirect: 'follow'};
+const requestOptions = { method: 'PATCH',  headers: myHeaders, body: raw, redirect: 'follow'};
 
 fetch("localhost:3000/images/:imageID", requestOptions)
   .then(response => response.text())
@@ -360,7 +400,7 @@ fetch("localhost:3000/images/:imageID", requestOptions)
 ### DELETE Routes
 #### Delete an existing file by ID
 ```javascript
-var requestOptions = { method: 'DELETE', redirect: 'follow' };
+const requestOptions = { method: 'DELETE', redirect: 'follow' };
 
 fetch("localhost:3000/images/:imageID", requestOptions)
   .then(response => response.text())

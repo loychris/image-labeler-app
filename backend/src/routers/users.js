@@ -117,12 +117,12 @@ router.patch('/:id', auth ,async (req, res) => {
 })
 
 // Clear fetchedImagesId list
-router.patch('/:id/clearfetched', auth, async (req,res) => {
+router.patch('/me/clearfetched', auth, async (req,res) => {
     try {
         const user = req.user;
         user.fetchedImagesID = [];
         await user.save();
-        res.status(200);
+        res.status(200).send('fetched images ids removed');
     }catch (e) {
         res.status(500).send(e);
     }
