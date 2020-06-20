@@ -1,3 +1,39 @@
+.wrapper {
+    height: 100%;
+    margin-left: 200px;
+}
+
 .overview {
-    border: 1px solid green; 
+    width: 100%;
+}
+
+.contentWrapper {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none;
+}
+
+.content {
+    height: 100%;
+    width: 100%;
+    margin: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none;
+}
+
+.categories {
+    height: 100px;
+    width: 100px;
+}
+
+h2 {
+    font-family: monospace;
+    font-size: 40px;
+}
+
+a {
+    text-decoration: none;
 }

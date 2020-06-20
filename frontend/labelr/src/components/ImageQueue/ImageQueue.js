@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import ImageContainer from './ImageContianer/ImageContainer';
-import BackButton from './BackButton/BackButton';
 
 
 import classes from './ImageQueue.module.css'; 

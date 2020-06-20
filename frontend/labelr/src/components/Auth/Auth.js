@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { Link } from 'react-router-dom';
+
 import classes from './Auth.module.css';
 
 import AuthTab from './AuthTab/AuthTab';
@@ -13,26 +15,27 @@ class Login extends Component {
 
     getUserLoginForm = () => {
         return(
-            <form className={classes.loginForm}>
+            <form className={classes.form}>
                 <h3>User Login</h3>
-                <label>email</label>
-                <input type='text'/>
-                <label>password</label>
-                <input type='text'/>
+                <label>email</label><br/>
+                <input type='text'/><br/>
+                <label>password</label><br/>
+                <input type='text'/><br/>
+                <input type='submit' value='Login'/>
             </form> 
         )
     }
 
     getUserSignupForm = () => {
         return(
-            <form>
+            <form className={classes.form}>
                 <h3>Create a user account</h3>
-                <label>Username:</label>
-                <input type='text'/>
-                <label>Email:</label>
-                <input type='text'/>
-                <label>Password:</label>
-                <input type='text'/>
+                <label>Username:</label><br/>
+                <input type='text'/><br/>
+                <label>Email:</label><br/>
+                <input type='text'/><br/>
+                <label>Password:</label><br/>
+                <input type='text'/><br/>
                 <input type='submit' value='Create Account'/>
             </form>
         )
@@ -40,28 +43,29 @@ class Login extends Component {
 
     getUploaderLoginForm = () => {
         return(
-            <form>
+            <form className={classes.form}>
                 <h3>Uploader Login</h3>
-                <label>email</label>
-                <input type='text'/>
-                <label>password</label>
-                <input type='text'/>
+                <label>email</label><br/>
+                <input type='text'/><br/>
+                <label>password</label><br/>
+                <input type='text'/><br/>
+                <input type='submit' value='Login'/>
             </form>
         )
     }
 
     getUploaderSignupForm = () => {
         return(
-            <form>
+            <form className={classes.form}>
                 <h3>Create a Uploader account</h3>
-                <label>Name:</label>
-                <input type='text'/>
-                <label>Company / Institution:</label>
-                <input type='text'/>
-                <label>Email:</label>
-                <input type='text'/>
-                <label>Password:</label>
-                <input type='text'/>
+                <label>Name:</label><br/>
+                <input type='text'/><br/>
+                <label>Company / Institution:</label><br/>
+                <input type='text'/><br/>
+                <label>Email:</label><br/>
+                <input type='text'/><br/>
+                <label>Password:</label><br/>
+                <input type='text'/><br/>
                 <input type='submit' value='Create Account'/>
             </form>
         )
@@ -113,32 +117,37 @@ class Login extends Component {
 
         const styleClasses = [classes.login];
         return(    
-            <div className={styleClasses.join(' ')}>
-                <div className={classes.userOptions}>
-                    <AuthTab 
-                        active={this.state.userType === 'user'}
-                        value={'User'} 
-                        clicked={this.switchToUser}/>
-                    <AuthTab 
-                        active={this.state.userType === 'uploader'}
-                        value={'Uploader'} 
-                        clicked={this.switchToUploader}/>
+            <div>
+                <Link to='/'>
+                    <div className={classes.backDrop}></div>
+                </Link>
+                <div className={styleClasses.join(' ')}>
+                    <div className={classes.userOptions}>
+                        <AuthTab 
+                            active={this.state.userType === 'user'}
+                            value={'User'} 
+                            clicked={this.switchToUser}/>
+                        <AuthTab 
+                            active={this.state.userType === 'uploader'}
+                            value={'Uploader'} 
+                            clicked={this.switchToUploader}/>
+                    </div>
+                    <div className={classes.loginSignup}>
+                        <AuthTab 
+                            active = {this.state.currentlyShowing === 'login'} 
+                            value = {'Login'} 
+                            clicked = {this.switchToLogin}/>
+                        <AuthTab 
+                            active = {this.state.currentlyShowing === 'signup'} 
+                            value = {'Signup'} 
+                            clicked = {this.switchToSignup}/>
+                    </div>
+                    <form>
+                        {inputs}
+                    </form>
                 </div>
-                <div className={classes.loginSignup}>
-                    <AuthTab 
-                        active = {this.state.currentlyShowing === 'login'} 
-                        value = {'Login'} 
-                        clicked = {this.switchToLogin}/>
-                    <AuthTab 
-                        active = {this.state.currentlyShowing === 'signup'} 
-                        value = {'Signup'} 
-                        clicked = {this.switchToSignup}/>
-                </div>
-                <form>
-                    {inputs}
-                </form>
-
             </div>
+
         )
     }
 }
