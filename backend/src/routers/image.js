@@ -57,6 +57,20 @@ router.get('/images/:label', async (req, res) => {
   }
 })
 
+// Get image by id
+router.get('/images/id/:id', async (req, res) => {
+  try{
+
+    const image = await Image.find({_id:req.params.id});
+    if(!image){ res.status(404).send('No image with given ID found'); }
+
+    res.status(200).send(image);
+
+  }catch(e){
+    res.status(500).send(e)
+  }
+})
+
 // Get all images
 router.get('/images', async (req, res) => {
   try {

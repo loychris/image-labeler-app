@@ -209,6 +209,25 @@ fetch("localhost:3000/images", requestOptions)
   .then(result => console.log(result))
   .catch(error => console.log('error', error));
 ```
+
+
+#### Get all existing images
+```javascript
+var request = require("request");
+
+var options = { method: 'GET',
+  url: 'http://127.0.0.1:3000/images/id/:id',
+  headers: 
+   { 'cache-control': 'no-cache',
+     Authorization: 'Bearer token' } };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+```
+
 #### Get all existing image labels
 
 - Return all existing labels without duplicates
