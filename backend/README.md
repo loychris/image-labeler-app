@@ -153,6 +153,26 @@ fetch("localhost:3000/users/:userID", requestOptions)
   .catch(error => console.log('error', error));
 ```
 
+#### Clear users fetchedImagesID
+```javascript
+onst myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+
+const requestOptions = {
+	method: 'PATCH',
+	headers: myHeaders,
+	body: raw,
+	redirect: 'follow'
+};
+
+fetch("localhost:3000/users/:userID/clearfetched", requestOptions)
+	.then(response => response.text())
+	.then(result => console.log(result))
+	.catch(error => console.log('error', error));
+```
+
+
+
 ### DELETE Routes
 
 #### Delete user ID
@@ -227,6 +247,22 @@ fetch("localhost:3000/images/next/:n", requestOptions)
   .catch(error => console.log('error', error));
 ```
 
+
+
+#### Get next image id  with specific label
+- Get the next image id of images that the user did not labeled yet.
+- User keep list of already labeled images ID, all the returned images are not existing in this list, after an image has been labeled by the user, the ID of the image will be added to the list of the IDs, so it will not show up for the user again.
+- In case there are no n images, return 400 at the moment. Next sprint we will modify it so it will return the rest .
+```javascript
+var requestOptions = { method: 'GET',  redirect: 'follow'};
+
+fetch("localhost:3000/images/next/id/:label", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+```
+
+
 #### Get next image (singular)
 -	Same as next n images, but singular
 ```javascript
@@ -258,7 +294,12 @@ const options = { method: 'POST',
       { value: 'fs.createReadStream("imgRoute")',
         options:
          { filename: 'imgRoute',
-           contentType: null } } } };
+           contentType: null 
+           label: 'label'     
+         } 
+      } 
+    } 
+};
 
 request(options, function (error, response, body) {
   if (error) throw new Error(error);
@@ -267,6 +308,76 @@ request(options, function (error, response, body) {
 });
 
 ```
+
+#### Get next n images IDs
+- Get the next n images that the user did not labeled yet.
+- The images will be added to users fetched images id list
+- The images are only images will the given label (inside the req body)
+```javascript
+const request = require("request");
+
+const options = { method: 'POST',
+  url: 'http://127.0.0.1:3000/images/next/:n/id',
+  headers: 
+   { 'cache-control': 'no-cache',
+     Authorization: 'Bearer token',
+     'Content-Type': 'application/json' },
+  body: { label: 'label' },
+  json: true };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+
+```
+#### Get next image ID
+- Get the next image that the user did not labeled yet.
+- The image id will be added to users fetched images id list
+- The image has the given label (inside the req body)
+```javascript
+const request = require("request");
+
+const options = { method: 'POST',
+  url: 'http://127.0.0.1:3000/images/next/id',
+  headers: 
+   {'cache-control': 'no-cache',
+     Authorization: 'Bearer token',
+     'Content-Type': 'application/json' },
+  body: { label: 'label' },
+  json: true };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+
+```
+
+#### Vote for an image
+- Add the id to the labeledImgaesId in user obj.
+```javascript
+const request = require("request");
+
+const options = { method: 'POST',
+  url: 'http://localhost:3000/images/:imgID',
+  headers: 
+   { 'cache-control': 'no-cache',
+     Authorization: 'Bearer token',
+     'Content-Type': 'application/json' },
+  body: { vote: false, label: 'LABEL' },
+  json: true };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+```
+
+
 
 ### PATCH Routes
 #### Update an existing file by ID
@@ -279,7 +390,7 @@ const raw = JSON.stringify({"labels":["label6"]});
 
 const requestOptions = { method: 'PATCH',  headers: myHeaders, body: raw, redirect: 'follow'};
 
-fetch("localhost:3000/images/5ee0e26612ae90262dcb9b03", requestOptions)
+fetch("localhost:3000/images/:imageID", requestOptions)
   .then(response => response.text())
   .then(result => console.log(result))
   .catch(error => console.log('error', error));
