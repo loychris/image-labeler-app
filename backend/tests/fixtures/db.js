@@ -6,6 +6,8 @@ const Image = require('../../src/models/image');
 
 const lablerId = new mongoose.Types.ObjectId();
 const uploaderId = new mongoose.Types.ObjectId();
+const imgIdOne = new mongoose.Types.ObjectId();
+const imgIdTwo = new mongoose.Types.ObjectId();
 
 
 const uploader = {
@@ -30,6 +32,21 @@ const labler = {
     }]
 };
 
+const imageOne = {
+    _id : imgIdOne,
+    owner: uploaderId,
+    data: Buffer.from("testBuffer"),
+    labels:[ {label:"labelOne", votes:[true, false, true] }]
+}
+
+const imageTwo = {
+    _id : imgIdTwo,
+    owner: uploaderId,
+    data: Buffer.from("testBuffer"),
+    labels:[ {label:"labelTwo", votes:[true, false, true] }]
+}
+
+//
 
 const setupDatabase = async ()=>{
     // Before each drop the database
@@ -37,6 +54,8 @@ const setupDatabase = async ()=>{
     await Image.deleteMany();
     await new User(labler).save();
     await new User(uploader).save();
+    await new Image(imageOne).save();
+    await new Image(imageTwo).save();
 };
 
 
@@ -44,5 +63,6 @@ const setupDatabase = async ()=>{
 module.exports = {
     lablerId, labler,
     uploaderId, uploader,
+    imageTwo, imageOne, imgIdOne, imgIdTwo,
     setupDatabase
 };
