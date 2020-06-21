@@ -103,3 +103,10 @@ test('should not delete own account without authentication', async () => {
         .send().expect(401);
 })
 
+test('should get users ranked by #labeled', async () => {
+    await request(app).delete('/highscores/2')
+        .send().expect.toBe([
+            { name: labler.name, imagesLabeled: 1 },
+            { name: uploader.name, imagesLabeled: 0 }
+        ])
+})

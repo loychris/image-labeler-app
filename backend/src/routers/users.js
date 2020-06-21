@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.params.id });
-        if (!user) {  res.status(404).send("User was not found"); };
+        if (!user) { res.status(404).send("User was not found"); };
         res.status(200).send(user);//mögliches problem ? -- sende user profile inklusive daten wie tokens und passwort ..
     } catch (e) {
         res.status(500).send(e);
@@ -93,11 +93,11 @@ router.post('/logoutall', auth, async (req, res) => {
 
 // ------------------------ PATCH ROUTES ------------------------
 // Update user by id - with verification feature, only allowed fields will be updated
-router.patch('/:id', auth ,async (req, res) => {
+router.patch('/:id', auth, async (req, res) => {
 
     const allowUpdates = ['name', 'email', 'password'];
     const updates = Object.keys(req.body);
-    const isValidOperation = updates.every( (update) => allowUpdates.includes(update));
+    const isValidOperation = updates.every((update) => allowUpdates.includes(update));
 
     try {
         const user = await req.user;
@@ -106,8 +106,8 @@ router.patch('/:id', auth ,async (req, res) => {
             updates.forEach(update => user[update] = req.body[update]);
             await user.save();
             res.status(201).send(user);
-        } else{
-            res.status(400).send({error:'unvalid field'})
+        } else {
+            res.status(400).send({ error: 'unvalid field' })
         }
     } catch (e) {
         res.status(500).send(e)
@@ -116,13 +116,13 @@ router.patch('/:id', auth ,async (req, res) => {
 })
 
 // Clear fetchedImagesId list
-router.patch('/me/clearfetched', auth, async (req,res) => {
+router.patch('/me/clearfetched', auth, async (req, res) => {
     try {
         const user = req.user;
         user.fetchedImagesID = [];
         await user.save();
         res.status(200).send('fetched images ids removed');
-    }catch (e) {
+    } catch (e) {
         res.status(500).send(e);
     }
 })
@@ -130,7 +130,7 @@ router.patch('/me/clearfetched', auth, async (req,res) => {
 
 // ------------------------ DELETE ROUTES ------------------------
 // Delete user by id
-router.delete('/:id', auth ,async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     try {
         await req.user.remove()
         res.status(201).send(req.user)
@@ -144,30 +144,30 @@ router.delete('/:id', auth ,async (req, res) => {
 
 
 
-router.get('/users/highscores/:n', async (req, res) => {
+router.get('/highscores/:n', async (req, res) => {
     const n = req.params.n;
     const ranking = []
 
     try {
-	let users = await User.find();
-	if (!users) { res.status(400).send('no users found');}
-	
-	users.sort((a,b) => parseFloat(b.labeledImagesID.length) - parseFloat(a.labeledImagesID.length));
-	if (users.length > n) {users.slice(0,n)}
-	
-	users.map( user => {
+        let users = await User.find();
+        if (!users) { res.status(400).send('no users found'); }
+
+        users.sort((a, b) => parseFloat(b.labeledImagesID.length) - parseFloat(a.labeledImagesID.length));
+        if (users.length > n) { users.slice(0, n) }
+
+        users.map(user => {
             {
-	    const name = user.name;
-	    const imagesLabeled = user.labeledImagesID.length;
-	    }
-	    return ranking.push(user);
-	})
-	
-        res.status(200).send(ranking); 
-    } catch(e) {
-	res(500).send(e);
+                const name = user.name;
+                const imagesLabeled = user.labeledImagesID.length;
+            }
+            return ranking.push(user);
+        })
+
+        res.status(200).send(ranking);
+    } catch (e) {
+        res(500).send(e);
     }
-} )
-    
+})
+
 
 module.exports = router;
