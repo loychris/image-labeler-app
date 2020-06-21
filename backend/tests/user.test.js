@@ -54,6 +54,11 @@ test('should sign up a new user', async () => {
         email: 'newmail@gmail.com',
         password: labler.password
     }).expect(201);
+
+    test = await User.findOne({ email: 'newmail@gmail.com' });
+
+    test.expect.not.toBeNull();
+
 })
 
 test('should not sign up a new user because empty req', async () => {
@@ -84,13 +89,16 @@ test('should not get user cause user doesnt exist', async () => {
         .send().expect(404);
 })
 
-test('delete own account while authenticated', async () => {
+test('should delete own account while authenticated', async () => {
     await request(app).delete('users/' + labler._id)
         .set('Authorization', `Bearer ${labler.tokens[0].token}`)
         .send().expect(201);
+
+    await User.findOne({ _id: labler._id });
+
 })// test delete other account issue isnt there and not sure if i should test for that
 
-test('delete own account without authentication', async () => {
+test('should not delete own account without authentication', async () => {
     await request(app).delete('users/' + labler._id)
         .send().expect(401);
 })
