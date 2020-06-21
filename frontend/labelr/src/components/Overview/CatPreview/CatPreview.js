@@ -18,5 +18,4 @@ class CatPreview extends Component {
         )
     }
 }
-// https://dummyimage.com/260x200/000/fff
 export default CatPreview;

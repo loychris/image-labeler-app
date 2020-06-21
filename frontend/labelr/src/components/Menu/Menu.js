@@ -22,6 +22,7 @@ class Menu extends Component {
                         <Link to='/'>Most active user</Link>
                     </div>
                 </li>
+                <li><Link to='/achievements'>Achievements</Link></li>
                 <li className={classes.user}>Logged in as:<Link className={classes.userLink} to='/'>Testuser One</Link></li>
             </ul>
         )
