@@ -6,10 +6,16 @@ const request = require('supertest');
 beforeEach(setupDatabase);
 
 test('Should login user', async () => {
-    await request(app).post('/users/login').send({
+    const response = await request(app).post('/users/login').send({
         email: labler.email,
         password: labler.password
     }).expect(200);
+
+    const user = await User.findById(response.body.user._id);
+
+    expect(response.body).toMatchObject({
+        token: user.tokens[1].token
+    })
 })
 
 test('Should not login user due to wrong credentials', async () => {
