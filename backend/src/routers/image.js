@@ -41,22 +41,6 @@ router.get('/labels', async (req, res) => {
   }
 })
 
-// Get image by label
-router.get('/images/:label', async (req, res) => {
-
-  try {
-    const imageList = [];
-    const images = await Image.find({})
-    images.map(image => {
-      const labelsList = image.labels.map(label => label.label);
-      return labelsList.includes(req.params.label) ? imageList.push(image) : false
-    })
-    res.status(200).send(imageList);
-  } catch (e) {
-    res.status(500).send(e);
-  }
-})
-
 // Get image by id
 router.get('/images/id/:id', async (req, res) => {
   try{
@@ -102,6 +86,7 @@ router.get('/images/next/:n', auth, async  (req, res) => {
 
   try {
     let images = await Image.find()
+
     images = images.map( image => !labeledImagesID.includes(image._id) && image  )
 
     if (!images){ res.status(400).send('no images found'); }
@@ -241,6 +226,18 @@ router.post('/images/next/id', auth, async  (req, res) => {
   }
 } )
 
+// Get image by label
+router.post('/images', async (req, res) => {
+
+  try {
+    const images = await Image.find({"labels.label" : req.body.label})
+    console.log(images);
+
+    res.status(200).send(images);
+  } catch (e) {
+    res.status(500).send(e);
+  }
+})
 // ------------------------ PATCH ROUTES ------------------------
 
 // Update Image - Still not in Use, planned to use in the future

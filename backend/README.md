@@ -262,16 +262,7 @@ request(options, function (error, response, body) {
   console.log(body);
 });
 ```
-#### Get images with specific label
--	Get and image with given label
-```javascript
-const requestOptions = { method: 'GET',  redirect: 'follow'};
 
-fetch("localhost:3000/images/:label", requestOptions)
-  .then(response => response.text())
-  .then(result => console.log(result))
-  .catch(error => console.log('error', error));
-```
 #### Get next n images
 - Get the next n images that the user did not labeled yet.
 - User keep list of already labeled images ID, all the returned images are not existing in this list, after an image has been labeled by the user, the ID of the image will be added to the list of the IDs, so it will not show up for the user again.
@@ -381,6 +372,28 @@ const options = { method: 'POST',
   url: 'http://127.0.0.1:3000/images/next/id',
   headers: 
    {'cache-control': 'no-cache',
+     Authorization: 'Bearer token',
+     'Content-Type': 'application/json' },
+  body: { label: 'label' },
+  json: true };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+
+```
+
+#### Get images with specific label
+-	Get and image with given label
+```javascript
+const request = require("request");
+
+const options = { method: 'POST',
+  url: 'http://localhost:3000/images',
+  headers: 
+   { 'cache-control': 'no-cache',
      Authorization: 'Bearer token',
      'Content-Type': 'application/json' },
   body: { label: 'label' },
