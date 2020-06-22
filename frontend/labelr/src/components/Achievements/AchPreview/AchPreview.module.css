@@ -15,11 +15,31 @@
     box-shadow: 5px 5px 15px rgba(0,0,0,0.6);
 }
 
-.thumbnail {
-    height: 80%;
+.achPreview:hover .progressBar{
+ display: none;
 }
-.progress {
-    margin-top: 5px;
+
+
+.description {
+    height: 15%;
+    display: none;
+}
+
+.achPreview:hover .description{
+    display: block;
+    font-family: monospace;
+   }
+
+.thumbnail {
+    height: 85%;
+}
+
+.progressBar{
+height: 15%;
+}
+
+.progressBar {
+    display: flex;
     width: 80%;
     font-size: 10px !important;
 }
@@ -27,6 +47,7 @@
 
 img{
     margin-top: 20px;
+    margin-bottom: 5px;
 }
 
 .caption{
