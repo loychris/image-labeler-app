@@ -121,15 +121,18 @@ router.get('/images/next/:n', auth, async  (req, res) => {
 
 // Upload a new image
 router.post('/upload', auth, upload.single('image'), async (req, res) => {
-  console.log(req.body.label);
-  const img = new Image({
-    data: req.file.buffer,
-    owner: req.user._id,
-    labels: [{label:req.body.label, votes:[true]}]
-  })
-  await img.save();
-
-  res.status(201).send({ msg: 'image added successfully' });
+  if  (req.file !== undefined){
+    const img = new Image({
+      data: req.file.buffer,
+      owner: req.user._id,
+      labels: [{label:req.body.label, votes:[true]}]
+    })
+    await img.save();
+    res.status(201).send({ msg: 'image added successfully' });
+  }
+  else{
+    res.status(400).send('Please add a file to upload');
+  }
 
 }, (error, req, res, next) => {
   res.status(415).send({ error: "Non valid file type" })

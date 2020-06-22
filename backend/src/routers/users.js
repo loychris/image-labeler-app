@@ -35,6 +35,27 @@ router.get('/me', auth, async (req, res) => {
 });
 
 
+
+// Get n highest score
+router.get('/highscores/:n', async (req, res) => {
+    const n = req.params.n;
+
+    try {
+        let users = await User.find().sort({ counter: -1 });
+        if (!users) { res.status(400).send('no users found'); }
+        console.log(users);
+
+        if (users.length > n) { users = users.slice(0, n) }
+
+
+        res.status(200).send(users);
+    } catch (e) {
+        res(500).send(e);
+    }
+})
+
+
+
 // ------------------------ POST ROUTES ------------------------
 
 // Register

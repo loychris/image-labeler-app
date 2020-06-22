@@ -46,6 +46,25 @@ fetch("", requestOptions)
   .catch(error => console.log('error', error));
 ```
 
+#### Get top n labelrs
+```javascript
+const request = require("request");
+
+const options = { method: 'GET',
+  url: 'http://127.0.0.1:3000/users/highscores/:n',
+  headers: 
+   { 'cache-control': 'no-cache',
+     Authorization: 'Bearer token' } };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+
+```
+
+
 #### Get  all images uploaded by user (authenticated)
  - Get all images uploaded by the authenticated user .
 ```javascript
