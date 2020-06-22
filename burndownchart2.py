@@ -14,6 +14,7 @@ burnt_actualminutes = [0]*8
 sum_minutes = 0
 issues = []
 day_in_minutes = 480
+actualminutes = 0
 
 with open (sys.argv[1]) as f:
     for line in f:
@@ -29,9 +30,10 @@ with open (sys.argv[1]) as f:
         if day == "none":
             continue
         burnt_minutes[sprintdays[day]] += minutes
-        burnt_actualminutes[sprintdays[day]] += minutes
+        burnt_actualminutes[sprintdays[day]] += actualminutes
 
 workload_week = [sum_minutes]*8
+print("average minutes/task = ", sum_minutes/len(issues))
 
 def burn_minutes(workload_week, burndown_week):
     burnt = 0
@@ -55,23 +57,25 @@ plt.plot([0,7], [tasks_in_days,0], label = 'Ideal Tasks Remaining')
 plt.axis('equal')
 plt.plot(x, burnt_days_arr, label = "Actual Tasks Remaining")
 
+workload_week = [sum_minutes]*8
 if sys.argv[2] == "4":
-    print("Third argument is 4")
     if sys.argv[3] == "3":
-        print("Fourth argument is 3")
         burntdown_actual = burn_minutes(workload_week, burnt_actualminutes)
         burnt_days_actual = minutes2days(burntdown_actual)
         burnt_days_actual_arr = np.array(burnt_days_actual)
         plt.plot(x, burnt_days_actual_arr, label = "Actual Time Burnt")
 
 ax = plt.subplot(1,1,1)
+if sys.argv[2] == "3" or sys.argv[3] == "2":
+    ax.set_ylim(ymin=0)
 #ax.set_xlim(xmin=0)
 ax.spines['left'].set_position('zero')
-ax.axhline(y=0, color='k')
-#ax.axvline(x=0)
+ax.spines['bottom'].set_position('zero')
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
 
 plt.xlabel('Time (in days)')
-plt.ylabel('Tasks (in days)\n56h = 7 Tage')
+plt.ylabel('Tasks (in days)\n56h = 7 days')
 plt.title('Burn-down Chart Sprint 2')
 plt.legend()
 plt.show()
