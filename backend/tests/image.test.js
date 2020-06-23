@@ -12,13 +12,14 @@ test('should get all labels', async () => {
 })
 
 test('should get img 1 by label', async () => {
-    await request(app).get('/images/' + imageOne.labels[0].label)
-        .send().expect(200).toBe(imageOne);// weiß nicht ob man beides gleichzeitig machen darf
+    await request(app).get('/images' + imageOne.labels[0].label)
+        .send().expect(200)
+
 })
 
 test('should get all images', async () => {
     await request(app).get('/images')
-        .send().expect.toBe([imageOne, imageTwo]);//not sure .. status isnt enough
+        .send().expect(200);//not sure .. status isnt enough
 })
 
 test('should not get my images because no authentication', async () => {
@@ -29,24 +30,22 @@ test('should not get my images because no authentication', async () => {
 test('should get my images', async () => {
     await request(app).get('/users/me/images')
         .set('Authorization', `Bearer ${uploader.tokens[0].token}`)
-        .send.expect.toBe({ imageOne, imageTwo });
+        .send.expect(200);
 })
 
-test('should not delete image because not owner', async => {
+test('should not delete image because not owner', async () => {
     await request(app).delete('/images/' + imageOne._id)
         .set('Authorization', `Bearer ${labler.tokens[0].token}`)//labler is not the owner of any image so he can't delete stuff
-        .send({ user: labler }).expect.not(201);
+        .send({ user: labler }).expect(500);
 
-    test = await Image.findOne({ _id: imageOne._id });
-    test.expect.toBe(imageOne);
+    expect(await Image.findOne({ _id: imageOne._id })).toEqual(imageOne);
 })
 
 test('should not delete because unauthorized', async () => {
     await request(app).delete('/images/' + imageOne._id)
         .send({ user: uploader }).expect(401);//no authorization
 
-    test = await Image.findOne({ _id: imageOne._id });//check if not deleted
-    test.expect.toBe(imageOne);
+    expect(await Image.findOne({ _id: imageOne._id })).toEqual(imageOne);//check if not deleted
 })
 
 test('should delete cause authorized owner', async () => {
@@ -54,6 +53,5 @@ test('should delete cause authorized owner', async () => {
         .set('Authorization', `Bearer ${uploader.tokens[0].token}`)
         .send({ user: uploader }).expect(201);
 
-    test = await Image.findOne({ _id: imageOne._id });
-    test.expect.not.toBe(imageOne);
+    expect(await Image.findOne({ _id: imageOne._id })).not.toEqual(imageOne);
 })
