@@ -55,58 +55,59 @@ test('should sign up a new user', async () => {
         password: labler.password
     }).expect(201);
 
-    test = await User.findOne({ email: 'newmail@gmail.com' });
+    const test = await User.findOne({ email: 'newmail@gmail.com' });
 
-    test.expect.not.toBeNull();
+    expect(test.body).not.toBe(null);
 
 })
 
 test('should not sign up a new user because empty req', async () => {
-    await request(app).post('/users/').send({
-
-    }).expect(500);
+    const response = await request(app).post('/users/')
+        .send().expect(500);
 })
 
 test('should not get users/me because unauthenticated', async () => {
-    await request(app).get('/users/me')
-        .set('Authorization', `Bearer ${labler.tokens[0].token}`)
+    const response = await request(app).get('/users/me')
         .send({ user: labler }).expect(401);
+
 })
 
 test('should get /users/me', async () => {
-    await request(app).get('/users/me')
+    const response = await request(app).get('/users/me')
         .set('Authorization', `Bearer ${labler.tokens[0].token}`)
         .send({ user: labler }).expect(200);
 })
 
 test('should get user with id', async () => {
-    await request(app).get('/users/' + labler._id)
+    const response = await request(app).get('/users/' + labler._id)
         .send().expect(200);
+    expect(response.body).toMatchObject({ email: labler.email });
 })
 
 test('should not get user cause user doesnt exist', async () => {
-    await request(app).get('users/invaliduseridstring42069')
+    const response = await request(app).get('users/invaliduseridstring42069')
         .send().expect(404);
 })
 
 test('should delete own account while authenticated', async () => {
-    await request(app).delete('users/' + labler._id)
+    const response = await request(app).delete('/users/' + labler._id)
         .set('Authorization', `Bearer ${labler.tokens[0].token}`)
         .send().expect(201);
 
-    await User.findOne({ _id: labler._id });
-
+    const test = await User.findOne({ _id: labler._id });
+    expect(test).toBe(null);
 })// test delete other account issue isnt there and not sure if i should test for that
 
 test('should not delete own account without authentication', async () => {
-    await request(app).delete('users/' + labler._id)
+    const response = await request(app).delete('/users/' + labler._id)
         .send().expect(401);
 })
 
 test('should get users ranked by #labeled', async () => {
-    await request(app).delete('/highscores/2')
-        .send().expect.toBe([
-            { name: labler.name, imagesLabeled: 1 },
-            { name: uploader.name, imagesLabeled: 0 }
-        ])
+    const response = await request(app).get('/highscores/2')
+        .send().expect(200);
+    expect(response.body).toMatchObject([
+        { name: labler.name, imagesLabeled: 1 },
+        { name: uploader.name, imagesLabeled: 0 }
+    ])
 })
