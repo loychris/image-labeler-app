@@ -458,3 +458,11 @@ fetch("localhost:3000/images/:imageID", requestOptions)
   .then(result => console.log(result))
   .catch(error => console.log('error', error));
 ```
+
+# Using the middleware
+### Authentication middleware
+The User must be authenticated to use the private routes like uploadingan or voting for an image,
+updating his profile and ca. otherwise, the user will get an 401 authentication response code.
+
+### Achievements middleware
+The achievements middleware will make sure everytime the user vote
