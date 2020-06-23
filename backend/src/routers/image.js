@@ -126,31 +126,35 @@ router.post('/upload', auth, upload.single('image'), async (req, res) => {
 // Vote for image
 router.post('/images/:id',auth, achievements,async (req, res) => {
 
-  const vote = req.body.vote;
+  const {vote, label} = req.body;
   const user = req.user;
+  let flag = true;
 
   try {
-    const image = await Image.findOne({_id: req.params.id});
+    let image = await Image.findOne({_id: req.params.id});
+
     if (!image) {
       return res.status(401).send({error: 'No image with this ID was found'})
     }
 
-    image.labels.map(label => {
-      if (label.label === req.body.label){
+    image.labels.map(labels => {
+      if (labels.label === label){
+        user.labeledImagesID.forEach( image => {
+          if (image.imageID === req.params.id){ res.status(400).send("Already voted for this picture"); } })
+        if (user.labeledImagesID.includes({imageID: req.params.id})){ res.status(400).send("Already voted for this picture"); }
 
-        if (user.labeledImagesID.includes(req.params.id)){
-          res.status(400).send("Already voted for this picture");
-        }
-
-        label.votes.push(vote);
+        labels.votes.push(vote);
         user.labeledImagesID.push({imageID: req.params.id, timestamp: moment().format('L')});
+        flag = false;
       }
     });
+
+    if (flag){ res.status(400).send("Unvalid labels"); }
 
     user.counter = user.counter + 1;
     await image.save();
     await user.save();
-    res.status(205).send(image.labels)
+    res.status(200).send(image.labels)
   } catch (e) {
     res.status(500).send(e);
   }
