@@ -21,21 +21,22 @@
 
 
 .description {
-    height: 15%;
+    height: 25%;
     display: none;
 }
 
 .achPreview:hover .description{
     display: block;
     font-family: monospace;
+    font-weight: 800;
    }
 
 .thumbnail {
-    height: 85%;
+    height: 80%;
 }
 
 .progressBar{
-height: 15%;
+    height: 20%;
 }
 
 .progressBar {
