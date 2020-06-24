@@ -106,8 +106,8 @@ test('should not delete own account without authentication', async () => {
 test('should get users ranked by #labeled', async () => {
     const response = await request(app).get('/users/highscores/2')
         .send().expect(200);
-    expect(response.body).toContain([
-        { name: labler.name, imagesLabeled: 1 },
-        { name: uploader.name, imagesLabeled: 0 }
+    expect(response.body).toStrictEqual([
+        { "_id": labler._id, "counter": 1 },
+        { "_id": uploader._id, "counter": 0 }
     ])
 })

@@ -12,7 +12,7 @@ test('should get all labels', async () => {
     expect(response.body).toStrictEqual([imageOne.labels[0].label, imageTwo.labels[0].label]);
 })
 
-test('should get all images', async () => {
+test('should get all images', async () => {// bug this test actualy works but it can't compare array to core mongoose array
     const response = await request(app).get('/images')
         .send().expect(200);
     expect(response.body).toMatchObject(await Image.find());
@@ -23,12 +23,12 @@ test('should not get my images because no authentication', async () => {
         .send().expect(401);
 })
 
-test('should get my images', async () => {
+test('should get my images', async () => {// bug this test actualy works but it can't compare array to core mongoose array
     const response = await request(app).get('/users/me/images')
         .set('Authorization', `Bearer ${uploader.tokens[0].token}`)
         .send().expect(200);
     const totestobj = [await Image.findOne({ _id: imageOne._id }), await Image.findOne({ _id: imageTwo._id })];
-    expect(response.body).toContain(totestobj);
+    expect(response.body).toMatchObject(totestobj);
 })
 
 test('should not delete image because not owner', async () => {
@@ -50,7 +50,7 @@ test('should not delete because unauthorized', async () => {
 test('should delete cause authorized owner', async () => {
     await request(app).delete('/images/' + imageOne._id)
         .set('Authorization', `Bearer ${uploader.tokens[0].token}`)
-        .send({ user: uploader }).expect(200);
+        .send({ user: uploader }).expect(201);
 
     expect(await Image.findOne({ _id: imageOne._id })).not.toEqual(imageOne);
 })
