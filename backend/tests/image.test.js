@@ -7,14 +7,16 @@ const Image = require('../src/models/image');
 beforeEach(setupDatabase);
 
 test('should get all labels', async () => {
-    await request(app).get('/labels')
+    const response = await request(app).get('/labels')
         .send().expect(200);
+    expect(response.body).toStrictEqual([imageOne.labels[0].label, imageTwo.labels[0].label]);
 })
 
 test('should get all images', async () => {
-    await request(app).get('/images')
-        .send().expect(200);//not sure .. status isnt enough
-})
+    const response = await request(app).get('/images')
+        .send().expect(200);
+    expect(response.body).toMatchObject(await Image.find());
+})//ich vergleiche literaly die selben bilder aber sie sind nicht gleich ..
 
 test('should not get my images because no authentication', async () => {
     await request(app).get('/users/me/images')
@@ -26,7 +28,7 @@ test('should get my images', async () => {
         .set('Authorization', `Bearer ${uploader.tokens[0].token}`)
         .send().expect(200);
     const totestobj = [await Image.findOne({ _id: imageOne._id }), await Image.findOne({ _id: imageTwo._id })];
-    expect(response.body).toMatchObjectt(totestobj)
+    expect(response.body).toContain(totestobj);
 })
 
 test('should not delete image because not owner', async () => {
