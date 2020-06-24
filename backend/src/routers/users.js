@@ -73,7 +73,7 @@ router.post('/', async (req, res) => {
 });
 
 // Log in
-router.post('/login', acheivements,async (req, res) => {
+router.post('/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password);
         const token = await user.generateAuthToken();
