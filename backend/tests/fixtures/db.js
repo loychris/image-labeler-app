@@ -11,44 +11,50 @@ const imgIdTwo = new mongoose.Types.ObjectId();
 
 
 const uploader = {
-    _id : uploaderId,
+    _id: uploaderId,
     isUploader: true,
+    counter: 0,
     name: 'Mike',
     email: 'uploader@gmail.com',
     password: 'uploaderPass3',
     tokens: [{
-        token: jwt.sign({_id : uploaderId}, 'xxlablerxx')
-    }]
+        token: jwt.sign({ _id: uploaderId }, 'xxlablerxx')
+    }],
+    labeledImagesId: [{}]
 };
 
 const labler = {
-    _id : lablerId,
+    _id: lablerId,
     isUploader: true,
+    counter: 1,
     name: 'John',
     email: 'labler@gmail.com',
     password: 'lablerPass1',
     tokens: [{
-        token: jwt.sign({_id : lablerId}, 'xxlablerxx')
+        token: jwt.sign({ _id: lablerId }, 'xxlablerxx')
+    }],
+    labeledImagesId: [{
+        imgIdOne
     }]
 };
 
 const imageOne = {
-    _id : imgIdOne,
+    _id: imgIdOne,
     owner: uploaderId,
     data: Buffer.from("testBuffer"),
-    labels:[ {label:"labelOne", votes:[true, false, true] }]
+    labels: [{ label: "labelOne", votes: [true, false, true] }]
 }
 
 const imageTwo = {
-    _id : imgIdTwo,
+    _id: imgIdTwo,
     owner: uploaderId,
     data: Buffer.from("testBuffer"),
-    labels:[ {label:"labelTwo", votes:[true, false, true] }]
+    labels: [{ label: "labelTwo", votes: [true, false, true] }]
 }
 
 //
 
-const setupDatabase = async ()=>{
+const setupDatabase = async () => {
     // Before each drop the database
     await User.deleteMany();
     await Image.deleteMany();

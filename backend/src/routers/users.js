@@ -22,16 +22,17 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.params.id });
+
         if (!user) {  res.status(404).send("User was not found"); }
-        res.status(200).send(user);//mögliches problem ? -- sende user profile inklusive daten wie tokens und passwort ..
+        res.status(200).send(user);
     } catch (e) {
+        console.log(e);
         res.status(500).send(e);
     }
 })
 
 // Get my account
 router.get('/me/profile', auth, async (req, res) => {
-    console.log('123');
     res.status(200).send(req.user)
 });
 
@@ -114,11 +115,11 @@ router.post('/logoutall', auth, async (req, res) => {
 
 // ------------------------ PATCH ROUTES ------------------------
 // Update user by id - with verification feature, only allowed fields will be updated
-router.patch('/:id', auth ,async (req, res) => {
+router.patch('/:id', auth, async (req, res) => {
 
     const allowUpdates = ['name', 'email', 'password'];
     const updates = Object.keys(req.body);
-    const isValidOperation = updates.every( (update) => allowUpdates.includes(update));
+    const isValidOperation = updates.every((update) => allowUpdates.includes(update));
 
     try {
         const user = await req.user;
@@ -127,8 +128,8 @@ router.patch('/:id', auth ,async (req, res) => {
             updates.forEach(update => user[update] = req.body[update]);
             await user.save();
             res.status(201).send(user);
-        } else{
-            res.status(400).send({error:'unvalid field'})
+        } else {
+            res.status(400).send({ error: 'unvalid field' })
         }
     } catch (e) {
         res.status(500).send(e)
@@ -143,7 +144,7 @@ router.patch('/me/clearfetched', auth, acheivements, async (req,res) => {
         user.fetchedImagesID = [];
         await user.save();
         res.status(200).send('fetched images ids removed');
-    }catch (e) {
+    } catch (e) {
         res.status(500).send(e);
     }
 })
@@ -151,7 +152,7 @@ router.patch('/me/clearfetched', auth, acheivements, async (req,res) => {
 
 // ------------------------ DELETE ROUTES ------------------------
 // Delete user by id
-router.delete('/:id', auth ,async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     try {
         await req.user.remove()
         res.status(201).send(req.user)

@@ -91,9 +91,30 @@ router.get('/images/next/:n', auth, async  (req, res) => {
 
     if (!images){ res.status(400).send('no images found'); }
 
-    if (images.length < n){ res.status(400).send(`There was no ${n} images`) }
+    if (images.length < n){ res.status(200).send(images.slice(0,images.length)); }
 
     res.status(200).send(images.slice(0,n));
+  } catch (e) {
+    res.status(500).send(e)
+  }
+
+} )
+
+// Get next Imgae - only images that the user did not voted for yet
+router.get('/images/next', auth, async  (req, res) => {
+
+  const labeledImagesID = req.user.labeledImagesID; // images the user already have been labeled
+
+  try {
+    let images = await Image.find();
+    if (!images){ res.status(400).send('no images found'); }
+
+    images = images.map( image => !labeledImagesID.includes(image._id) && image  );
+    console.log(images);
+
+    if (!images.length){ res.status(400).send(`no image left to label`); }
+
+    res.status(200).send(images.slice(0,1));
   } catch (e) {
     res.status(500).send(e)
   }
