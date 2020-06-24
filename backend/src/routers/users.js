@@ -163,33 +163,4 @@ router.delete('/:id', auth, async (req, res) => {
 })
 
 
-
-
-
-router.get('/highscores/:n', async (req, res) => {
-    const n = req.params.n;
-    const ranking = []
-
-    try {
-        let users = await User.find();
-        if (!users) { res.status(400).send('no users found'); }
-
-        users.sort((a, b) => parseFloat(b.labeledImagesID.length) - parseFloat(a.labeledImagesID.length));
-        if (users.length > n) { users.slice(0, n) }
-
-        users.map(user => {
-            {
-                const name = user.name;
-                const imagesLabeled = user.labeledImagesID.length;
-            }
-            return ranking.push(user);
-        })
-
-        res.status(200).send(ranking);
-    } catch (e) {
-        res(500).send(e);
-    }
-})
-
-
 module.exports = router;
