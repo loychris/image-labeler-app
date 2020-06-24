@@ -22,12 +22,9 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.params.id });
-
         if (!user) {  res.status(404).send("User was not found"); }
         res.status(200).send(user);
     } catch (e) {
-        console.log(e);
-        res.status(500).send(e);
     }
 })
 

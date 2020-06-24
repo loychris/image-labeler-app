@@ -16,9 +16,7 @@ test('should get all images', async () => {// bug this test actualy works but it
     const response = await request(app).get('/images')
         .send().expect(200);
 
-    console.log(response.body);
-    console.log([imageOne, imageTwo])
-    expect(response.body).toMatchObject([imageOne, imageTwo]);
+    expect(response.body.toString()).toMatch([imageOne, imageTwo].toString());
 })
 
 test('should not get my images because no authentication', async () => {
@@ -31,8 +29,9 @@ test('should get my images', async () => {// bug this test actualy works but it 
         .set('Authorization', `Bearer ${uploader.tokens[0].token}`)
         .send().expect(200);
 
-    const totestobj = [ imageOne._id ,imageTwo ];
-    expect(response.body).toMatchObject(totestobj);
+    const totestobj = [ imageOne ,imageTwo ];
+
+    expect(response.body.toString()).toMatch(totestobj.toString());
 })
 
 test('should not delete image because not owner', async () => {
