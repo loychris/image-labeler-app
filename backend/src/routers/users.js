@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require('../models/user');
 const auth = require('../middleware/auth')
+const acheivements = require('../middleware/achievements')
 
 // ------------------------ GET ROUTES ------------------------
 
@@ -29,7 +30,7 @@ router.get('/:id', async (req, res) => {
 })
 
 // Get my account
-router.get('/me', auth, async (req, res) => {
+router.get('/me/profile', auth, async (req, res) => {
     console.log('123');
     res.status(200).send(req.user)
 });
@@ -42,10 +43,10 @@ router.get('/highscores/:n', async (req, res) => {
     try {
         let users = await User.find().sort({ counter: -1 });
         if (!users) { res.status(400).send('no users found'); }
-        console.log(users);
 
         if (users.length > n) { users = users.slice(0, n) }
 
+        users = users.map(user => ({_id: user._id, acheivements: user.acheivements, counter: user.counter}))
 
         res.status(200).send(users);
     } catch (e) {
@@ -72,7 +73,7 @@ router.post('/', async (req, res) => {
 });
 
 // Log in
-router.post('/login', async (req, res) => {
+router.post('/login', acheivements,async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password);
         const token = await user.generateAuthToken();
@@ -136,7 +137,7 @@ router.patch('/:id', auth, async (req, res) => {
 })
 
 // Clear fetchedImagesId list
-router.patch('/me/clearfetched', auth, async (req, res) => {
+router.patch('/me/clearfetched', auth, acheivements, async (req,res) => {
     try {
         const user = req.user;
         user.fetchedImagesID = [];

@@ -299,7 +299,6 @@ router.delete('/images/:id', auth, async (req, res) => {
       owner: req.user._id
     });
     if (!image) { return res.status(401).send({error: 'No image with this ID was found'}) }
-    await image.save();
     res.status(201).send({msg:"Image deleted"});
   } catch (e) {
     res.status(500).send(e);
