@@ -13,6 +13,7 @@ const imgIdTwo = new mongoose.Types.ObjectId();
 const uploader = {
     _id: uploaderId,
     isUploader: true,
+    counter: 0,
     name: 'Mike',
     email: 'uploader@gmail.com',
     password: 'uploaderPass3',
@@ -25,6 +26,7 @@ const uploader = {
 const labler = {
     _id: lablerId,
     isUploader: true,
+    counter: 1,
     name: 'John',
     email: 'labler@gmail.com',
     password: 'lablerPass1',

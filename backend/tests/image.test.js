@@ -15,8 +15,11 @@ test('should get all labels', async () => {
 test('should get all images', async () => {// bug this test actualy works but it can't compare array to core mongoose array
     const response = await request(app).get('/images')
         .send().expect(200);
-    expect(response.body).toMatchObject(await Image.find());
-})//ich vergleiche literaly die selben bilder aber sie sind nicht gleich ..
+
+    console.log(response.body);
+    console.log([imageOne, imageTwo])
+    expect(response.body).toMatchObject([imageOne, imageTwo]);
+})
 
 test('should not get my images because no authentication', async () => {
     await request(app).get('/users/me/images')
@@ -27,7 +30,8 @@ test('should get my images', async () => {// bug this test actualy works but it 
     const response = await request(app).get('/users/me/images')
         .set('Authorization', `Bearer ${uploader.tokens[0].token}`)
         .send().expect(200);
-    const totestobj = [await Image.findOne({ _id: imageOne._id }), await Image.findOne({ _id: imageTwo._id })];
+
+    const totestobj = [ imageOne._id ,imageTwo ];
     expect(response.body).toMatchObject(totestobj);
 })
 

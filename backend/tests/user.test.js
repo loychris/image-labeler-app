@@ -44,13 +44,10 @@ test('Should logout all', async () => {
         send().expect(200);
 })
 
-
-
-
-
-
 test('should sign up a new user', async () => {
     await request(app).post('/users/').send({
+        isUploader: true,
+        name: 'Martin',
         email: 'newmail@gmail.com',
         password: labler.password
     }).expect(201);
@@ -67,25 +64,25 @@ test('should not sign up a new user because empty req', async () => {
 })
 
 test('should not get users/me because unauthenticated', async () => {
-    const response = await request(app).get('/users/me')
+    const response = await request(app).get('/users/me/profile')
         .send({ user: labler }).expect(401);
 
 })
 
 test('should get /users/me', async () => {
-    const response = await request(app).get('/users/me')
+    const response = await request(app).get('/users/me/profile')
         .set('Authorization', `Bearer ${labler.tokens[0].token}`)
         .send({ user: labler }).expect(200);
 })
 
 test('should get user with id', async () => {
-    const response = await request(app).get('/users/' + labler._id)
+    const response = await request(app).get(`/users/${labler._id}`)
         .send().expect(200);
     expect(response.body).toMatchObject({ email: labler.email });
 })
 
 test('should not get user cause user doesnt exist', async () => {
-    const response = await request(app).get('users/invaliduseridstring42069')
+    await request(app).get('/users/5ef37e0d68b599600f67fcdd')
         .send().expect(404);
 })
 
@@ -106,8 +103,9 @@ test('should not delete own account without authentication', async () => {
 test('should get users ranked by #labeled', async () => {
     const response = await request(app).get('/users/highscores/2')
         .send().expect(200);
+
     expect(response.body).toStrictEqual([
-        { "_id": labler._id, "counter": 1 },
-        { "_id": uploader._id, "counter": 0 }
+        { "_id": labler._id.toString(), "counter": 1 },
+        { "_id": uploader._id.toString(), "counter": 0 }
     ])
 })

@@ -22,16 +22,17 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.params.id });
+
         if (!user) {  res.status(404).send("User was not found"); }
-        res.status(200).send(user);//mögliches problem ? -- sende user profile inklusive daten wie tokens und passwort ..
+        res.status(200).send(user);
     } catch (e) {
+        console.log(e);
         res.status(500).send(e);
     }
 })
 
 // Get my account
 router.get('/me/profile', auth, async (req, res) => {
-    console.log('123');
     res.status(200).send(req.user)
 });
 
@@ -73,7 +74,7 @@ router.post('/', async (req, res) => {
 });
 
 // Log in
-router.post('/login', acheivements,async (req, res) => {
+router.post('/login',async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password);
         const token = await user.generateAuthToken();
