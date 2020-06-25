@@ -1,12 +1,13 @@
-import React, { Component } from "react";
-import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+import React, { Component } from 'react';
+import PopupNewAchievement from '../Popup/PopupNewAchievement';
+import { Navbar, Nav, NavDropdown, Badge } from 'react-bootstrap';
 // import classes from "./Menu.module.css";
 
 class Menu extends Component {
   state = {
     loggedInAsUser: false,
-    loggedInAsUploader: true,
-    userName: "Testuser One",
+    loggedInAsUploader: false,
+    userName: 'Testuser One',
   };
 
   /*
@@ -14,7 +15,7 @@ class Menu extends Component {
   */
   renderLoginSignup() {
     if (!this.state.loggedInAsUser && !this.state.loggedInAsUploader) {
-      return <Nav.Link href="/login">Login/Signup</Nav.Link>;
+      return <Nav.Link href='/login'>Login/Signup</Nav.Link>;
     }
   }
 
@@ -27,14 +28,14 @@ class Menu extends Component {
         <NavDropdown
           alignRight
           title={this.state.userName}
-          id="collasible-nav-dropdown"
+          id='collasible-nav-dropdown'
         >
-          <NavDropdown.Item href="">User Profile</NavDropdown.Item>
-          <NavDropdown.Item href="">Achievements</NavDropdown.Item>
+          <NavDropdown.Item href=''>User Profile</NavDropdown.Item>
+          <NavDropdown.Item href=''>Achievements</NavDropdown.Item>
           <NavDropdown.Divider />
-          <NavDropdown.Item hrerf="">Delete Account</NavDropdown.Item>
+          <NavDropdown.Item hrerf=''>Delete Account</NavDropdown.Item>
           <NavDropdown.Divider />
-          <NavDropdown.Item hrerf="">Logout</NavDropdown.Item>
+          <NavDropdown.Item hrerf=''>Logout</NavDropdown.Item>
         </NavDropdown>
       );
     }
@@ -45,7 +46,7 @@ class Menu extends Component {
   */
   renderLoggedInAsUploader() {
     if (this.state.loggedInAsUploader) {
-      return <Nav.Link href="">Upload new Pictures</Nav.Link>;
+      return <Nav.Link href=''>Upload new Pictures</Nav.Link>;
     }
   }
 
@@ -55,25 +56,35 @@ class Menu extends Component {
   renderShowCurrentActivities() {
     if (this.state.loggedInAsUser || this.state.loggedInAsUploader) {
       return (
-        <NavDropdown title="Latest activities" id="collasible-nav-dropdown">
-          <NavDropdown.Item href="">Last uploaded pictures</NavDropdown.Item>
-          <NavDropdown.Item href="">Last labeled pictures</NavDropdown.Item>
-          <NavDropdown.Item hrerf="">Most active users</NavDropdown.Item>
+        <NavDropdown title='Latest activities' id='collasible-nav-dropdown'>
+          <NavDropdown.Item href=''>Last uploaded pictures</NavDropdown.Item>
+          <NavDropdown.Item href=''>Last labeled pictures</NavDropdown.Item>
+          <NavDropdown.Item hrerf=''>Most active users</NavDropdown.Item>
         </NavDropdown>
       );
     }
   }
 
+  /*
+  TODO: Connect to backend to enable appearing only when user achieves a new goal/achievement
+  */
+  renderShowPopupNewAchievement() {
+    if (this.state.loggedInAsUser || this.state.loggedInAsUploader) {
+      return <PopupNewAchievement />;
+    }
+  }
+
   render() {
     return (
-      <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark">
-        <Navbar.Brand href="/">Labelr</Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="mr-auto">
+      <Navbar collapseOnSelect expand='sm' bg='dark' variant='dark'>
+        <Navbar.Brand href='/'>Labelr</Navbar.Brand>
+        <Navbar.Toggle aria-controls='responsive-navbar-nav' />
+        <Navbar.Collapse id='responsive-navbar-nav'>
+          <Nav className='mr-auto'>
             {this.renderLoginSignup()} {this.renderShowCurrentActivities()}
             {this.renderLoggedInAsUploader()}
           </Nav>
+          {this.renderShowPopupNewAchievement()}
           <Nav>{this.renderUserMenu()}</Nav>
         </Navbar.Collapse>
       </Navbar>
