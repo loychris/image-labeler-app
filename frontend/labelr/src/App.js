@@ -12,7 +12,7 @@ import Auth from './components/Auth/Auth';
 import Menu from './components/Menu/Menu';
 import Overview from './components/Overview/Overview';
 import ImageQueue from './components/ImageQueue/ImageQueue';
-import UploadForm from './components/';
+// import UploadForm from './components/';
 import Achievements from './components/Achievements/Achievements';
 
 
@@ -48,9 +48,9 @@ function App()  {
             <ImageQueue token={token} category={currentCategory}/>
           </Route>
           <main className='main'>
-              <Route exact path='/uploadForm'>
+              {/* <Route exact path='/uploadForm'>
                 <UploadForm token={token}/>
-              </Route>
+              </Route> */}
             </main>
           <Redirect to="/" />
         </Switch>
