@@ -3,6 +3,7 @@ import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 // import classes from "./Menu.module.css";
 
 class Menu extends Component {
+  
   state = {
     loggedInAsUser: false,
     loggedInAsUploader: true,
@@ -13,10 +14,11 @@ class Menu extends Component {
   /*
   Show Link to Login/Register if user is not logged in
   */
-  renderLoginSignup() {
+  renderLoginSignup = () =>  {
     if (!this.state.loggedInAsUser && !this.state.loggedInAsUploader) {
       return <Nav.Link href="/login">Login/Signup</Nav.Link>;
-
+    }
+  }
 
 
   /*
@@ -44,16 +46,16 @@ class Menu extends Component {
   /*
   Show Upload Link if uploader is logged in
   */
-  renderLoggedInAsUploader() {
+  renderLoggedInAsUploader = () => {
     if (this.state.loggedInAsUploader) {
-      return <Nav.Link href="">Upload new Pictures</Nav.Link>;
+      return (<Nav.Link href="/uploadForm">Upload new Pictures</Nav.Link>)
     }
   }
 
   /*
   Show dropdown menu with last uploaded pictures, last labeled pictures and most active users
   */
-  renderShowCurrentActivities() {
+  renderShowCurrentActivities = () => {
     if (this.state.loggedInAsUser || this.state.loggedInAsUploader) {
       return (
         <NavDropdown title="Latest activities" id="collasible-nav-dropdown">
@@ -65,15 +67,16 @@ class Menu extends Component {
     }
   }
 
- /*
-  render() {
+ 
+    render(){
     return (
       <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark">
         <Navbar.Brand href="/">Labelr</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="mr-auto">
-            {this.renderLoginSignup()} {this.renderShowCurrentActivities()}
+            {this.renderLoginSignup()} 
+            {this.renderShowCurrentActivities()}
             {this.renderLoggedInAsUploader()}
           </Nav>
           <Nav>{this.renderUserMenu()}</Nav>
@@ -83,6 +86,6 @@ class Menu extends Component {
   }
 }
 
-*/
+
 
 export default Menu;

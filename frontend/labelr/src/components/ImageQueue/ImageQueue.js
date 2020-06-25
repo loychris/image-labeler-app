@@ -152,7 +152,7 @@ class ImageQueue extends Component {
                         Back
                     </div>
                 </Link>
-                <h1>Is there a {this.props.category} in this picture?</h1> 
+                <h1>Is there a <strong>Car</strong> in this picture?</h1> 
                 {imageContainers}
                 <div 
                     className={leftButtonClasses.join(' ')} 
