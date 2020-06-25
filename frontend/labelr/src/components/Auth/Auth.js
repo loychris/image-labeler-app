@@ -1,155 +1,268 @@
-import React, { Component } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from 'react-router-dom';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+
+import { AuthContext } from '../context/auth-context';
+import { useHttpClient } from './http-hook';
+
 
 import classes from './Auth.module.css';
 
 import AuthTab from './AuthTab/AuthTab';
 
 
-class Login extends Component {
+function Login() {
 
-    state = {
-        userType: 'user', // <-> 'uploader'
-        currentlyShowing: 'login' // <-> 'signup'
-    }
+    const auth = useContext(AuthContext);
+    const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
-    getUserLoginForm = () => {
-        return(
-            <form className={classes.form}>
-                <h3>User Login</h3>
-                <label>email</label><br/>
-                <input type='text'/><br/>
-                <label>password</label><br/>
-                <input type='text'/><br/>
-                <input type='submit' value='Login'/>
-            </form> 
-        )
-    }
 
-    getUserSignupForm = () => {
-        return(
-            <form className={classes.form}>
-                <h3>Create a user account</h3>
-                <label>Username:</label><br/>
-                <input type='text'/><br/>
-                <label>Email:</label><br/>
-                <input type='text'/><br/>
-                <label>Password:</label><br/>
-                <input type='text'/><br/>
-                <input type='submit' value='Create Account'/>
-            </form>
-        )
-    }
+    const [userType, setUserType] = useState('User') // <-> 'uploader'
+    const [currentForm, setCurrentForm] = useState('login') // <-> 'signup'
 
-    getUploaderLoginForm = () => {
-        return(
-            <form className={classes.form}>
-                <h3>Uploader Login</h3>
-                <label>email</label><br/>
-                <input type='text'/><br/>
-                <label>password</label><br/>
-                <input type='text'/><br/>
-                <input type='submit' value='Login'/>
-            </form>
-        )
-    }
 
-    getUploaderSignupForm = () => {
-        return(
-            <form className={classes.form}>
-                <h3>Create a Uploader account</h3>
-                <label>Name:</label><br/>
-                <input type='text'/><br/>
-                <label>Company / Institution:</label><br/>
-                <input type='text'/><br/>
-                <label>Email:</label><br/>
-                <input type='text'/><br/>
-                <label>Password:</label><br/>
-                <input type='text'/><br/>
-                <input type='submit' value='Create Account'/>
-            </form>
-        )
-    }  
 
-    switchToUser = () => {
-        if(this.state.userType !== 'user'){
-            this.setState({userType: 'user'})
+    const switchToUser = () => {
+        if(userType !== 'User'){
+            setUserType('User');
         }
     }
 
-    switchToUploader = () => {
-        if(this.state.userType !== 'uploader'){
-            this.setState({userType: 'uploader'})
+    const switchToUploader = () => {
+        if(userType !== 'Uploader'){
+            setUserType('Uploader');
         }
     }
 
-    switchToLogin = () => {
-        if(this.state.currentlyShowing !== 'login'){
-            this.setState({currentlyShowing: 'login'})
+    const switchToLogin = () => {
+        if(currentForm !== 'login'){
+            setCurrentForm('login');
         }
     }
 
-    switchToSignup = () => {
-        if(this.state.currentlyShowing !== 'signup'){
-            this.setState({currentlyShowing: 'signup'})
+    const switchToSignup = () => {
+        if(currentForm !== 'signup'){
+            setCurrentForm('signup');
         }
     }
 
-
-
-    render(){
-
-        let inputs;
-
-        if(this.state.userType === 'user'){
-            if(this.state.currentlyShowing === 'login'){
-                inputs = this.getUserLoginForm();
-            } else {
-                inputs = this.getUserSignupForm(); 
+    const handleLogin = async (values, { setSubmitting }) => {
+        console.log('/////////// SUBMITTING', values);
+        setSubmitting(false);
+        const responseData = await sendRequest(
+            'http://localhost:3000/api/users/login',
+            'POST',
+            JSON.stringify({
+            email: values.email.value,
+            password: values.password.value,
+            isUploader: userType === 'Uploader'
+            }),
+            {
+            'Content-Type': 'application/json'
             }
-        } else {
-            if(this.state.currentlyShowing === 'login'){
-                inputs = this.getUploaderLoginForm();
-            }else {
-                inputs = this.getUploaderSignupForm();
-            }
-        }
+        );
+        auth.login(responseData.user.id, responseData.token);
+        setSubmitting(false);
+    }
 
-        const styleClasses = [classes.login];
-        return(    
-            <div>
-                <Link to='/'>
-                    <div className={classes.backDrop}></div>
-                </Link>
-                <div className={styleClasses.join(' ')}>
-                    <div className={classes.userOptions}>
-                        <AuthTab 
-                            active={this.state.userType === 'user'}
-                            value={'User'} 
-                            clicked={this.switchToUser}/>
-                        <AuthTab 
-                            active={this.state.userType === 'uploader'}
-                            value={'Uploader'} 
-                            clicked={this.switchToUploader}/>
-                    </div>
-                    <div className={classes.loginSignup}>
-                        <AuthTab 
-                            active = {this.state.currentlyShowing === 'login'} 
-                            value = {'Login'} 
-                            clicked = {this.switchToLogin}/>
-                        <AuthTab 
-                            active = {this.state.currentlyShowing === 'signup'} 
-                            value = {'Signup'} 
-                            clicked = {this.switchToSignup}/>
-                    </div>
-                    <form>
-                        {inputs}
-                    </form>
+    const handleSignup = async (values, { setSubmitting }) => {
+        console.log('/////////// SUBMITTING', values)
+        setSubmitting(false);
+        const responseData = await sendRequest(
+            'http://localhost:3000/api/users',
+            'POST',
+            JSON.stringify({
+            name: values.username.value,
+            email: values.email.value,
+            password: values.password.value,
+            isUploader: userType === 'Uploader'
+            }),
+            {
+            'Content-Type': 'application/json'
+            }
+        );
+        auth.login(responseData.user.id, responseData.token);
+    }
+
+    const validateLogin = values => {
+        const errors = {};
+        if (!values.email) {
+            errors.email = 'Required';
+        } else if (
+            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+        ) {
+            errors.email = 'Not a valid email address!';
+        } 
+        if(!values.password){
+            errors.password = 'Required';
+        } else if( values.password.length < 6){
+            errors.password = 'Password must be at least 6 characters long'
+        }
+        return errors;
+    }
+
+    const validateSignup = values => {
+        const errors = {};
+        if(!values.username){
+            errors.username = 'Required';
+        }else if(values.username.length < 6){
+            errors.username = 'Username must be at least 6 characters long';
+        }
+        if (!values.email) {
+            errors.email = 'Required';
+        } else if (
+            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+        ) {
+            errors.email = 'Not a valid email address!';
+        } 
+        if(!values.password){
+            errors.password = 'Required';
+        } else if( values.password.length < 6){
+            errors.password = 'Password must be at least 6 characters long'
+        }
+        return errors;
+    }
+
+    const getLoginForm = () => {
+        return(
+            <Formik
+                initialValues={{ email: '', password: '' }}
+                validate={validateLogin}
+                onSubmit={handleLogin}
+            >
+                {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
+                <form className={classes.form} onSubmit={handleLogin}>
+                    <h3>{userType} login</h3>
+                    <label>Email:</label>
+                    <input
+                        id="email"
+                        type="email"
+                        name="email"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.email}
+                    />
+                    <span className={classes.invalidMessage}>
+                        {errors.email && touched.email && errors.email}
+                    </span>
+                    <br/>
+                    <label>Password:</label>
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.password}
+                    />
+                    <span className={classes.invalidMessage}>
+                        {errors.password && touched.password && errors.password}<br/>
+                    </span>
+                    <button type="submit" disabled={isSubmitting}>
+                    Login
+                    </button>
+                </form>
+                )}
+            </Formik>
+        )
+    }
+
+    const getSignupForm = () => {
+        return(
+            <Formik
+                initialValues={{ username: '', email: '', password: '' }}
+                validate={validateSignup}
+                onSubmit={handleSignup}
+            >
+                {({
+                values,
+                errors,
+                touched,
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                isSubmitting,
+                /* and other goodies */
+                }) => (
+                <form className={classes.form} onSubmit={handleSubmit}>
+                    <h3>{userType} login</h3>
+                    <label>Username:</label>
+                    <input
+                        id="username"
+                        type="text"
+                        name="username"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.username}
+                    /><br/>
+                    <span className={classes.invalidMessage}>
+                        {errors.username && touched.username && errors.username}
+                    </span>
+                    <label>Email:</label>
+                    <input
+                        id="email"
+                        type="email"
+                        name="email"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.email}
+                    /><br/>
+                    <span className={classes.invalidMessage}>
+                        {errors.email && touched.email && errors.email}
+                    </span>
+                    <label>Password:</label>
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.password}
+                    /><br/>
+                    <span className={classes.invalidMessage}>
+                        {errors.password && touched.password && errors.password}<br/>
+                    </span>                    
+                    <button type="submit" disabled={isSubmitting}>
+                    Submit
+                    </button>
+                </form>
+                )}
+            </Formik>
+        )
+    }
+ 
+
+
+
+    let inputs = currentForm === 'login' ? getLoginForm() : getSignupForm();
+    return(    
+        <div>
+            <div className={classes.backDrop}></div>
+            <div className={classes.login}>
+                <div className={classes.userOptions}>
+                    <AuthTab 
+                        active={userType === 'User'}
+                        value={'User'} 
+                        clicked={switchToUser}/>
+                    <AuthTab 
+                        active={userType === 'Uploader'}
+                        value={'Uploader'} 
+                        clicked={switchToUploader}/>
                 </div>
+                <div className={classes.loginSignup}>
+                    <AuthTab 
+                        active = {currentForm === 'login'} 
+                        value = {'Login'} 
+                        clicked = {switchToLogin}/>
+                    <AuthTab 
+                        active = {currentForm === 'signup'} 
+                        value = {'Signup'} 
+                        clicked = {switchToSignup}/>
+                </div>
+                {inputs}
             </div>
-
-        )
-    }
+        </div>
+    )
 }
 
 export default Login;

@@ -13,10 +13,6 @@
     padding: 20px; 
 }
 
-.login > input[type=submit] {
-    background-color: red;
-}
-
 .hidden{
     transform: translate3d(0, -100vh, 0);
 }
@@ -40,7 +36,7 @@
     z-index: 90;
 }
 
-input[type=submit]{
+.form button[type=submit]{
     position: absolute;
     bottom: 30px; 
     right: 30px;
@@ -58,22 +54,28 @@ input[type=submit]{
     padding-top: 25px; 
 }
 
-.form input[type=text]{
+.form input[type=text], .form input[type=password], .form input[type=email]{
     height: 40px;
     font-size: 15pt; 
     padding: 3px 15px;
     border: none;
     border-radius: 10px;
     box-shadow: 0px 3px 5px rgb(0,0,0,0.5);
-    margin-bottom: 15px;
+    margin-bottom: 4px;
     margin-top: 5px; 
 }
 
 .form label {
-    margin-top: 20px; 
-    text-align: left;
+    margin-top: 15px;
+    display: block;
 }
 
 .form h3 {
     font-size: 20pt;
+}
+
+.invalidMessage {
+    color: red; 
+    font-size: 10pt;
+    display: block;
 }
