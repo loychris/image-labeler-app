@@ -20,7 +20,6 @@ with open (sys.argv[1]) as f:
     for line in f:
         if sys.argv[2] == "4":
             issue, minutes_str, day, actualminutes_newline = line.split(" ")  
-            actualminutes = int(actualminutes_newline.rstrip("\n"))
         if sys.argv[2] == "3":
             issue, minutes_str, daynewline = line.split(" ")  
             day = daynewline.rstrip("\n")
@@ -30,9 +29,11 @@ with open (sys.argv[1]) as f:
         if day == "none":
             continue
         burnt_minutes[sprintdays[day]] += minutes
+        actualminutes = int(actualminutes_newline.rstrip("\n"))
         burnt_actualminutes[sprintdays[day]] += actualminutes
+    unique_issues = list(set(issues))
+    print(len(unique_issues), len(issues))
 
-workload_week = [sum_minutes]*8
 print("average minutes/task = ", sum_minutes/len(issues))
 
 def burn_minutes(workload_week, burndown_week):
@@ -45,6 +46,7 @@ def burn_minutes(workload_week, burndown_week):
 def minutes2days(burnt_week):
     return [item/day_in_minutes for item in burnt_week]
 
+workload_week = [sum_minutes]*8
 burntdown = burn_minutes(workload_week, burnt_minutes)
 burnt_days = minutes2days(burntdown)
 burnt_days_arr = np.array(burnt_days)
@@ -55,11 +57,12 @@ x = np.arange(0,8,1)
 y = np.arange(tasks_in_days)
 plt.plot([0,7], [tasks_in_days,0], label = 'Ideal Tasks Remaining')
 plt.axis('equal')
-plt.plot(x, burnt_days_arr, label = "Actual Tasks Remaining")
+plt.xticks(x)
+plt.plot(x, burnt_days_arr, label = "Actual Tasks Remaining", marker='o')
 
-workload_week = [sum_minutes]*8
 if sys.argv[2] == "4":
     if sys.argv[3] == "3":
+        workload_week = [sum_minutes]*8
         burntdown_actual = burn_minutes(workload_week, burnt_actualminutes)
         burnt_days_actual = minutes2days(burntdown_actual)
         burnt_days_actual_arr = np.array(burnt_days_actual)
