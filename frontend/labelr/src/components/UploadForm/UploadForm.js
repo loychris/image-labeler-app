@@ -1,17 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import Dropzone from 'react-dropzone'
+import ReactDropzone from "react-dropzone";
 
 import classes from './UploadForm.module.css';
 
-const imageMaxSize = 10000000;
+
+
+const imageMaxSize = 1000000000; // bytes
+const acceptedFileTypes = ['image/x-png', 'image/png', 'image/jpg', 'image/jpeg', 'image/gif']
 
 function  UploadForm() {
 
-    const [images, setImages] = useState(null);
+    const [images, setImages] = useState([]);
 
     const handleOnDrop = (files, rejectedFiles) => {
         console.log('accepted files', files);
         console.log('rejected files', rejectedFiles);
+        setImages(files);
+        if(rejectedFiles && rejectedFiles.length > 0){
+            const currentRejectedFile = rejectedFiles[0];
+            const currentRejectedFileType = currentRejectedFile.type; 
+            const currentRejectedFileSize = currentRejectedFile.size; 
+        }
         ////////////////////////////////////////////////////////////////
         /////////////////////////// TODO ///////////////////////////////
         ////////////////////////////////////////////////////////////////
@@ -23,13 +33,24 @@ function  UploadForm() {
         ////////////////////////////////////////////////////////////////
     }
 
+    const previewStyle = {
+        display: 'inline',
+        width: 100,
+        height: 100,
+      };
+
+    const  onPreviewDrop = (files) => {
+        setImages(images.concat(files))
+      }
+
     return(
-        <div>
+        <div className={classes.main}>
             <h1>Upload your Images</h1>
             <form className={classes.uploadForm}>
                 <label>Category name:</label>
                 <input type='text'/>
-                <label>Your Images:</label>
+
+
                 <Dropzone 
                     onDrop={handleOnDrop}
                     maxSize={imageMaxSize}
@@ -38,15 +59,29 @@ function  UploadForm() {
                         <section className={classes.dropzone}>
                         <div {...getRootProps()}>
                             <input {...getInputProps()} />
-                            <p><span className={classes.chooseFile}>Choose image files</span> or drag them here</p>
+                            <p className={classes.zoneText}><span className={classes.chooseFile}>Choose image files</span> or drag them here</p>
                         </div>
                         </section>
                     )}
                 </Dropzone>
-                
-                <button onClick={onStartUpload}>Start the upload</button>
+                {
+                    images.length > 0 &&
+                    <Fragment>
+                        <h3>Previews</h3>
+                        {images.map((file) => (
+                        <img
+                            alt="Preview"
+                            key={file.preview}
+                            src={file.preview}
+                            style={previewStyle}
+                        />))}
+                </Fragment>
+                }
+                <div className={classes.buttonContainer}>
+                    <button type='submit' onClick={onStartUpload}>Start the upload</button>
+                </div>
             </form>
-        </div>
+        </div >
     )
 }
 

@@ -11,7 +11,7 @@ import classes from './Auth.module.css';
 import AuthTab from './AuthTab/AuthTab';
 
 
-function Login() {
+function Login(props) {
 
     const auth = useContext(AuthContext);
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -49,20 +49,43 @@ function Login() {
     const handleLogin = async (values, { setSubmitting }) => {
         console.log('/////////// SUBMITTING', values);
         setSubmitting(false);
-        const responseData = await sendRequest(
-            'http://localhost:3000/api/users/login',
-            'POST',
-            JSON.stringify({
+        
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
             email: values.email.value,
-            password: values.password.value,
-            isUploader: userType === 'Uploader'
-            }),
-            {
-            'Content-Type': 'application/json'
-            }
-        );
-        auth.login(responseData.user.id, responseData.token);
-        setSubmitting(false);
+            password: values.password.value
+        });
+
+        const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+        };
+
+        fetch("http://localhost:3000/users/login", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+
+        // const responseData = await sendRequest(
+        //     'http://localhost:3000/users/login',
+        //     'POST',
+        //     JSON.stringify({
+        //     email: values.email.value,
+        //     password: values.password.value,
+        //     isUploader: userType === 'Uploader'
+        //     }),
+        //     {
+        //     'Content-Type': 'application/json'
+        //     }
+        // );
+        // console.log('////////////', responseData);
+        // props.login(responseData.user.id, responseData.token);
+        // auth.login(responseData.user.id, responseData.token);
+        
     }
 
     const handleSignup = async (values, { setSubmitting }) => {
@@ -131,7 +154,7 @@ function Login() {
                 onSubmit={handleLogin}
             >
                 {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
-                <form className={classes.form} onSubmit={handleLogin}>
+                <form className={classes.form} onSubmit={handleSubmit}>
                     <h3>{userType} login</h3>
                     <label>Email:</label>
                     <input

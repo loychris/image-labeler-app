@@ -17,7 +17,8 @@ import UploadForm from './components/UploadForm/UploadForm';
 
 function App()  {
 
-    const [token, setToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWY0MDI5ZWIxY2Q0YTdkNDQxZGI0NTYiLCJpYXQiOjE1OTMwNDk3NTh9.skKvmVRYbUW71o7dq28u0JszqJ6iwBHxOLdd8F61yZ4");
+    const [token, setToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWY0NDc4ODViOWI2NjRiYWQ3OWRjZTIiLCJpYXQiOjE1OTMwNjc0MDB9.n_v6Z3orkod6S7UgDS0t9sjeQhrgb6JctbVvTr3bMpk");
+ //   const [token, setToken] = useState(null); 
     const [userId, setUserId] = useState(false);
     const [currentCategory, setCurrentCategory] = useState('');
 
@@ -33,35 +34,33 @@ function App()  {
       setUserId(null);
     }, []);
 
-    let routes; 
+    let routes;
 
-    if (token) {
-      routes = (
+    if(token){
+      routes = 
         <Switch>
-          <Route exact path={['/', '/login']}>
-            <Overview token={token}/>
-          </Route>
           <Route exact path= '/imageQueue'>
             <ImageQueue token={token} category={currentCategory}/>
           </Route>
-          <main className='main'>
-              <Route exact path='/uploadForm'>
-                <UploadForm token={token}/>
-              </Route>
-            </main>
+          <Route exact path='/uploadForm'>
+            <UploadForm token={token}/>
+          </Route>
           <Redirect to="/" />
         </Switch>
-      );
-    } else {
-      routes = (
+    }else {
+      routes = 
         <Switch>
-          <Route exact path='/login' >
-            <Auth/>
+
+          <Route exact path='/uploadForm'>
+            <UploadForm token={token}/>
           </Route>
-          <Redirect to="/auth" />
+          <Route exact path='/login'>
+              <Auth token={token} login={login}/>
+          </Route>
+          <Redirect to="/login" />
         </Switch>
-      );
     }
+
 
     return (
       <AuthContext.Provider 
@@ -74,9 +73,16 @@ function App()  {
         <Router>
           <div className="App">
             <Menu logout={logout}/>
+            <Route path= '/imageQueue'>
+              <ImageQueue token={token} category={currentCategory}/>
+            </Route>
+            <Route exact path={['/', '/login']}>
+              <Overview token={token}/>
+            </Route>
             {routes}
           </div>
         </Router>
+        
       </AuthContext.Provider>
     );
 }
