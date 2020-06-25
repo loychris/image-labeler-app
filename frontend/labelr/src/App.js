@@ -6,6 +6,7 @@ import Auth from './components/Auth/Auth';
 import Menu from './components/Menu/Menu';
 import Overview from './components/Overview/Overview';
 import ImageQueue from './components/ImageQueue/ImageQueue';
+import Achievements from './components/Achievements/Achievements';
 
 class App extends Component {
 
@@ -37,6 +38,10 @@ class App extends Component {
         render={() => {
           return <ImageQueue category={this.state.currentCategory}/>
         }}/>
+        <Route
+        exact
+        path='/achievements'
+        component={Achievements}/>
       </div>
     );
   }
