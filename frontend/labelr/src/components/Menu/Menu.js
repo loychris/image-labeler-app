@@ -9,14 +9,15 @@ class Menu extends Component {
     userName: "Testuser One",
   };
 
+
   /*
   Show Link to Login/Register if user is not logged in
   */
   renderLoginSignup() {
     if (!this.state.loggedInAsUser && !this.state.loggedInAsUploader) {
       return <Nav.Link href="/login">Login/Signup</Nav.Link>;
-    }
-  }
+
+
 
   /*
   Show User's Menu if user or uploader is logged in
@@ -64,6 +65,7 @@ class Menu extends Component {
     }
   }
 
+ /*
   render() {
     return (
       <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark">
@@ -80,5 +82,7 @@ class Menu extends Component {
     );
   }
 }
+
+*/
 
 export default Menu;
