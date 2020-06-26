@@ -4,17 +4,13 @@ import { Navbar, Nav, NavDropdown, Badge } from 'react-bootstrap';
 // import classes from "./Menu.module.css";
 
 class Menu extends Component {
-  state = {
-    loggedInAsUser: false,
-    loggedInAsUploader: false,
-    userName: 'Testuser One',
-  };3000
+
 
   /*
   Show Link to Login/Register if user is not logged in
   */
   renderLoginSignup() {
-    if (!this.state.loggedInAsUser && !this.state.loggedInAsUploader) {
+    if (!this.props.loggedInAsUser && !this.props.loggedInAsUploader) {
       return <Nav.Link href='/login'>Login/Signup</Nav.Link>;
     }
   }
@@ -23,11 +19,11 @@ class Menu extends Component {
   Show User's Menu if user or uploader is logged in
   */
   renderUserMenu() {
-    if (this.state.loggedInAsUser || this.state.loggedInAsUploader) {
+    if (this.props.loggedInAsUser || this.props.loggedInAsUploader) {
       return (
         <NavDropdown
           alignRight
-          title={this.state.userName}
+          title={this.props.userName}
           id='collasible-nav-dropdown'
         >
           <NavDropdown.Item href=''>User Profile</NavDropdown.Item>
@@ -35,7 +31,7 @@ class Menu extends Component {
           <NavDropdown.Divider />
           <NavDropdown.Item hrerf=''>Delete Account</NavDropdown.Item>
           <NavDropdown.Divider />
-          <NavDropdown.Item hrerf=''>Logout</NavDropdown.Item>
+          <NavDropdown.Item hrerf='' onClick={this.props.logout}>Logout</NavDropdown.Item>
         </NavDropdown>
       );
     }
@@ -45,7 +41,7 @@ class Menu extends Component {
   Show Upload Link if uploader is logged in
   */
   renderLoggedInAsUploader() {
-    if (this.state.loggedInAsUploader) {
+    if (this.props.loggedInAsUploader) {
       return <Nav.Link href=''>Upload new Pictures</Nav.Link>;
     }
   }
@@ -54,7 +50,7 @@ class Menu extends Component {
   Show dropdown menu with last uploaded pictures, last labeled pictures and most active users
   */
   renderShowCurrentActivities() {
-    if (this.state.loggedInAsUser || this.state.loggedInAsUploader) {
+    if (this.props.loggedInAsUser || this.props.loggedInAsUploader) {
       return (
         <NavDropdown title='Latest activities' id='collasible-nav-dropdown'>
           <NavDropdown.Item href=''>Last uploaded pictures</NavDropdown.Item>
@@ -69,7 +65,7 @@ class Menu extends Component {
   TODO: Connect to backend to enable appearing only when user achieves a new goal/achievement
   */
   renderShowPopupNewAchievement() {
-    if (this.state.loggedInAsUser || this.state.loggedInAsUploader) {
+    if (this.props.loggedInAsUser || this.props.loggedInAsUploader) {
       return <PopupNewAchievement />;
     }
   }
@@ -81,10 +77,10 @@ class Menu extends Component {
         <Navbar.Toggle aria-controls='responsive-navbar-nav' />
         <Navbar.Collapse id='responsive-navbar-nav'>
           <Nav className='mr-auto'>
-            {this.renderLoginSignup()} {this.renderShowCurrentActivities()}
+            {this.renderLoginSignup()} 
+            {this.renderShowCurrentActivities()}
             {this.renderLoggedInAsUploader()}
           </Nav>
-          {this.renderShowPopupNewAchievement()}
           <Nav>{this.renderUserMenu()}</Nav>
         </Navbar.Collapse>
       </Navbar>

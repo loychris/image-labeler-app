@@ -75,7 +75,11 @@ function App()  {
         }}>
         <Router>
           <div className="App">
-            <Menu logout={logout}/>
+            <Menu 
+              logout={logout}
+              loggedIn={!!token}
+              loggedInAsUser={!!token}
+              loggedInAsUploader={!!token}/>
             <Route path= '/imageQueue'>
               <ImageQueue token={token} category={currentCategory}/>
             </Route>
