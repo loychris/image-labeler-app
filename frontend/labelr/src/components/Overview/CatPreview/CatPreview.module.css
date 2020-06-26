@@ -1,19 +1,19 @@
 .catPreview {
-    margin: 60px;
     background-color: white;
-    width: 250px;
-    height: 250px;
+    width: 200px;
+    height: 200px;
     display: block;
     border-radius: 12%;
     box-shadow: 5px 5px 15px rgb(0,0,0,0.9);
     transition: 0.5s ease;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .catPreview:hover {
     transform: scale(1.05);
     box-shadow: 5px 5px 15px rgba(0,0,0,0.6);
 }
-
 
 
 

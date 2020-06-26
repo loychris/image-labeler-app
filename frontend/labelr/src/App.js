@@ -13,6 +13,7 @@ import Menu from './components/Menu/Menu';
 import Overview from './components/Overview/Overview';
 import ImageQueue from './components/ImageQueue/ImageQueue';
 import UploadForm from './components/UploadForm/UploadForm';
+import Achievements from './components/Achievements/Achievements';
 
 
 function App()  {
@@ -21,7 +22,6 @@ function App()  {
  //   const [token, setToken] = useState(null); 
     const [userId, setUserId] = useState(false);
     const [currentCategory, setCurrentCategory] = useState('');
-
 
     const login = useCallback((uid, token) => {
       setToken(token);
@@ -46,11 +46,14 @@ function App()  {
             <UploadForm token={token}/>
           </Route>
           <Redirect to="/" />
+          <Route
+            exact
+            path='/achievements'
+            component={Achievements}/>
         </Switch>
     }else {
       routes = 
         <Switch>
-
           <Route exact path='/uploadForm'>
             <UploadForm token={token}/>
           </Route>
@@ -82,8 +85,7 @@ function App()  {
             {routes}
           </div>
         </Router>
-        
-      </AuthContext.Provider>
+              </AuthContext.Provider>
     );
 }
 

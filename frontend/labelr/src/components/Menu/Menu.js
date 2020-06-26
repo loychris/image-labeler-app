@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import classes from './Menu.module.css';
 import AuthButton from './AuthButton/AuthButton';
 
+
 class Menu extends Component {
 
     render() {
