@@ -68,6 +68,7 @@
 
 .form label {
     margin-top: 15px;
+    margin-bottom: 0px; 
     display: block;
 }
 

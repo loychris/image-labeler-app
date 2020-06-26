@@ -18,20 +18,20 @@ import Achievements from './components/Achievements/Achievements';
 
 function App()  {
 
-    const [token, setToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWY0NDc4ODViOWI2NjRiYWQ3OWRjZTIiLCJpYXQiOjE1OTMwNjc0MDB9.n_v6Z3orkod6S7UgDS0t9sjeQhrgb6JctbVvTr3bMpk");
- //   const [token, setToken] = useState(null); 
-    const [userId, setUserId] = useState(false);
+    //const [token, setToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWY0NDc4ODViOWI2NjRiYWQ3OWRjZTIiLCJpYXQiOjE1OTMwNjc0MDB9.n_v6Z3orkod6S7UgDS0t9sjeQhrgb6JctbVvTr3bMpk");
+    const [token, setToken] = useState(null); 
+    const [user, setUser] = useState(false);
     const [currentCategory, setCurrentCategory] = useState('');
 
-    const login = useCallback((uid, token) => {
+    const login = useCallback((user, token) => {
       setToken(token);
-      setUserId(uid);
+      setUser(user);
     }, []);
   
     const logout = useCallback(() => {
       console.log('Logging out');
       setToken(null);
-      setUserId(null);
+      setUser(null);
     }, []);
 
     let routes;

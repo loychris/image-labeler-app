@@ -11,7 +11,7 @@ import classes from './Auth.module.css';
 import AuthTab from './AuthTab/AuthTab';
 
 
-function Login(props) {
+function Auth(props) {
 
     const auth = useContext(AuthContext);
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -47,65 +47,46 @@ function Login(props) {
     }
 
     const handleLogin = async (values, { setSubmitting }) => {
-        console.log('/////////// SUBMITTING', values);
+        console.log('/////////// SUBMITTING', values)
         setSubmitting(false);
-        
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        const raw = JSON.stringify({
-            email: values.email.value,
-            password: values.password.value
-        });
-
-        const requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-        };
-
-        fetch("http://localhost:3000/users/login", requestOptions)
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
-
-        // const responseData = await sendRequest(
-        //     'http://localhost:3000/users/login',
-        //     'POST',
-        //     JSON.stringify({
-        //     email: values.email.value,
-        //     password: values.password.value,
-        //     isUploader: userType === 'Uploader'
-        //     }),
-        //     {
-        //     'Content-Type': 'application/json'
-        //     }
-        // );
-        // console.log('////////////', responseData);
-        // props.login(responseData.user.id, responseData.token);
-        // auth.login(responseData.user.id, responseData.token);
-        
+        const body = JSON.stringify({
+            email: values.email,
+            password: values.password,
+        })
+        console.log(body);
+        const responseData = await sendRequest(
+            'http://127.0.0.1:3000/users/login',
+            'POST',
+            body,
+            {
+            'Content-Type': 'application/json'
+            }
+        );
+        console.log(responseData);
+        auth.login(responseData.user.id, responseData.token);
     }
 
     const handleSignup = async (values, { setSubmitting }) => {
         console.log('/////////// SUBMITTING', values)
         setSubmitting(false);
-        const responseData = await sendRequest(
-            'http://localhost:3000/api/users',
-            'POST',
-            JSON.stringify({
-            name: values.username.value,
-            email: values.email.value,
-            password: values.password.value,
+        const body = JSON.stringify({
+            name: values.username,
+            email: values.email,
+            password: values.password,
             isUploader: userType === 'Uploader'
-            }),
+        })
+        console.log(body);
+        const responseData = await sendRequest(
+            'http://127.0.0.1:3000/users',
+            'POST',
+            body,
             {
             'Content-Type': 'application/json'
             }
         );
         auth.login(responseData.user.id, responseData.token);
     }
+
 
     const validateLogin = values => {
         const errors = {};
@@ -240,7 +221,7 @@ function Login(props) {
                         name="password"
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values.password}
+                        value={values.passw3000ord}
                     /><br/>
                     <span className={classes.invalidMessage}>
                         {errors.password && touched.password && errors.password}<br/>
@@ -288,4 +269,4 @@ function Login(props) {
     )
 }
 
-export default Login;
+export default Auth;

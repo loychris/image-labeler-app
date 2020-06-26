@@ -8,7 +8,7 @@ class Menu extends Component {
     loggedInAsUser: false,
     loggedInAsUploader: false,
     userName: 'Testuser One',
-  };
+  };3000
 
   /*
   Show Link to Login/Register if user is not logged in
@@ -93,3 +93,4 @@ class Menu extends Component {
 }
 
 export default Menu;
+
