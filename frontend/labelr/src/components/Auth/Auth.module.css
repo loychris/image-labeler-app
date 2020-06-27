@@ -12,10 +12,12 @@
     z-index: 100;
     padding: 20px; 
     text-align: center;
+    transition: 0.4s ease;
 }
 
 .hidden{
-    transform: translate3d(0, -100vh, 0);
+    transform: translate3d(-50%, -200vh, 0);
+    opacity: 0;
 }
 
 .loginSignup, .userOptions {

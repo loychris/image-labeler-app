@@ -241,8 +241,8 @@ function Auth(props) {
     let inputs = currentForm === 'login' ? getLoginForm() : getSignupForm();
     return(    
         <div>
-            <div className={classes.backDrop}></div>
-            <div className={classes.login}>
+            {props.loggedIn ? null: <div className={classes.backDrop}></div>}
+            <div className={`${classes.login} ${props.loggedIn ? classes.hidden : ''}`}>
                 <div className={classes.userOptions}>
                     <AuthTab 
                         active={userType === 'User'}

@@ -57,9 +57,7 @@ function App()  {
           <Route exact path='/uploadForm'>
             <UploadForm token={token}/>
           </Route>
-          <Route exact path='/login'>
-              <Auth token={token} login={login}/>
-          </Route>
+
           <Redirect to="/login" />
         </Switch>
     }
@@ -87,6 +85,7 @@ function App()  {
               <Overview token={token}/>
             </Route>
             {routes}
+              <Auth loggedIn={!!token} login={login}/>
           </div>
         </Router>
               </AuthContext.Provider>
