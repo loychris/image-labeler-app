@@ -1,17 +1,6 @@
-.main{
-    max-width: 1200px; 
-    height: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #f5f5f5;
-    padding-top: 50px; 
-    padding-left: 50px; 
-    padding-right: 50px; 
-}
 
 .dropzone {
     height: 200px; 
-    width: 100%;
     background-color: #e4e4e4;
     outline: 2px dashed black;
     outline-offset: -10px;
@@ -60,7 +49,7 @@
     bottom: 30px; 
     right: 30px;
     color: #ffffff;
-    background: #413E4D;
+    background: #343a40;
     box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
     cursor: pointer; 

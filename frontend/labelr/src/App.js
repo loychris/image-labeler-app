@@ -14,14 +14,12 @@ import Overview from './components/Overview/Overview';
 import ImageQueue from './components/ImageQueue/ImageQueue';
 import UploadForm from './components/UploadForm/UploadForm';
 import Achievements from './components/Achievements/Achievements';
-
+import Highscore from './components/Highscore/Highscore';
+import UploaderHome from './components/UploaderHome/UploaderHome';
 
 function App()  {
-
-    //const [token, setToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWY0NDc4ODViOWI2NjRiYWQ3OWRjZTIiLCJpYXQiOjE1OTMwNjc0MDB9.n_v6Z3orkod6S7UgDS0t9sjeQhrgb6JctbVvTr3bMpk");
     const [token, setToken] = useState(null); 
     const [user, setUser] = useState(false);
-    const [currentCategory, setCurrentCategory] = useState('');
 
     const login = useCallback((user, token) => {
       setToken(token);
@@ -34,32 +32,53 @@ function App()  {
       setUser(null);
     }, []);
 
+
     let routes;
+    let uploaderComponents;
+    let homePage;
+
+    
 
     if(token){
-      routes = 
+      if(user.isUploader){
+        routes = 
         <Switch>
-          <Route exact path= '/imageQueue'>
-            <ImageQueue token={token} category={currentCategory}/>
-          </Route>
-          <Route exact path='/uploadForm'>
-            <UploadForm token={token}/>
-          </Route>
-          <Redirect to="/" />
-          <Route
-            exact
-            path='/achievements'
-            component={Achievements}/>
-        </Switch>
-    }else {
-      routes = 
-        <Switch>
-          <Route exact path='/uploadForm'>
-            <UploadForm token={token}/>
-          </Route>
+          <Route exact path= '/imageQueue/:category'
+            component={ImageQueue}
+          />
+          <Route exact path='/highscore'
+            component={Highscore}
+          />
+          <Route exact path='/achievements'
+            component={Achievements}
+          />
 
-          <Redirect to="/login" />
+          <Route exact path='/uploadForm' 
+            component={UploadForm}
+          />
+          <Route exact path='/uploaderHome'
+            component={UploaderHome}
+          />
+          <Route exact path='/categories'
+            component={Overview}/>
+          <Redirect to="/" />
         </Switch>
+      }else {
+        routes = 
+        <Switch>
+          <Route exact path= '/imageQueue/:category'
+            component={ImageQueue}
+          />
+          <Route exact path='highscore'
+            component={Highscore}
+          />
+          <Route exact path='/achievements'
+            component={Achievements}
+          />
+        </Switch>
+      }
+    }else{
+      routes = <Redirect to='/login'/>
     }
 
 
@@ -74,21 +93,20 @@ function App()  {
         <Router>
           <div className="App">
             <Menu 
-              logout={logout}
-              loggedIn={!!token}
-              loggedInAsUser={!!token}
-              loggedInAsUploader={!!token}/>
-            <Route path= '/imageQueue'>
-              <ImageQueue token={token} category={currentCategory}/>
-            </Route>
-            <Route exact path={['/', '/login']}>
-              <Overview token={token}/>
-            </Route>
+              logout={logout}       // function to be called when loggin out 
+              loggedIn={!!token}    // true if logged in
+              isUploader={user ? user.isUploader : false} // true, if logged in as uploader
+            />
+            <Route exact path={['/', '/login']} 
+              component={user && user.isUploader ? UploaderHome : Overview}
+            />
             {routes}
-              <Auth loggedIn={!!token} login={login}/>
+            <Route exact path={['/login']} 
+              component={() => <Auth loggedIn={!!token} login={login}/>}
+            />
           </div>
         </Router>
-              </AuthContext.Provider>
+      </AuthContext.Provider>
     );
 }
 

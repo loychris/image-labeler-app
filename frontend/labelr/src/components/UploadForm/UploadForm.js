@@ -44,8 +44,9 @@ function  UploadForm() {
       }
 
     return(
-        <div className={classes.main}>
+        <main className={classes.main}>
             <h1>Upload your Images</h1>
+            <hr/>
             <form className={classes.uploadForm}>
                 <label>Category name:</label>
                 <input type='text'/>
@@ -81,7 +82,7 @@ function  UploadForm() {
                     <button type='submit' onClick={onStartUpload}>Start the upload</button>
                 </div>
             </form>
-        </div >
+        </main >
     )
 }
 

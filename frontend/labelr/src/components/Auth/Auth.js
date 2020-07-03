@@ -47,13 +47,11 @@ function Auth(props) {
     }
 
     const handleLogin = async (values, { setSubmitting }) => {
-        console.log('/////////// SUBMITTING', values)
         setSubmitting(false);
         const body = JSON.stringify({
             email: values.email,
             password: values.password,
         })
-        console.log(body);
         const responseData = await sendRequest(
             'http://127.0.0.1:3000/users/login',
             'POST',
@@ -62,12 +60,10 @@ function Auth(props) {
             'Content-Type': 'application/json'
             }
         );
-        console.log(responseData);
-        auth.login(responseData.user.id, responseData.token);
+        auth.login(responseData.user, responseData.token);
     }
 
     const handleSignup = async (values, { setSubmitting }) => {
-        console.log('/////////// SUBMITTING', values)
         setSubmitting(false);
         const body = JSON.stringify({
             name: values.username,
@@ -75,7 +71,6 @@ function Auth(props) {
             password: values.password,
             isUploader: userType === 'Uploader'
         })
-        console.log(body);
         const responseData = await sendRequest(
             'http://127.0.0.1:3000/users',
             'POST',
@@ -84,7 +79,9 @@ function Auth(props) {
             'Content-Type': 'application/json'
             }
         );
-        auth.login(responseData.user.id, responseData.token);
+        console.log("__________________________")
+        console.log(responseData);
+        auth.login(responseData.user, responseData.token);
     }
 
 
