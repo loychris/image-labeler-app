@@ -13,7 +13,7 @@ class CatPreview extends Component {
             <Link to={'imageQueue/' + this.props.name}>
                 <div className={classes.catPreview}>
                     <div className={classes.thumbnail}>
-                        <img src={this.props.src} alt={this.props.name} />
+                        <img className={classes.Img} src={this.props.src} alt={this.props.name} />
                         <span className={classes.caption}>{this.props.name}</span>
                     </div>
                 </div>

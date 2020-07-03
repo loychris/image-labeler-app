@@ -2,11 +2,20 @@
     height: 100%;
 }
 
-.overview {
-    width: 100%;
+
+
+.Flex {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%; 
 }
 
-.contentWrapper {
+.overview a {
+    text-decoration: none;
+}
+
+/* .contentWrapper {
     height: 100%;
     width: 100%;
     display: flex;
@@ -30,9 +39,7 @@
     padding-top: 50px;
 }
 
-a {
-    text-decoration: none;
-}
+
 
 .column{
     max-width: 20% !important;
@@ -45,4 +52,4 @@ a {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-}
+} */

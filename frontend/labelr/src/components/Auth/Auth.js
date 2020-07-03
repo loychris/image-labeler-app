@@ -79,7 +79,9 @@ function Auth(props) {
             'Content-Type': 'application/json'
             }
         );
-        auth.login(responseData.user.id, responseData.token);
+        console.log("__________________________")
+        console.log(responseData);
+        auth.login(responseData.user, responseData.token);
     }
 
 
