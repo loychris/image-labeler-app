@@ -17,13 +17,14 @@ import Achievements from './components/Achievements/Achievements';
 
 
 function App()  {
-
-    //const [token, setToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWY0NDc4ODViOWI2NjRiYWQ3OWRjZTIiLCJpYXQiOjE1OTMwNjc0MDB9.n_v6Z3orkod6S7UgDS0t9sjeQhrgb6JctbVvTr3bMpk");
     const [token, setToken] = useState(null); 
     const [user, setUser] = useState(false);
     const [currentCategory, setCurrentCategory] = useState('');
 
     const login = useCallback((user, token) => {
+      console.log(`Logging in 
+        /////////// User ${user}, 
+        /////////// token: ${token}`);
       setToken(token);
       setUser(user);
     }, []);
@@ -39,9 +40,11 @@ function App()  {
     if(token){
       routes = 
         <Switch>
-          <Route exact path= '/imageQueue'>
-            <ImageQueue token={token} category={currentCategory}/>
-          </Route>
+          <Route 
+            exact 
+            path= '/imageQueue/:category'
+            component={ImageQueue}
+          />
           <Route exact path='/uploadForm'>
             <UploadForm token={token}/>
           </Route>
@@ -74,13 +77,10 @@ function App()  {
         <Router>
           <div className="App">
             <Menu 
-              logout={logout}
-              loggedIn={!!token}
-              loggedInAsUser={!!token}
-              loggedInAsUploader={!!token}/>
-            <Route path= '/imageQueue'>
-              <ImageQueue token={token} category={currentCategory}/>
-            </Route>
+              logout={logout}       // function to be called when loggin out 
+              loggedIn={!!token}    // true if logged in
+              isUploader={user ? user.isUploader : false} // true, if logged in as uploader
+            />
             <Route exact path={['/', '/login']}>
               <Overview token={token}/>
             </Route>
@@ -88,7 +88,7 @@ function App()  {
               <Auth loggedIn={!!token} login={login}/>
           </div>
         </Router>
-              </AuthContext.Provider>
+      </AuthContext.Provider>
     );
 }
 

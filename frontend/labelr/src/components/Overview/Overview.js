@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Col } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 
 import CatPreview from './CatPreview/CatPreview';
 
@@ -63,9 +62,7 @@ class Overview extends Component {
         const catPreviews = this.state.categories.map(c => {
             return (
                 <Col className={classes.column} xs={4} md={3} key={c.name} align={"center"}>
-                    <Link to={`imageQueue/${c.name}`}>
-                        <CatPreview {...c} setCategory={this.props.setCategory} />
-                    </Link>
+                    <CatPreview {...c} />
                 </Col>
             )
         })
