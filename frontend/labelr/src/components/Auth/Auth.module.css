@@ -11,14 +11,13 @@
     box-shadow: 0px 5px 50px #000000;
     z-index: 100;
     padding: 20px; 
-}
-
-.login > input[type=submit] {
-    background-color: red;
+    text-align: center;
+    transition: 0.4s ease;
 }
 
 .hidden{
-    transform: translate3d(0, -100vh, 0);
+    transform: translate3d(-50%, -200vh, 0);
+    opacity: 0;
 }
 
 .loginSignup, .userOptions {
@@ -40,7 +39,7 @@
     z-index: 90;
 }
 
-input[type=submit]{
+.form button[type=submit]{
     position: absolute;
     bottom: 30px; 
     right: 30px;
@@ -58,22 +57,29 @@ input[type=submit]{
     padding-top: 25px; 
 }
 
-.form input[type=text]{
+.form input[type=text], .form input[type=password], .form input[type=email]{
     height: 40px;
     font-size: 15pt; 
     padding: 3px 15px;
     border: none;
     border-radius: 10px;
     box-shadow: 0px 3px 5px rgb(0,0,0,0.5);
-    margin-bottom: 15px;
+    margin-bottom: 4px;
     margin-top: 5px; 
 }
 
 .form label {
-    margin-top: 20px; 
-    text-align: left;
+    margin-top: 15px;
+    margin-bottom: 0px; 
+    display: block;
 }
 
 .form h3 {
     font-size: 20pt;
+}
+
+.invalidMessage {
+    color: red; 
+    font-size: 10pt;
+    display: block;
 }

@@ -1,43 +1,37 @@
-import React, { Component } from "react";
-import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+import React, { Component } from 'react';
+import PopupNewAchievement from '../Popup/PopupNewAchievement';
+import { Navbar, Nav, NavDropdown, Badge } from 'react-bootstrap';
 // import classes from "./Menu.module.css";
 
 class Menu extends Component {
-  
-  state = {
-    loggedInAsUser: false,
-    loggedInAsUploader: true,
-    userName: "Testuser One",
-  };
 
 
   /*
   Show Link to Login/Register if user is not logged in
   */
-  renderLoginSignup = () =>  {
-    if (!this.state.loggedInAsUser && !this.state.loggedInAsUploader) {
-      return <Nav.Link href="/login">Login/Signup</Nav.Link>;
+  renderLoginSignup() {
+    if (!this.props.loggedInAsUser && !this.props.loggedInAsUploader) {
+      return <Nav.Link href='/login'>Login/Signup</Nav.Link>;
     }
   }
-
 
   /*
   Show User's Menu if user or uploader is logged in
   */
   renderUserMenu() {
-    if (this.state.loggedInAsUser || this.state.loggedInAsUploader) {
+    if (this.props.loggedInAsUser || this.props.loggedInAsUploader) {
       return (
         <NavDropdown
           alignRight
-          title={this.state.userName}
-          id="collasible-nav-dropdown"
+          title={this.props.userName}
+          id='collasible-nav-dropdown'
         >
-          <NavDropdown.Item href="">User Profile</NavDropdown.Item>
-          <NavDropdown.Item href="">Achievements</NavDropdown.Item>
+          <NavDropdown.Item href=''>User Profile</NavDropdown.Item>
+          <NavDropdown.Item href=''>Achievements</NavDropdown.Item>
           <NavDropdown.Divider />
-          <NavDropdown.Item hrerf="">Delete Account</NavDropdown.Item>
+          <NavDropdown.Item hrerf=''>Delete Account</NavDropdown.Item>
           <NavDropdown.Divider />
-          <NavDropdown.Item hrerf="">Logout</NavDropdown.Item>
+          <NavDropdown.Item hrerf='' onClick={this.props.logout}>Logout</NavDropdown.Item>
         </NavDropdown>
       );
     }
@@ -46,35 +40,43 @@ class Menu extends Component {
   /*
   Show Upload Link if uploader is logged in
   */
-  renderLoggedInAsUploader = () => {
-    if (this.state.loggedInAsUploader) {
-      return (<Nav.Link href="/uploadForm">Upload new Pictures</Nav.Link>)
+  renderLoggedInAsUploader() {
+    if (this.props.loggedInAsUploader) {
+      return <Nav.Link href=''>Upload new Pictures</Nav.Link>;
     }
   }
 
   /*
   Show dropdown menu with last uploaded pictures, last labeled pictures and most active users
   */
-  renderShowCurrentActivities = () => {
-    if (this.state.loggedInAsUser || this.state.loggedInAsUploader) {
+  renderShowCurrentActivities() {
+    if (this.props.loggedInAsUser || this.props.loggedInAsUploader) {
       return (
-        <NavDropdown title="Latest activities" id="collasible-nav-dropdown">
-          <NavDropdown.Item href="">Last uploaded pictures</NavDropdown.Item>
-          <NavDropdown.Item href="">Last labeled pictures</NavDropdown.Item>
-          <NavDropdown.Item hrerf="">Most active users</NavDropdown.Item>
+        <NavDropdown title='Latest activities' id='collasible-nav-dropdown'>
+          <NavDropdown.Item href=''>Last uploaded pictures</NavDropdown.Item>
+          <NavDropdown.Item href=''>Last labeled pictures</NavDropdown.Item>
+          <NavDropdown.Item hrerf=''>Most active users</NavDropdown.Item>
         </NavDropdown>
       );
     }
   }
 
- 
-    render(){
+  /*
+  TODO: Connect to backend to enable appearing only when user achieves a new goal/achievement
+  */
+  renderShowPopupNewAchievement() {
+    if (this.props.loggedInAsUser || this.props.loggedInAsUploader) {
+      return <PopupNewAchievement />;
+    }
+  }
+
+  render() {
     return (
-      <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark">
-        <Navbar.Brand href="/">Labelr</Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="mr-auto">
+      <Navbar collapseOnSelect expand='sm' bg='dark' variant='dark'>
+        <Navbar.Brand href='/'>Labelr</Navbar.Brand>
+        <Navbar.Toggle aria-controls='responsive-navbar-nav' />
+        <Navbar.Collapse id='responsive-navbar-nav'>
+          <Nav className='mr-auto'>
             {this.renderLoginSignup()} 
             {this.renderShowCurrentActivities()}
             {this.renderLoggedInAsUploader()}
@@ -86,6 +88,5 @@ class Menu extends Component {
   }
 }
 
-
-
 export default Menu;
+

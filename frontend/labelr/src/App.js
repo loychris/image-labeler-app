@@ -12,59 +12,56 @@ import Auth from './components/Auth/Auth';
 import Menu from './components/Menu/Menu';
 import Overview from './components/Overview/Overview';
 import ImageQueue from './components/ImageQueue/ImageQueue';
-// import UploadForm from './components/';
+import UploadForm from './components/UploadForm/UploadForm';
 import Achievements from './components/Achievements/Achievements';
-
 
 
 function App()  {
 
-
-    const [token, setToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWY0MDI5ZWIxY2Q0YTdkNDQxZGI0NTYiLCJpYXQiOjE1OTMwNDk3NTh9.skKvmVRYbUW71o7dq28u0JszqJ6iwBHxOLdd8F61yZ4");
-    const [userId, setUserId] = useState(false);
+    //const [token, setToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWY0NDc4ODViOWI2NjRiYWQ3OWRjZTIiLCJpYXQiOjE1OTMwNjc0MDB9.n_v6Z3orkod6S7UgDS0t9sjeQhrgb6JctbVvTr3bMpk");
+    const [token, setToken] = useState(null); 
+    const [user, setUser] = useState(false);
     const [currentCategory, setCurrentCategory] = useState('');
 
-
-    const login = useCallback((uid, token) => {
+    const login = useCallback((user, token) => {
       setToken(token);
-      setUserId(uid);
+      setUser(user);
     }, []);
   
     const logout = useCallback(() => {
       console.log('Logging out');
       setToken(null);
-      setUserId(null);
+      setUser(null);
     }, []);
 
-    let routes; 
+    let routes;
 
-    if (token) {
-      routes = (
+    if(token){
+      routes = 
         <Switch>
-          <Route exact path={['/', '/login']}>
-            <Overview token={token}/>
-          </Route>
           <Route exact path= '/imageQueue'>
             <ImageQueue token={token} category={currentCategory}/>
           </Route>
-          <main className='main'>
-              {/* <Route exact path='/uploadForm'>
-                <UploadForm token={token}/>
-              </Route> */}
-            </main>
-          <Redirect to="/" />
-        </Switch>
-      );
-    } else {
-      routes = (
-        <Switch>
-          <Route exact path='/login' >
-            <Auth/>
+          <Route exact path='/uploadForm'>
+            <UploadForm token={token}/>
           </Route>
-          <Redirect to="/auth" />
+          <Redirect to="/" />
+          <Route
+            exact
+            path='/achievements'
+            component={Achievements}/>
         </Switch>
-      );
+    }else {
+      routes = 
+        <Switch>
+          <Route exact path='/uploadForm'>
+            <UploadForm token={token}/>
+          </Route>
+
+          <Redirect to="/login" />
+        </Switch>
     }
+
 
     return (
       <AuthContext.Provider 
@@ -76,17 +73,22 @@ function App()  {
         }}>
         <Router>
           <div className="App">
-            <Menu logout={logout}/>
+            <Menu 
+              logout={logout}
+              loggedIn={!!token}
+              loggedInAsUser={!!token}
+              loggedInAsUploader={!!token}/>
+            <Route path= '/imageQueue'>
+              <ImageQueue token={token} category={currentCategory}/>
+            </Route>
+            <Route exact path={['/', '/login']}>
+              <Overview token={token}/>
+            </Route>
             {routes}
-            <Route
-              exact
-              path='/achievements'
-              component={Achievements}/>
-
+              <Auth loggedIn={!!token} login={login}/>
           </div>
         </Router>
-      </AuthContext.Provider>
-
+              </AuthContext.Provider>
     );
 }
 

@@ -1,0 +1,25 @@
+.authButton {
+    float: right;
+    color: lightgrey;
+        color: #ffffff;
+    display: inline-block;
+    text-align: center;
+    margin-right: 30px; 
+    text-decoration: none;
+
+
+}
+
+.authButton a {
+    color: #ffffff;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+}
+
+.authButton
+
+.authButton a:hover:not(.userLink) {
+    background-color: #f5f5f5;
+    color: #413E4D;
+}
