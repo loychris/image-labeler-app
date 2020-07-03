@@ -99,9 +99,8 @@ if sys.argv[3] == "2":
     ax.set_ylim(ymin=0)
 #ax.set_xlim(xmin=0)
 sprintweek.insert(0,"0")
-sprintweek = [item.rstrip('01234') for item in sprintweek]
 for i in range(number+1):
-    sprintweek[i] = str(i)+ "\n" + sprintweek[i]
+    sprintweek[i] = str(i)+ "\n" + sprintweek[i].capitalize().rstrip('01234')
 ax.set_xticklabels(sprintweek)
 ax.spines['left'].set_position('zero')
 ax.spines['bottom'].set_position('zero')
