@@ -69,7 +69,7 @@ function App()  {
           <Route exact path= '/imageQueue/:category'
             component={ImageQueue}
           />
-          <Route exact path='highscore'
+          <Route exact path='/highscore'
             component={Highscore}
           />
           <Route exact path='/achievements'
