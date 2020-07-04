@@ -2,8 +2,14 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const moment = require('moment');
 
 const userSchema = new mongoose.Schema({
+    isUploader:{
+        type: Boolean,
+        required: true
+    },
+
     name: {
         type: String,
         required: true,
@@ -35,8 +41,25 @@ const userSchema = new mongoose.Schema({
         }
     }],
     labeledImagesID: [{
-        type:String
-    }]
+        imageID: {type: String},
+        timestamp:{type: String}
+    }],
+    fetchedImagesID:[{
+        type: String
+    }],
+    counter: {
+        type: Number,
+        default: 0
+    },
+    achievements: [
+        {
+            achievement: {type: String},
+            date: {type: String}
+        }
+    ],
+    createdAt:{
+        timestamp: {type: String, default: moment().format().substr(0,10)}
+    }
 })
 
 userSchema.methods.generateAuthToken = async function () {
