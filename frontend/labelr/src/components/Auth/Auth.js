@@ -50,7 +50,7 @@ function Auth(props) {
         setSubmitting(false);
         const body = JSON.stringify({
             email: values.email,
-            password: values.password,
+            password: values.password
         })
         const responseData = await sendRequest(
             'http://127.0.0.1:3000/users/login',
