@@ -2,12 +2,15 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const User = require('./../../src/models/user');
 const Image = require('../../src/models/image');
+const SetOBJ = require('../../src/models/set');
 
 
 const lablerId = new mongoose.Types.ObjectId();
 const uploaderId = new mongoose.Types.ObjectId();
 const imgIdOne = new mongoose.Types.ObjectId();
 const imgIdTwo = new mongoose.Types.ObjectId();
+const setIdOne = new mongoose.Types.ObjectId();
+const setIdTwo = new mongoose.Types.ObjectId();
 
 
 const uploader = {
@@ -52,6 +55,23 @@ const imageTwo = {
     labels: [{ label: "labelTwo", votes: [true, false, true] }]
 }
 
+const setOne = {
+    _id: setIdOne,
+    owner: uploader._id,
+    label: "labelBoth",
+    imageId: [imageOne._id, imageTwo._id],
+    deadline: "09.07.2020",
+}
+
+const setTwo = {
+    _id: setIdTwo,
+    owner: uploader._id,
+    label: "labeliOne",
+    imageId: [imageOne._id],
+    deadline: "09.07.2020",
+}
+
+
 //
 
 const setupDatabase = async () => {
@@ -70,5 +90,6 @@ module.exports = {
     lablerId, labler,
     uploaderId, uploader,
     imageTwo, imageOne, imgIdOne, imgIdTwo,
+    setOne, setTwo, setIdOne, setIdTwo,
     setupDatabase
 };

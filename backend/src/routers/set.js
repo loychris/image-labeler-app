@@ -59,7 +59,7 @@ router.get('/labels', async (req,res) => {
     try {
         const sets = await SetOBJ.find()
         const labels = sets.map( set => {
-            console.log(set.label);
+            console.log(set.label);// should be taken out of final product .. i wont since this ain't mine
             return set.label
         } );
         res.status(200).send(Array.from(new Set(labels)));
