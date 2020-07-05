@@ -26,6 +26,7 @@
 }
 
 .pic {
+    margin-top: 0px; 
     border-radius: 9px; 
     width: 400px; 
 }

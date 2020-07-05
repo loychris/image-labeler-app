@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Col } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 
 import CatPreview from './CatPreview/CatPreview';
 
@@ -55,37 +54,21 @@ class Overview extends Component {
             { name: 'Lamps', route: '/cat20', src: img19 },
         ]
     }
-
-    catCount = Math.ceil((this.state.categories.length / 4));
-
-
+    
     render() {
         const catPreviews = this.state.categories.map(c => {
             return (
-                <Col className={classes.column} xs={4} md={3} key={c.name} align={"center"}>
-                    <Link to={`imageQueue/${c.name}`}>
-                        <CatPreview {...c} setCategory={this.props.setCategory} />
-                    </Link>
-                </Col>
+                    <CatPreview {...c} />
             )
         })
-
-
-
-
         return (
-            <div className={classes.wrapper}>
-                <div className={classes.overview}>
-                    <h2>Select a Categorie</h2>
+            <main>
+                <h1>Select a Categorie</h1>
+                <hr/>
+                <div className={classes.Flex}>
+                    {catPreviews}
                 </div>
-                <div className={classes.contentWrapper}>
-                    <div className={classes.content}>
-                        <div className={classes.catContent}>
-                            {catPreviews}
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </main>
         )
     }
 }
