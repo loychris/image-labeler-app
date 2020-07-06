@@ -59,7 +59,8 @@ const userSchema = new mongoose.Schema({
     ],
     createdAt:{
         timestamp: {type: String, default: moment().format().substr(0,10)}
-    }
+    },
+    imageSets:[ {type: String} ]
 })
 
 userSchema.methods.generateAuthToken = async function () {
