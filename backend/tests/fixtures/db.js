@@ -57,7 +57,7 @@ const imageTwo = {
 
 const setOne = {
     _id: setIdOne,
-    owner: uploader._id,
+    owner: uploaderId,
     label: "labelBoth",
     imageId: [imageOne._id, imageTwo._id],
     deadline: "09.07.2020",
@@ -65,7 +65,7 @@ const setOne = {
 
 const setTwo = {
     _id: setIdTwo,
-    owner: uploader._id,
+    owner: uploaderId,
     label: "labeliOne",
     imageId: [imageOne._id],
     deadline: "09.07.2020",
