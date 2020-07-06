@@ -30,8 +30,6 @@ class UploaderHome extends Component {
             <span className={classes.caption}>browse labeled image sets</span>
           </Link>
         </div>
-
-        <hr />
         {/* <Link to='/categories'>Label Images</Link>
         <Link to='/highscore'>Label Images</Link>
         <Link to='/achievements'>Achievements</Link>
