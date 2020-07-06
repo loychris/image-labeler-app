@@ -13,18 +13,26 @@ function  UploadForm() {
 
     const [images, setImages] = useState([]);
 
-    const handleOnDrop = (files, rejectedFiles) => {
-        console.log('accepted files', files);
-        console.log('rejected files', rejectedFiles);
-        setImages(files);
-        if(rejectedFiles && rejectedFiles.length > 0){
-            const currentRejectedFile = rejectedFiles[0];
-            const currentRejectedFileType = currentRejectedFile.type; 
-            const currentRejectedFileSize = currentRejectedFile.size; 
+
+    const handleOnDrop = async (acceptedFiles, rejectedFiles) => {
+        if(acceptedFiles && acceptedFiles.length > 0){
+            let imgs = [];
+            for (var i = 0; i < acceptedFiles.length; i++) { //for multiple files          
+                (function(file) {
+                    var name = file.name;
+                    var reader = new FileReader();  
+                    reader.onload = function(e) {  
+                        // get file content  
+                        var pic = e.target.result; 
+                        imgs.push(pic);
+                    }
+                    reader.readAsDataURL(file, "UTF-8");
+                })(acceptedFiles[i]);
+            }
+            setTimeout(() => {
+                setImages(imgs);
+            }, acceptedFiles.length * 20);
         }
-        ////////////////////////////////////////////////////////////////
-        /////////////////////////// TODO ///////////////////////////////
-        ////////////////////////////////////////////////////////////////
     }
 
     const onStartUpload = () => {
@@ -60,7 +68,10 @@ function  UploadForm() {
                         <section className={classes.dropzone}>
                         <div {...getRootProps()}>
                             <input {...getInputProps()} />
-                            <p className={classes.zoneText}><span className={classes.chooseFile}>Choose image files</span> or drag them here</p>
+                            <p className={classes.zoneText}>
+                                <span className={classes.chooseFile}>Choose image files</span>
+                                or drag them here
+                            </p>
                         </div>
                         </section>
                     )}
@@ -72,8 +83,8 @@ function  UploadForm() {
                         {images.map((file) => (
                         <img
                             alt="Preview"
-                            key={file.preview}
-                            src={file.preview}
+                            key={file}
+                            src={file}
                             style={previewStyle}
                         />))}
                 </Fragment>
