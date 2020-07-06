@@ -30,6 +30,7 @@ class Menu extends Component {
         >
           <NavDropdown.Item href=''>User Profile</NavDropdown.Item>
           <NavDropdown.Item >Achievements</NavDropdown.Item>
+          <NavDropdown.Item >Analytics</NavDropdown.Item>
           <NavDropdown.Divider />
           <NavDropdown.Item hrerf=''>Delete Account</NavDropdown.Item>
           <NavDropdown.Divider />
@@ -85,6 +86,7 @@ class Menu extends Component {
           </Nav>
           <Nav><NavLink to='/highscore'>Highscore</NavLink></Nav>
           <Nav><NavLink to='/achievements'>Achievements</NavLink></Nav>
+          <Nav><NavLink to='/analytics'>Analytics</NavLink></Nav>
           <Nav><NavLink to='/uploadForm'>Upload Images</NavLink></Nav>
           <Nav>{this.renderUserMenu()}</Nav>
         </Navbar.Collapse>

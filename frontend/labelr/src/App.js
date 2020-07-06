@@ -16,10 +16,11 @@ import UploadForm from './components/UploadForm/UploadForm';
 import Achievements from './components/Achievements/Achievements';
 import Highscore from './components/Highscore/Highscore';
 import UploaderHome from './components/UploaderHome/UploaderHome';
+import Analytics from './components/Analytics/Analytics';
 
 function App()  {
-    const [token, setToken] = useState(null); 
-    const [user, setUser] = useState(false);
+    const [token, setToken] = useState("asdfasdfvasdg"); 
+    const [user, setUser] = useState({isUploader : true});
 
     const login = useCallback((user, token) => {
       setToken(token);
@@ -52,7 +53,9 @@ function App()  {
           <Route exact path='/achievements'
             component={Achievements}
           />
-
+          <Route exact path='/analytics'
+            component={Analytics}
+          />
           <Route exact path='/uploadForm' 
             component={UploadForm}
           />
