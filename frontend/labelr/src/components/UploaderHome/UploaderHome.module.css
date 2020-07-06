@@ -1,24 +1,16 @@
 .Flex {
   display: flex;
   flex-wrap: wrap;
-  /* justify-content: flex-end; */
-  width: 100%;
+  max-width: 100%;
   justify-content: space-around;
-  /* align-items: center; */
-
-  /* align-items: stretch; */
-}
-
-.Icons:hover {
-  transform: scale(1.05) translate(0, -7px);
-  box-shadow: 0px 15px 13px rgba(0, 0, 0, 0.3);
 }
 
 .Icons {
   background-color: #f5f5f5;
   width: 45%;
-  height: 350px;
+  height: auto;
   display: block;
+  flex-wrap: wrap;
   border-radius: 10px;
   border: 1px solid #f3f3f3;
   box-shadow: 0px 10px 10px rgb(0, 0, 0, 0.3);
@@ -26,9 +18,16 @@
   margin: 30px;
 }
 
-/* .wrapper {
-  height: 100%;
-} */
+.Icons:hover {
+  transform: scale(1.05) translate(0, -7px);
+  box-shadow: 0px 15px 13px rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+}
+
+.Images {
+  max-height: 100%;
+  width: auto;
+}
 
 .caption {
   color: black;
