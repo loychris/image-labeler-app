@@ -11,10 +11,10 @@ router.get('/', async (req, res) => {
 
     try {
         const users = await User.find();
-        if (!users) { res.status(404).send() }
+        if (!users) { res.status(404).send("no users found in database!") }
         res.status(200).send(users)
     } catch (e) {
-        res.status(500).send()
+        res.status(500).send("server error on ' GET('/') '")
     }
 })
 
@@ -22,9 +22,10 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.params.id });
-        if (!user) {  res.status(404).send("User was not found"); }
+        if (!user) { res.status(404).send("User was not found"); }
         res.status(200).send(user);
     } catch (e) {
+        res.status(500).send("server error")
     }
 })
 
@@ -40,15 +41,15 @@ router.get('/highscores/:n', async (req, res) => {
 
     try {
         let users = await User.find().sort({ counter: -1 });
-        if (!users) { res.status(400).send('no users found'); }
+        if (!users) { res.status(404).send('no users found'); }
 
         if (users.length > n) { users = users.slice(0, n) }
 
-        users = users.map(user => ({_id: user._id, acheivements: user.acheivements, counter: user.counter}))
+        users = users.map(user => ({ _id: user._id, acheivements: user.acheivements, counter: user.counter }))
 
         res.status(200).send(users);
     } catch (e) {
-        res(500).send(e);
+        res(500).send({ e });
     }
 })
 
@@ -77,7 +78,7 @@ router.post('/login', async (req, res) => {
         const token = await user.generateAuthToken();
         res.status(200).send({ user, token });
     } catch (e) {
-        res.status(400).send({message: "Could not find user for email pw combination"});
+        res.status(400).send({ message: "Could not find user for email pw combination" });
     }
 })
 
@@ -90,7 +91,7 @@ router.post('/logout', auth, async (req, res) => {
         res.status(200).send({ msg: "Logout successfully" })
 
     } catch (e) {
-        res.status(500).send()
+        res.status(500).send(e)
     }
 
 })
@@ -104,7 +105,7 @@ router.post('/logoutall', auth, async (req, res) => {
         res.status(200).send({ msg: "Logout from all devices successfully, all registered tokens have been removed" })
 
     } catch (e) {
-        res.status(500).send()
+        res.status(500).send(e)
     }
 
 })
@@ -126,7 +127,7 @@ router.patch('/:id', auth, async (req, res) => {
             await user.save();
             res.status(201).send(user);
         } else {
-            res.status(400).send({ error: 'unvalid field' })
+            res.status(400).send({ error: 'invalid id' })
         }
     } catch (e) {
         res.status(500).send(e)
@@ -135,7 +136,7 @@ router.patch('/:id', auth, async (req, res) => {
 })
 
 // Clear fetchedImagesId list
-router.patch('/me/clearfetched', auth, acheivements, async (req,res) => {
+router.patch('/me/clearfetched', auth, acheivements, async (req, res) => {
     try {
         const user = req.user;
         user.fetchedImagesID = [];
