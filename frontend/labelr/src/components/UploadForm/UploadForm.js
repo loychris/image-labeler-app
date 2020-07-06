@@ -1,7 +1,7 @@
 import React, { useState, Fragment } from 'react';
 import Dropzone from 'react-dropzone'
-import ReactDropzone from "react-dropzone";
 
+import ImgPreview from './ImgPreview/ImgPreview';
 import classes from './UploadForm.module.css';
 
 
@@ -15,6 +15,7 @@ function  UploadForm() {
 
 
     const handleOnDrop = async (acceptedFiles, rejectedFiles) => {
+        console.log(acceptedFiles);
         if(acceptedFiles && acceptedFiles.length > 0){
             let imgs = [];
             for (var i = 0; i < acceptedFiles.length; i++) { //for multiple files          
@@ -22,17 +23,24 @@ function  UploadForm() {
                     var name = file.name;
                     var reader = new FileReader();  
                     reader.onload = function(e) {  
-                        // get file content  
-                        var pic = e.target.result; 
-                        imgs.push(pic);
+                        imgs.push(e.target.result);
                     }
                     reader.readAsDataURL(file, "UTF-8");
                 })(acceptedFiles[i]);
             }
             setTimeout(() => {
-                setImages(imgs);
+                const imagesNew = [];
+                for(let i = 0; i<imgs.length; i++){
+                    imagesNew.push({src: imgs[i], id: i})
+                }
+                setImages(imagesNew);
             }, acceptedFiles.length * 20);
         }
+    }
+
+    const remove = (id) => {
+        const imagesNew = images.filter(x => x.id !== id);
+        setImages(imagesNew);
     }
 
     const onStartUpload = () => {
@@ -40,12 +48,6 @@ function  UploadForm() {
         /////////////////////////// TODO ///////////////////////////////
         ////////////////////////////////////////////////////////////////
     }
-
-    const previewStyle = {
-        display: 'inline',
-        width: 100,
-        height: 100,
-      };
 
     const  onPreviewDrop = (files) => {
         setImages(images.concat(files))
@@ -58,37 +60,33 @@ function  UploadForm() {
             <form className={classes.uploadForm}>
                 <label>Category name:</label>
                 <input type='text'/>
-
-
+                <div className={classes.Previews}>
+                    {
+                        images.length > 0 ? 
+                            images.map((img) => (
+                                <ImgPreview src={img.src} remove={() => remove(img.id)} key={img.id}/>
+                            ))
+                            : null
+                    }
+                </div> 
                 <Dropzone 
                     onDrop={handleOnDrop}
                     maxSize={imageMaxSize}
                     accept='image/*'>
                     {({getRootProps, getInputProps}) => (
-                        <section className={classes.dropzone}>
                         <div {...getRootProps()}>
                             <input {...getInputProps()} />
-                            <p className={classes.zoneText}>
-                                <span className={classes.chooseFile}>Choose image files</span>
-                                or drag them here
-                            </p>
+                            <section className={classes.dropzone}>
+                                <p className={classes.zoneText}>
+                                    <span className={classes.chooseFile}>Choose image files</span>
+                                    or drag them here
+                                </p>
+                            </section>
                         </div>
-                        </section>
                     )}
                 </Dropzone>
-                {
-                    images.length > 0 &&
-                    <Fragment>
-                        <h3>Previews</h3>
-                        {images.map((file) => (
-                        <img
-                            alt="Preview"
-                            key={file}
-                            src={file}
-                            style={previewStyle}
-                        />))}
-                </Fragment>
-                }
+
+
                 <div className={classes.buttonContainer}>
                     <button type='submit' onClick={onStartUpload}>Start the upload</button>
                 </div>

@@ -63,3 +63,10 @@
     display: block; 
     min-height: 150px;
 }
+
+.Previews {
+    display: flex;
+    width: 100%; 
+    flex-wrap: wrap;
+    justify-content: center; 
+}

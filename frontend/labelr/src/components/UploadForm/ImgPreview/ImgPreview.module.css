@@ -1,0 +1,38 @@
+.PreviewContainer {
+    padding: 9px; 
+    position: relative; 
+    transition: 0.2s ease;
+    cursor: pointer;
+}
+
+.X {
+    display: none;
+}
+
+.PreviewContainer:hover .X {
+    display: block;
+    position: absolute; 
+    right: 3px; 
+    top: 3px;  
+    height: 20px; 
+    width: 20px; 
+    border-radius: 10px;
+    margin: 0;
+    background-color: #ffffff;
+    cursor: pointer;
+}
+
+.PreviewContainer:hover .X:hover {
+    transform: scale(1.1);
+}
+
+.PreviewContainer img {
+    height: 100px;
+    width: 100px; 
+    border-radius: 5px; 
+    margin: 0px; 
+}
+
+.PreviewContainer:hover {
+    transform: scale(1.1);
+}

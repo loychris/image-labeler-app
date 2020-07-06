@@ -18,8 +18,28 @@ import Highscore from './components/Highscore/Highscore';
 import UploaderHome from './components/UploaderHome/UploaderHome';
 
 function App()  {
-    const [token, setToken] = useState(null); 
-    const [user, setUser] = useState(false);
+    const [token, setToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjAyZjgwMDM5MjZlZTc0MzY4NjA2NGYiLCJpYXQiOjE1OTQwMzAwODB9.bxmdfbO_Lopf6KKNm5bhtwHnY7tLmimLTuDl52ST87Y"); 
+    const [user, setUser] = useState({
+      createdAt: {
+        timestamp: '2020-07-05'
+      },
+      fetchedImagesID: [],
+      counter: 0,
+      _id: '5f02f8003926ee743686064f',
+      name: 'ChrisLoy',
+      email: '1@z.com',
+      password: '$2a$08$cpLr9RIokTLnysyB4nH6YuRWLTfy5NrzdRKFcFX11oEW4JggUPFMW',
+      isUploader: true,
+      tokens: [
+        {
+          _id: '5f02f8003926ee7436860650',
+          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjAyZjgwMDM5MjZlZTc0MzY4NjA2NGYiLCJpYXQiOjE1OTQwMzAwODB9.bxmdfbO_Lopf6KKNm5bhtwHnY7tLmimLTuDl52ST87Y'
+        }
+      ],
+      labeledImagesID: [],
+      achievements: [],
+      __v: 0
+    });
 
     const login = useCallback((user, token) => {
       setToken(token);
