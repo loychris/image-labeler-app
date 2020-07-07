@@ -22,9 +22,12 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.params.id });
+
         if (!user) {  res.status(404).send("User was not found"); }
         res.status(200).send(user);
     } catch (e) {
+        console.log(e);
+        res.status(500).send(e);
     }
 })
 
@@ -71,7 +74,7 @@ router.post('/', async (req, res) => {
 });
 
 // Log in
-router.post('/login',async (req, res) => {
+router.post('/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password);
         const token = await user.generateAuthToken();
@@ -158,6 +161,7 @@ router.delete('/:id', auth, async (req, res) => {
         res.status(500).send(e);
     }
 })
+
 
 
 module.exports = router;

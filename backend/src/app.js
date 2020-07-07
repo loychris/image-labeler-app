@@ -7,6 +7,7 @@ require("./db/mongoose");
 
 const indexRouter = require('./routers/image');
 const usersRouter = require('./routers/users');
+const setRouter = require('./routers/set');
 
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 // include routes -> routes.js
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/set', setRouter);
 
 
 app.listen(port);
