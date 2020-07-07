@@ -17,29 +17,48 @@ import Achievements from './components/Achievements/Achievements';
 import Highscore from './components/Highscore/Highscore';
 import UploaderHome from './components/UploaderHome/UploaderHome';
 
+let logoutTimer;
+
 const App = () => {
     const [token, setToken] = useState(null); 
+    const [tokenExpirationDate, setTokenExpirationDate] = useState();
     const [user, setUser] = useState(null);
 
-    const login = useCallback((user, token) => {
+    const login = useCallback((user, token, expirationDate) => {
       setToken(token);
       setUser(user);
+      const tokenExpirationDate = expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60); 
+      setTokenExpirationDate(tokenExpirationDate);
       localStorage.setItem(
         'userData',
-        JSON.stringify({userId: user, token: token})
+        JSON.stringify({
+          userId: user, 
+          token: token,
+          expiration: tokenExpirationDate.toISOString()
+        })
       )
     }, []);
   
     const logout = useCallback(() => {
       console.log('Logging out');
       setToken(null);
+      setTokenExpirationDate(null);
       setUser(null);
       localStorage.removeItem('userData')
     }, []);
 
     useEffect(() => {
+      if(token && tokenExpirationDate) {
+        const remainingTime = tokenExpirationDate.getTime() - new Date().getTime(); 
+        logoutTimer = setTimeout(logout, remainingTime);
+      } else {
+        clearTimeout(logoutTimer);
+      }
+    }, [token, logout, tokenExpirationDate])
+
+    useEffect(() => {
       const storedData = JSON.parse(localStorage.getItem('userData'));
-      if(storedData && storedData.token){
+      if(storedData && storedData.token && new Date(storedData.expiration) > new Date()){
         login(storedData.user, storedData.token)
       }
     }, [login])
