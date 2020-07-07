@@ -17,9 +17,9 @@ const upload = multer({
     }
 })
 
-
 router.get('/my', auth, async ( req, res) => {
     try {
+        console.log('my');
         const sets = await SetOBJ.find({owner:req.user._id})
         if (!sets){
             res.status(404).send({error: 'No image collection found for this user'})
@@ -68,8 +68,6 @@ router.get('/labels', async (req,res) => {
         res.status(500).send(e)
     }
 })
-
-
 
 router.post('/',auth, upload.single('image'), async ( req, res ) => {
     try {
@@ -124,8 +122,6 @@ router.post('/next/:setId', auth, async  (req, res) => {
         }
     } catch (e) { res.status(500).send(e) }
 });
-
-
 
 router.delete('/:id', async (req, res) => {
     try {

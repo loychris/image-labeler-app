@@ -14,7 +14,6 @@ const imageSchema = new mongoose.Schema({
         votes: [{ type: Boolean }]
     }],
     imageSetId: {type: String }
-
 });
 
 const Image = mongoose.model('Image', imageSchema);

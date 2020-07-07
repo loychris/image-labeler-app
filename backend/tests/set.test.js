@@ -9,7 +9,7 @@ const SetOBJ = require('../src/models/set');
 beforeEach(setupDatabase);
 
 test('should get set- One & Two', async() => {
-    const response = await request(app).get('/my')
+    const response = await request(app).get('/set/my')
         .set('Authorization', `Bearer ${uploader.tokens[0].token}`)
         .send({ user: uploader })
         .expect(200);
@@ -18,21 +18,21 @@ test('should get set- One & Two', async() => {
 })
 
 test('should get set one by id', async() => {
-    const response = await request(app).get('/' + setOne._id)
+    const response = await request(app).get(`/set/${setOne._id}`)
         .send().expect(200);
 
     expect(response.body).toEqual(setOne.toString());
 })
 
 test('should get all categories', async() => {
-    const response = await request(app).get('/')
+    const response = await request(app).get('/set')
         .send().expect(200);
 
     expect(response.body).toEqual([setOne, setTwo]);
 })
 
 test('should get al labels', async() => {
-    const response = await request(app).get('/labels')
+    const response = await request(app).get('/set/labels')
         .send().expect(200);
 
     expect(response.body).toEqual([setOne.label, setTwo.label]);//need testing .. do monday

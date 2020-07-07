@@ -45,14 +45,17 @@ const imageOne = {
     _id: imgIdOne,
     owner: uploaderId,
     data: Buffer.from("testBuffer"),
-    labels: [{ label: "labelOne", votes: [true, false, true] }]
+    labels: [{ label: "labelOne", votes: [true, false, true] }],
+    imageSetId: 1
 }
 
 const imageTwo = {
     _id: imgIdTwo,
     owner: uploaderId,
     data: Buffer.from("testBuffer"),
-    labels: [{ label: "labelTwo", votes: [true, false, true] }]
+    labels: [{ label: "labelTwo", votes: [true, false, true] }],
+    imageSetId: 2
+
 }
 
 const setOne = {
@@ -78,6 +81,9 @@ const setupDatabase = async () => {
     // Before each drop the database
     await User.deleteMany();
     await Image.deleteMany();
+    await SetOBJ.deleteMany();
+    await new SetOBJ(setOne).save();
+    await new SetOBJ(setTwo).save();
     await new User(labler).save();
     await new User(uploader).save();
     await new Image(imageOne).save();
