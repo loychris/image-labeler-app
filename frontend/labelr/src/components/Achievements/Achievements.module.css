@@ -1,9 +1,8 @@
-.wrapper {
-    height: 100%;
-}
-
-.overview {
-    width: 100%;
+.Flex {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%; 
 }
 
 .contentWrapper {

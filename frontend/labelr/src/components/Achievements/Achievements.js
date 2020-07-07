@@ -69,25 +69,16 @@ class Achievements extends Component {
 
 render() {
     const achPreviews = this.state.achievements.map(c => {
-        return (
-            <Col className={classes.column} xs={4} md={3} key={c.name} align={"center"}>
-                <AchPreview {...c} setCategory={this.props.setCategory} />
-            </Col>
-        )
+        return <AchPreview {...c} setCategory={this.props.setCategory}/>
     })
         return (
-            <div className={classes.wrapper}>
-                <div className={classes.overview}>
-                    <h2>Achievements</h2>
+            <main >
+                <h1>Your Achievements</h1>
+                <hr/>
+                <div className={classes.Flex}>
+                    {achPreviews}
                 </div>
-                <div className={classes.contentWrapper}>
-                    <div className={classes.content}>
-                        <div className={classes.achContent}>
-                            {achPreviews}
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </main>
     )
 
         }

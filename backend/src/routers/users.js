@@ -80,7 +80,7 @@ router.post('/login', async (req, res) => {
         const token = await user.generateAuthToken();
         res.status(200).send({ user, token });
     } catch (e) {
-        res.status(400).send();
+        res.status(400).send({message: "Could not find user for email pw combination"});
     }
 })
 
