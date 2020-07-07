@@ -19,11 +19,12 @@ const upload = multer({
 
 router.get('/my', auth, async ( req, res) => {
     try {
-        const sets = await SetOBJ.find({owner:req.user._id})
-        if (!sets){
+        const sets = await SetOBJ.find({owner:req.user._id});
+        if (!sets || sets.length === 0){
             res.status(404).send({error: 'No image collection found for this user'})
+        }else{
+            res.status(200).send(sets);
         }
-        res.status(200).send(sets);
     }catch(e){
         res.status(500).send(e)
     }
@@ -45,12 +46,12 @@ router.get('/labels', async (req,res) => {
 
 router.get('/:id', async ( req, res) => {
     try {
-        console.log(req.params.id);
         const set = await SetOBJ.findOne({_id:req.params.id})
-        if (!set){
+        if (!set || set.length === 0){
             res.status(404).send({error: 'No image collection found with this ID'})
+        }else {
+            res.status(200).send(set);
         }
-        res.status(200).send(set);
     }catch(e){
         res.status(500).send(e)
     }
@@ -122,7 +123,7 @@ router.post('/next/:setId', auth, async  (req, res) => {
     } catch (e) { res.status(500).send(e) }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     try {
         await SetOBJ.findOneAndDelete({_id:req.params.id})
         res.status(201).send({message: "removed"});
