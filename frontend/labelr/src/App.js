@@ -18,27 +18,32 @@ import Highscore from './components/Highscore/Highscore';
 import UploaderHome from './components/UploaderHome/UploaderHome';
 
 function App()  {
-    const [token, setToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjAyZjgwMDM5MjZlZTc0MzY4NjA2NGYiLCJpYXQiOjE1OTQwMzAwODB9.bxmdfbO_Lopf6KKNm5bhtwHnY7tLmimLTuDl52ST87Y"); 
+    const [token, setToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjAzZTU1NTlmY2MzZjEyZWI4OTBhMDQiLCJpYXQiOjE1OTQwOTA5MTN9.QWlq6UmK1puyF2i5KuKzMM_Yr56KcjTtvGit1sEDNj8"); 
     const [user, setUser] = useState({
       createdAt: {
-        timestamp: '2020-07-05'
+        timestamp: '2020-07-07'
       },
       fetchedImagesID: [],
       counter: 0,
-      _id: '5f02f8003926ee743686064f',
-      name: 'ChrisLoy',
-      email: '1@z.com',
-      password: '$2a$08$cpLr9RIokTLnysyB4nH6YuRWLTfy5NrzdRKFcFX11oEW4JggUPFMW',
-      isUploader: true,
+      imageSets: [],
+      _id: '5f03e5559fcc3f12eb890a04',
+      name: 'christoph',
+      email: 'abc@d.com',
+      password: '$2a$08$A8RXbtNLCZE3NxkWohF69ecnL3ffFkypia9tKEOlJsTtEXfJv0amK',
+      isUploader: false,
       tokens: [
         {
-          _id: '5f02f8003926ee7436860650',
-          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjAyZjgwMDM5MjZlZTc0MzY4NjA2NGYiLCJpYXQiOjE1OTQwMzAwODB9.bxmdfbO_Lopf6KKNm5bhtwHnY7tLmimLTuDl52ST87Y'
+          _id: '5f03e5559fcc3f12eb890a05',
+          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjAzZTU1NTlmY2MzZjEyZWI4OTBhMDQiLCJpYXQiOjE1OTQwOTA4Mzd9.g8WGwn9dzTyTmVgBf6SmBYXyF9Tbk-9WW4gl-YJ9PE8'
+        },
+        {
+          _id: '5f03e5a19fcc3f12eb890a06',
+          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjAzZTU1NTlmY2MzZjEyZWI4OTBhMDQiLCJpYXQiOjE1OTQwOTA5MTN9.QWlq6UmK1puyF2i5KuKzMM_Yr56KcjTtvGit1sEDNj8'
         }
       ],
       labeledImagesID: [],
       achievements: [],
-      __v: 0
+      __v: 1
     });
 
     const login = useCallback((user, token) => {
