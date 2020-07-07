@@ -19,13 +19,26 @@ const upload = multer({
 
 router.get('/my', auth, async ( req, res) => {
     try {
-        console.log('my');
         const sets = await SetOBJ.find({owner:req.user._id})
         if (!sets){
             res.status(404).send({error: 'No image collection found for this user'})
         }
         res.status(200).send(sets);
     }catch(e){
+        res.status(500).send(e)
+    }
+})
+
+router.get('/labels', async (req,res) => {
+    try {
+        const sets = await SetOBJ.find()
+        const labels = sets.map( set => {
+            //console.log(set.label);// should be taken out of final product .. i wont since this ain't mine
+            return set.label
+        } );
+        res.status(200).send(Array.from(new Set(labels)));
+    }
+    catch (e) {
         res.status(500).send(e)
     }
 })
@@ -51,20 +64,6 @@ router.get('/', async ( req, res) => {
         }
         res.status(200).send(sets);
     }catch(e){
-        res.status(500).send(e)
-    }
-})
-
-router.get('/labels', async (req,res) => {
-    try {
-        const sets = await SetOBJ.find()
-        const labels = sets.map( set => {
-            console.log(set.label);// should be taken out of final product .. i wont since this ain't mine
-            return set.label
-        } );
-        res.status(200).send(Array.from(new Set(labels)));
-    }
-    catch (e) {
         res.status(500).send(e)
     }
 })

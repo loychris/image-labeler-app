@@ -14,26 +14,26 @@ test('should get set- One & Two', async() => {
         .send({ user: uploader })
         .expect(200);
 
-    expect(response.body).toEqual([imageOne, imageTwo]);//need testing .. do monday
+    expect(response.body.toString()).toEqual([setOne,setTwo].toString());//need testing .. do monday
 })
 
 test('should get set one by id', async() => {
     const response = await request(app).get(`/set/${setOne._id}`)
         .send().expect(200);
 
-    expect(response.body).toEqual(setOne.toString());
+    expect(response.body.toString()).toEqual(setOne.toString());
 })
 
 test('should get all categories', async() => {
-    const response = await request(app).get('/set')
+    const response = await request(app).get('/set/')
         .send().expect(200);
 
-    expect(response.body).toEqual([setOne, setTwo]);
+    expect(response.body.toString()).toEqual([setOne, setTwo].toString());
 })
 
 test('should get al labels', async() => {
     const response = await request(app).get('/set/labels')
         .send().expect(200);
 
-    expect(response.body).toEqual([setOne.label, setTwo.label]);//need testing .. do monday
+    expect(response.body.toString()).toEqual([setOne.label, setTwo.label].toString());//need testing .. do monday
 })
