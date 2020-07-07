@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -17,54 +17,37 @@ import Achievements from './components/Achievements/Achievements';
 import Highscore from './components/Highscore/Highscore';
 import UploaderHome from './components/UploaderHome/UploaderHome';
 
-function App()  {
-    const [token, setToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjAzZTU1NTlmY2MzZjEyZWI4OTBhMDQiLCJpYXQiOjE1OTQwOTA5MTN9.QWlq6UmK1puyF2i5KuKzMM_Yr56KcjTtvGit1sEDNj8"); 
-    const [user, setUser] = useState({
-      createdAt: {
-        timestamp: '2020-07-07'
-      },
-      fetchedImagesID: [],
-      counter: 0,
-      imageSets: [],
-      _id: '5f03e5559fcc3f12eb890a04',
-      name: 'christoph',
-      email: 'abc@d.com',
-      password: '$2a$08$A8RXbtNLCZE3NxkWohF69ecnL3ffFkypia9tKEOlJsTtEXfJv0amK',
-      isUploader: false,
-      tokens: [
-        {
-          _id: '5f03e5559fcc3f12eb890a05',
-          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjAzZTU1NTlmY2MzZjEyZWI4OTBhMDQiLCJpYXQiOjE1OTQwOTA4Mzd9.g8WGwn9dzTyTmVgBf6SmBYXyF9Tbk-9WW4gl-YJ9PE8'
-        },
-        {
-          _id: '5f03e5a19fcc3f12eb890a06',
-          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjAzZTU1NTlmY2MzZjEyZWI4OTBhMDQiLCJpYXQiOjE1OTQwOTA5MTN9.QWlq6UmK1puyF2i5KuKzMM_Yr56KcjTtvGit1sEDNj8'
-        }
-      ],
-      labeledImagesID: [],
-      achievements: [],
-      __v: 1
-    });
+const App = () => {
+    const [token, setToken] = useState(null); 
+    const [user, setUser] = useState(null);
 
     const login = useCallback((user, token) => {
       setToken(token);
       setUser(user);
+      localStorage.setItem(
+        'userData',
+        JSON.stringify({userId: user, token: token})
+      )
     }, []);
   
     const logout = useCallback(() => {
       console.log('Logging out');
       setToken(null);
       setUser(null);
+      localStorage.removeItem('userData')
     }, []);
 
+    useEffect(() => {
+      const storedData = JSON.parse(localStorage.getItem('userData'));
+      if(storedData && storedData.token){
+        login(storedData.user, storedData.token)
+      }
+    }, [login])
 
     let routes;
-    let uploaderComponents;
-    let homePage;
 
-    
 
-    if(token){
+    if(token && user){
       if(user.isUploader){
         routes = 
         <Switch>
