@@ -44,7 +44,7 @@ router.get('/highscores/:n', async (req, res) => {
 
         if (users.length > n) { users = users.slice(0, n) }
 
-        users = users.map(user => ({_id: user._id, acheivements: user.acheivements, counter: user.counter}))
+        users = users.map(user => ({_id: user._id, name: user.name, achievements: user.achievements.length, counter: user.counter}))
 
         res.status(200).send(users);
     } catch (e) {
