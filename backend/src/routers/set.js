@@ -89,7 +89,6 @@ router.post('/',auth, upload.single('image'), async ( req, res ) => {
                 const image = await Image.findOne({_id})
                 image.imageSetId = setCompleted._id
             })
-
             res.status(201).send({ msg: 'set added successfully' });
         }
         else{
