@@ -1,9 +1,8 @@
 import React, { useState, useContext } from "react";
-import { Link } from 'react-router-dom';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik } from 'formik';
 
 import { AuthContext } from '../context/auth-context';
-import { useHttpClient } from './http-hook';
+import axios from 'axios';
 
 
 import classes from './Auth.module.css';
@@ -14,74 +13,50 @@ import AuthTab from './AuthTab/AuthTab';
 function Auth(props) {
 
     const auth = useContext(AuthContext);
-    const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    
 
-
-    const [userType, setUserType] = useState('User') // <-> 'uploader'
+    const [ loggedIn, setLoggedIn ] = useState(false);
+    const [userType, setUserType ] = useState('User') // <-> 'uploader'
     const [currentForm, setCurrentForm] = useState('login') // <-> 'signup'
-
-
-
-    const switchToUser = () => {
-        if(userType !== 'User'){
-            setUserType('User');
-        }
-    }
-
-    const switchToUploader = () => {
-        if(userType !== 'Uploader'){
-            setUserType('Uploader');
-        }
-    }
-
-    const switchToLogin = () => {
-        if(currentForm !== 'login'){
-            setCurrentForm('login');
-        }
-    }
-
-    const switchToSignup = () => {
-        if(currentForm !== 'signup'){
-            setCurrentForm('signup');
-        }
-    }
+    const [incorrectPW, setIncorrectPW] = useState(false);
 
     const handleLogin = async (values, { setSubmitting }) => {
         setSubmitting(false);
-        const body = JSON.stringify({
+
+        axios.post('/users/login', JSON.stringify({
             email: values.email,
             password: values.password
+        }), {
+            headers: { 'Content-Type': 'application/json' }
         })
-        const responseData = await sendRequest(
-            'http://127.0.0.1:3000/users/login',
-            'POST',
-            body,
-            {
-            'Content-Type': 'application/json'
+        .then(response => { 
+            auth.login(response.data.user, response.data.token);
+        })
+        .catch(error => {
+            console.log("THERE WAS AN ERROR WHILE LOGGING IN")
+            console.log(error);
+            if(error.response && error.response.status === 400 && !incorrectPW){
+                setIncorrectPW(true);
             }
-        );
-        auth.login(responseData.user, responseData.token);
+        });
     }
 
     const handleSignup = async (values, { setSubmitting }) => {
         setSubmitting(false);
-        const body = JSON.stringify({
+        axios.post('http://127.0.0.1:3000/users', JSON.stringify({
             name: values.username,
             email: values.email,
             password: values.password,
             isUploader: userType === 'Uploader'
+        }), {
+            headers: { 'Content-Type': 'application/json' }
         })
-        const responseData = await sendRequest(
-            'http://127.0.0.1:3000/users',
-            'POST',
-            body,
-            {
-            'Content-Type': 'application/json'
-            }
-        );
-        console.log("__________________________")
-        console.log(responseData);
-        auth.login(responseData.user, responseData.token);
+        .then(response => {
+            console.log(response);
+            auth.login(response.data.user, response.data.token);
+        }).catch(e => {
+            console.log(e);
+        })
     }
 
 
@@ -159,6 +134,10 @@ function Auth(props) {
                     <span className={classes.invalidMessage}>
                         {errors.password && touched.password && errors.password}<br/>
                     </span>
+                    {incorrectPW ? <span className={classes.invalidMessage}>
+                        Username or password incorrect. Please try again <br/>
+                    </span>  : null}
+                    <div onClick={() => setCurrentForm('user')}>Don't have an account? Sign up! ->  </div>                 
                     <button type="submit" disabled={isSubmitting}>
                     Login
                     </button>
@@ -222,17 +201,16 @@ function Auth(props) {
                     /><br/>
                     <span className={classes.invalidMessage}>
                         {errors.password && touched.password && errors.password}<br/>
-                    </span>                    
+                    </span>   
+                    <div onClick={() => setCurrentForm('login')}>Already have an account? Login instead -> </div>                 
                     <button type="submit" disabled={isSubmitting}>
-                    Submit
+                        Create Account
                     </button>
                 </form>
                 )}
             </Formik>
         )
     }
- 
-
 
 
     let inputs = currentForm === 'login' ? getLoginForm() : getSignupForm();
@@ -244,21 +222,11 @@ function Auth(props) {
                     <AuthTab 
                         active={userType === 'User'}
                         value={'User'} 
-                        clicked={switchToUser}/>
+                        clicked={() => setUserType('user')}/>
                     <AuthTab 
                         active={userType === 'Uploader'}
                         value={'Uploader'} 
-                        clicked={switchToUploader}/>
-                </div>
-                <div className={classes.loginSignup}>
-                    <AuthTab 
-                        active = {currentForm === 'login'} 
-                        value = {'Login'} 
-                        clicked = {switchToLogin}/>
-                    <AuthTab 
-                        active = {currentForm === 'signup'} 
-                        value = {'Signup'} 
-                        clicked = {switchToSignup}/>
+                        clicked={() => setUserType('uploader')}/>
                 </div>
                 {inputs}
             </div>
