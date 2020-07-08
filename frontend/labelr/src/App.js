@@ -85,6 +85,9 @@ const App = () => {
           <Route exact path= '/imageQueue/:category'
             component={ImageQueue}
           />
+          <Route exact path='/overview'
+            component={Overview}
+          />
           <Route exact path='/highscore'
             component={Highscore}
           />

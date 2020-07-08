@@ -9,11 +9,6 @@ class Menu extends Component {
   /*
   Show Link to Login/Register if user is not logged in
   */
-  renderLoginSignup() {
-    if (!this.props.loggedIn) {
-      return <Nav.Link href='/login'>Login/Signup</Nav.Link>;
-    }
-  }
 
   /*
   Show User's Menu if user or uploader is logged in
