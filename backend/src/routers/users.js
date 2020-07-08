@@ -11,7 +11,8 @@ router.get('/', async (req, res) => {
 
     try {
         const users = await User.find();
-        if (!users) { res.status(404).send("no users found in database!") }
+        if (!users) {return res.status(404).send("no users found in database!") }
+
         res.status(200).send(users)
     } catch (e) {
         res.status(500).send("server error on ' GET('/') '")
@@ -22,7 +23,8 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.params.id });
-        if (!user) { res.status(404).send("User was not found"); }
+        if (!user) {return res.status(404).send("User was not found"); }
+
         res.status(200).send(user);
     } catch (e) {
         res.status(500).send("server error")
@@ -41,7 +43,7 @@ router.get('/highscores/:n', async (req, res) => {
 
     try {
         let users = await User.find().sort({ counter: -1 });
-        if (!users) { res.status(404).send('no users found'); }
+        if (!users) {return res.status(404).send('no users found'); }
 
         if (users.length > n) { users = users.slice(0, n) }
 

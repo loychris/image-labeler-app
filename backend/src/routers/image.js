@@ -46,7 +46,7 @@ router.get('/images/id/:id', async (req, res) => {
   try {
 
     const image = await Image.find({ _id: req.params.id });
-    if (!image) { res.status(404).send('No image with given ID found'); }
+    if (!image) {return res.status(404).send('No image with given ID found'); }
 
     res.status(200).send(image);
 
@@ -59,9 +59,8 @@ router.get('/images/id/:id', async (req, res) => {
 router.get('/images', async (req, res) => {
   try {
     const images = await Image.find();
-    if (!images) {
-      res.status(404).send('No images found');
-    }
+    if (!images) {return res.status(404).send('No images found');}
+
     res.status(200).send(images);
   } catch (e) {
     res.status(500).send(e);
@@ -89,9 +88,9 @@ router.get('/images/next/:n', auth, async (req, res) => {
 
     images = images.map(image => !labeledImagesID.includes(image._id) && image)
 
-    if (!images) { res.status(400).send('no images found'); }
+    if (!images) {return res.status(400).send('no images found'); }
 
-    if (images.length < n) { res.status(200).send(images.slice(0, images.length)); }
+    if (images.length < n) {return res.status(200).send(images.slice(0, images.length)); }
 
     res.status(200).send(images.slice(0, n));
   } catch (e) {
@@ -112,7 +111,7 @@ router.get('/images/next', auth, async (req, res) => {
     images = images.map(image => !labeledImagesID.includes(image._id) && image);
     console.log(images);
 
-    if (!images.length) { res.status(400).send(`no image left to label`); }
+    if (!images.length) {return res.status(400).send(`no image left to label`); }
 
     res.status(200).send(images.slice(0, 1));
   } catch (e) {
@@ -171,7 +170,7 @@ router.post('/images/:id', auth, achievements, async (req, res) => {
       }
     });
 
-    if (flag) { res.status(400).send("Invalid labels"); }
+    if (flag) {return res.status(400).send("Invalid labels"); }
 
     user.counter = user.counter + 1;
     await image.save();
@@ -257,7 +256,7 @@ router.post('/images', async (req, res) => {
 
   try {
     const images = await Image.find({ "labels.label": req.body.label })
-    console.log(images);
+    console.log(images); //for debugging i guess, needs to be removed when not in use TODO
 
     res.status(200).send(images);
   } catch (e) {
