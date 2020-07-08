@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {
-  BrowserRouter as Router,
-  Route,
-  Redirect,
-  Switch
-} from 'react-router-dom';import { AuthContext } from './components/context/auth-context';
-
+import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';import { AuthContext } from './components/context/auth-context';
+import axios from 'axios';
 import './App.css';
 
 import Auth from './components/Auth/Auth';
@@ -23,7 +18,6 @@ const App = () => {
     const [token, setToken] = useState(null); 
     const [tokenExpirationDate, setTokenExpirationDate] = useState();
     const [user, setUser] = useState(null);
-    const [redirect, setRedirect] = useState(null);
 
     const login = useCallback((user, token, expirationDate) => {
       console.log('LOGGING IN');
@@ -44,13 +38,20 @@ const App = () => {
   
     const logout = useCallback(() => {
       console.log('Logging out');
+      const currentToken = JSON.parse(localStorage.getItem('userData')).token;
       localStorage.removeItem('userData')
+      axios.post(
+        '/users/logout',
+        {},
+        {
+          headers: { Authorization: `Bearer ${currentToken}` }
+        }
+      )
+      .then()
+      .catch(console.log)
       setToken(null);
       setUser(null);
       setTokenExpirationDate(null);
-      if(!redirect){
-        setRedirect('/login');
-      }
     }, []);
 
     useEffect(() => {

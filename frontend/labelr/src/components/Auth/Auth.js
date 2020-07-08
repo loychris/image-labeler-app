@@ -43,7 +43,7 @@ function Auth(props) {
 
     const handleSignup = async (values, { setSubmitting }) => {
         setSubmitting(false);
-        axios.post('http://127.0.0.1:3000/users', JSON.stringify({
+        axios.post('/users', JSON.stringify({
             name: values.username,
             email: values.email,
             password: values.password,

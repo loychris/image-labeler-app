@@ -52,7 +52,7 @@ class Menu extends Component {
           <NavLink to='/achievements' className={classes.NavLink}>
             Achievements
           </NavLink>
-          <NavLink to='/logout' className={classes.NavLink}>
+          <NavLink to='/' className={classes.NavLink} onClick={this.props.logout}>
             Logout
           </NavLink>
         </Nav>
@@ -70,7 +70,7 @@ class Menu extends Component {
           <NavLink to='/uploadForm' className={classes.NavLink}>
             Upload Images
           </NavLink>
-          <NavLink to='/logout' className={classes.NavLink}>
+          <NavLink to='/' onClick={this.props.logout} className={classes.NavLink}>
             Logout
           </NavLink>
         </Nav>
