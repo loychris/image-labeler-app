@@ -27,7 +27,8 @@ class Menu extends Component {
           id='collasible-nav-dropdown'
         >
           <NavDropdown.Item href=''>User Profile</NavDropdown.Item>
-          <NavDropdown.Item>Achievements</NavDropdown.Item>
+          <NavDropdown.Item >Achievements</NavDropdown.Item>
+          <NavDropdown.Item >Analytics</NavDropdown.Item>
           <NavDropdown.Divider />
           <NavDropdown.Item hrerf=''>Delete Account</NavDropdown.Item>
           <NavDropdown.Divider />

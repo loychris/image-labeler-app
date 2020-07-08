@@ -11,6 +11,7 @@ import UploadForm from './components/UploadForm/UploadForm';
 import Achievements from './components/Achievements/Achievements';
 import Highscore from './components/Highscore/Highscore';
 import UploaderHome from './components/UploaderHome/UploaderHome';
+import Analytics from './components/Analytics/Analytics';
 
 let logoutTimer;
 
@@ -90,7 +91,9 @@ const App = () => {
           <Route exact path='/achievements'
             component={Achievements}
           />
-
+          <Route exact path='/analytics'
+            component={Analytics}
+          />
           <Route exact path='/uploadForm' 
             component={UploadForm}
           />
