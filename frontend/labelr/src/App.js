@@ -30,7 +30,7 @@ const App = () => {
       localStorage.setItem(
         'userData',
         JSON.stringify({
-          userId: user, 
+          user: user, 
           token: token,
           expiration: tokenExpirationDate.toISOString()
         })
@@ -71,7 +71,7 @@ const App = () => {
         storedData.token &&
         new Date(storedData.expiration) > new Date()
       ) {
-        login(storedData.userId, storedData.token, new Date(storedData.expiration));
+        login(storedData.user, storedData.token, new Date(storedData.expiration));
       }
     }, [login]);
 
@@ -147,7 +147,7 @@ const App = () => {
               component={user && user.isUploader ? UploaderHome : Overview}
             />
             {routes}
-            <Auth login={login} loggedIn={JSON.parse(localStorage.getItem('userData')) ? true : false }/>
+            <Auth login={login} loggedIn={token ? true : false }/>
           </div>
         </Router>
       </AuthContext.Provider>

@@ -1,6 +1,6 @@
 
-.dropzone {
-    height: 200px; 
+.Dropzone {
+    min-height: 200px; 
     background-color: #e4e4e4;
     outline: 2px dashed black;
     outline-offset: -10px;
@@ -8,28 +8,40 @@
     padding-top: 40px; 
     cursor: pointer;
     border-radius: 10px;
+    padding: 10px;
+    z-index: 10;
 }
 
-.zoneText {
+.ZoneText {
     font-size: 20px;
 }
 
-.chooseFile {
+.ChooseFile {
     font-weight: bold;
 
 }
 
-.chooseFile:hover {
+
+.IconDrop {
+    display: block; 
+}
+
+
+.NameLength {
+    float: right;
+}
+
+.ChooseFile:hover {
     color: #a5a5a5;
 }
 
-.uploadForm label {
-    margin-top: 50px; 
-}
+.uploadForm {
+    text-align: left;
+} 
 
-.uploadForm input[type=text], .form input[type=password], .form input[type=email]{
+.uploadForm input[type=text] {
     height: 40px;
-    width: 60%; 
+    width: 100%; 
     font-size: 15pt; 
     padding: 3px 15px;
     border: none;
@@ -37,10 +49,7 @@
     box-shadow: 0px 3px 5px rgb(0,0,0,0.5);
     margin-bottom: 4px;
     margin-top: 5px; 
-    display: block; 
-    margin-left: auto; 
-    margin-right: auto; 
-    margin-bottom: 50px; 
+    display: block;  
 }
 
 .uploadForm button[type=submit]{
@@ -57,7 +66,7 @@
     border: none;
 }
 
-.buttonContainer{
+.ButtonContainer{
     position: relative;
     display: block; 
     min-height: 150px;
@@ -67,13 +76,13 @@
     display: flex;
     width: 100%; 
     flex-wrap: wrap;
-    justify-content: left; 
+    justify-content: space-evenly; 
+    z-index: 50;
 }
 
 .iconDropZone {
     height: 120px; 
     width: 120px; 
-    border: 1px solid red; 
 }
 
 .Icon {
@@ -88,4 +97,10 @@
 
 .inputContainer {
     display: flex;
+    flex-wrap: wrap;
+}
+
+.inputContainer div {
+    margin-left: 10px; 
+    margin-right: 10px; 
 }

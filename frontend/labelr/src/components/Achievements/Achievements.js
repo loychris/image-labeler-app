@@ -31,7 +31,7 @@ render() {
     const storedData = JSON.parse(localStorage.getItem('userData'));
 
     //Number that represents the date on which the user signed up
-    const createdAt = parseInt(storedData.userId.createdAt.timestamp.replace('-', '').replace('-', ''));
+    const createdAt = parseInt(storedData.user.createdAt.timestamp.replace('-', '').replace('-', ''));
 
     // Number that represents the current Date -100 days
     const hundredDaysago = parseInt(moment().subtract(100, 'day').format().substr(0,10).replace('-', '').replace('-', ''))
@@ -40,7 +40,7 @@ render() {
     const currentMoment = parseInt(moment().format().substr(0,10).replace('-', '').replace('-', ''))
 
     // total number of images labeled by user
-    const counter = storedData.userId.counter; 
+    const counter = storedData.user.counter; 
     
     const achievements = [ 
         {name: 'The First of Many!' , description: 'First Image labeled',src: pic2, progress: counter > 0 ? 100 : 0},

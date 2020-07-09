@@ -36,7 +36,6 @@ class ImageQueue extends Component {
         console.log('--------------------');
         const category = this.props.match.params.category; 
         console.log(category);
-        console.log('Category: ', this.props.match.params.category);
         console.log('--------------------');
         if(!this.state.idsLoaded){
             console.log("LOADING IMAGES");

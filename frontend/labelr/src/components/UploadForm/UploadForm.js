@@ -13,8 +13,9 @@ function  UploadForm() {
 
     const [images, setImages] = useState([]);
     const [icon, setIcon] = useState(null);
+    const [name, setName] = useState('');
 
-    const handleIconDrop = async (acceptedFiles, rejectedFiles) => {
+    const handleOnIconDrop = async (acceptedFiles, rejectedFiles) => {
         if(acceptedFiles && acceptedFiles.length > 0){
             var reader = new FileReader();  
             reader.onload = function(e) {  
@@ -32,6 +33,12 @@ function  UploadForm() {
                 </g>
             </svg>
         )
+    }
+
+    const handleOnNameImput = (event) => {
+        if(event.target.value.length <= 20){
+            setName(event.target.value);
+        }
     }
 
 
@@ -70,63 +77,73 @@ function  UploadForm() {
 
 
     return(
-        <main className={classes.main}>
+        <main>
             <h1>Upload your Images</h1>
             <hr/>
             <form className={classes.uploadForm}>
                 <div className={classes.inputContainer}>
-                    <label>Icon: </label>
-                    <Dropzone 
-                        onDrop={handleIconDrop}
-                        maxSize={imageMaxSize}
-                        maxFiles={1}
-                        multiple={false}
-                        accept='image/*'>
-                        {({getRootProps, getInputProps}) => (
-                            <div {...getRootProps()}>
-                                <input {...getInputProps()} />
-                                <div className={classes.iconDropZone}>
-                                    {icon ? 
-                                        <img className={classes.Icon} src={icon} alt=''/> : 
-                                        getUploadIcon()}
+                    <div>
+                        <label>Icon: </label>
+                        <Dropzone 
+                            className={classes.IconDrop}
+                            onDrop={handleOnIconDrop}
+                            maxSize={imageMaxSize}
+                            maxFiles={1}
+                            multiple={false}
+                            accept='image/*'>
+                            {({getRootProps, getInputProps}) => (
+                                <div {...getRootProps()}>
+                                    <input {...getInputProps()} />
+                                    <div className={classes.iconDropZone}>
+                                        {
+                                            icon ? 
+                                            <img className={classes.Icon} src={icon} alt=''/> 
+                                            : getUploadIcon()
+                                        }   
+                                    </div>
                                 </div>
-                                
-                            </div>
-                        )}
-                    </Dropzone>
+                            )}
+                        </Dropzone>
+                    </div>
                     <div>
                         <label>Category name:</label>
-                        <input type='text'/>
+                        <input className={classes.Name} onChange={handleOnNameImput} value={name} type='text'/>
+                        <span className={classes.NameLength}>{name.length} / 20</span>
                     </div>
+
                 </div>
 
                 <div className={classes.Previews}>
-                    {
-                        images.length > 0 ? 
+                        {
+                            images.length > 0 ? 
                             images.map((img) => (
                                 <ImgPreview src={img.src} remove={() => remove(img.id)} key={img.id}/>
-                            ))
-                            : null
-                    }
-                </div> 
+                            )) : null
+                        }
+                </div>
                 <Dropzone 
                     onDrop={handleOnDrop}
                     maxSize={imageMaxSize}
                     accept='image/*'>
                     {({getRootProps, getInputProps}) => (
                         <div {...getRootProps()}>
+
                             <input {...getInputProps()} />
-                            <section className={classes.dropzone}>
-                                <p className={classes.zoneText}>
+                            <section className={classes.Dropzone}>
+                                <p className={classes.ZoneText}> 
                                     {getUploadIcon()}
-                                    <span className={classes.chooseFile}>Choose image files </span>
-                                    or drag them here
+                                    { 
+                                        images.length === 0 ? 
+                                            <span className={classes.ChooseFile}>Choose image files </span>
+                                        :   <span className={classes.ChooseFile}>Choose more images </span>
+                                    }
+                                    <span>or drag them here</span>
                                 </p>
                             </section>
                         </div>
                     )}
                 </Dropzone>
-                <div className={classes.buttonContainer}>
+                <div className={classes.ButtonContainer}>
                     <button type='submit' onClick={onStartUpload}>Upload Image Set for ${images.length*0.02.toFixed(2)}</button>
                 </div>
             </form>
