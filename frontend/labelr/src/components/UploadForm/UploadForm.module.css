@@ -5,7 +5,7 @@
     outline: 2px dashed black;
     outline-offset: -10px;
     text-align: center;
-    padding-top: 130px; 
+    padding-top: 40px; 
     cursor: pointer;
     border-radius: 10px;
 }
@@ -21,7 +21,6 @@
 
 .chooseFile:hover {
     color: #a5a5a5;
-
 }
 
 .uploadForm label {
@@ -62,4 +61,31 @@
     position: relative;
     display: block; 
     min-height: 150px;
+}
+
+.Previews {
+    display: flex;
+    width: 100%; 
+    flex-wrap: wrap;
+    justify-content: left; 
+}
+
+.iconDropZone {
+    height: 120px; 
+    width: 120px; 
+    border: 1px solid red; 
+}
+
+.Icon {
+    margin: 0px; 
+    height: 120px; 
+    width: 120px; 
+}
+
+.uploadIcon {
+    margin-right: 30px; 
+}
+
+.inputContainer {
+    display: flex;
 }

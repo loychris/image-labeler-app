@@ -12,7 +12,8 @@ const imageSchema = new mongoose.Schema({
     labels: [{
         label: { type: String, required: true},
         votes: [{ type: Boolean }]
-    }]
+    }],
+    imageSetId: {type: String }
 
 });
 

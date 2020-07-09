@@ -1,3 +1,25 @@
 .Menu {
-    z-index: 80;
+  z-index: 80;
 }
+
+.NavLink {
+  color: #ffffff;
+  padding: 0em 0.5em;
+  text-decoration: none;
+}
+
+.NavLink:hover {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* .button {
+  background-color: #343a40;
+  border: 2px solid #e7e7e7;
+  color: white;
+  padding: 0em 0.5em;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+} */

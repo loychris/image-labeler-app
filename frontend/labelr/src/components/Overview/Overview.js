@@ -58,7 +58,7 @@ class Overview extends Component {
     render() {
         const catPreviews = this.state.categories.map(c => {
             return (
-                    <CatPreview {...c} />
+                    <CatPreview {...c} key={c.name}/>
             )
         })
         return (

@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import PopupNewAchievement from '../Popup/PopupNewAchievement';
-import { Navbar, Nav, NavDropdown, Badge } from 'react-bootstrap';
+import { Navbar, Nav, NavDropdown, Badge, Button, Form } from 'react-bootstrap';
 import { NavLink, Link } from 'react-router-dom';
 
 import classes from './Menu.module.css';
 
 class Menu extends Component {
-
-
   /*
   Show Link to Login/Register if user is not logged in
   */
@@ -29,13 +27,35 @@ class Menu extends Component {
           id='collasible-nav-dropdown'
         >
           <NavDropdown.Item href=''>User Profile</NavDropdown.Item>
-          <NavDropdown.Item >Achievements</NavDropdown.Item>
-          <NavDropdown.Item >Analytics</NavDropdown.Item>
+          <NavDropdown.Item>Achievements</NavDropdown.Item>
           <NavDropdown.Divider />
           <NavDropdown.Item hrerf=''>Delete Account</NavDropdown.Item>
           <NavDropdown.Divider />
-          <NavDropdown.Item hrerf='' onClick={this.props.logout}>Logout</NavDropdown.Item>
+          <NavDropdown.Item hrerf='' onClick={this.props.logout}>
+            Logout
+          </NavDropdown.Item>
         </NavDropdown>
+      );
+    }
+  }
+
+  /*
+  Show Highscore, Achievement and Logout if user is logged in
+  */
+  renderIsLoggedInAsUser() {
+    if (this.props.loggedIn && !this.props.isUploader) {
+      return (
+        <Nav>
+          <NavLink to='/highscore' className={classes.NavLink}>
+            Highscore
+          </NavLink>
+          <NavLink to='/achievements' className={classes.NavLink}>
+            Achievements
+          </NavLink>
+          <NavLink to='/logout' className={classes.NavLink}>
+            Logout
+          </NavLink>
+        </Nav>
       );
     }
   }
@@ -44,8 +64,17 @@ class Menu extends Component {
   Show Upload Link if uploader is logged in
   */
   renderLoggedInAsUploader() {
-    if (this.props.loggedIn && this.props.isUploader) {
-      return <NavLink to='/uploadForm'>Upload Images</NavLink>
+    if (this.props.isUploader) {
+      return (
+        <Nav>
+          <NavLink to='/uploadForm' className={classes.NavLink}>
+            Upload Images
+          </NavLink>
+          <NavLink to='/logout' className={classes.NavLink}>
+            Logout
+          </NavLink>
+        </Nav>
+      );
     }
   }
 
@@ -75,20 +104,25 @@ class Menu extends Component {
 
   render() {
     return (
-      <Navbar style={{zIndex: 80}} fixed="top" collapseOnSelect expand='sm' bg='dark' variant='dark'>
-        <Link to='/' ><Navbar.Brand>Labelr</Navbar.Brand></Link>
+      <Navbar
+        style={{ zIndex: 80 }}
+        fixed='top'
+        collapseOnSelect
+        expand='sm'
+        bg='dark'
+        variant='dark'
+      >
+        <Link to='/'>
+          <Navbar.Brand>Labelr</Navbar.Brand>
+        </Link>
         <Navbar.Toggle aria-controls='responsive-navbar-nav' />
         <Navbar.Collapse id='responsive-navbar-nav'>
           <Nav className='mr-auto'>
-            {this.renderLoginSignup()} 
-            {this.renderShowCurrentActivities()}
-            {this.renderLoggedInAsUploader()}
+            {/* {this.renderLoginSignup()} */}
+            {/* {this.renderShowCurrentActivities()} */}
           </Nav>
-          <Nav><NavLink to='/highscore'>Highscore</NavLink></Nav>
-          <Nav><NavLink to='/achievements'>Achievements</NavLink></Nav>
-          <Nav><NavLink to='/analytics'>Analytics</NavLink></Nav>
-          <Nav><NavLink to='/uploadForm'>Upload Images</NavLink></Nav>
-          <Nav>{this.renderUserMenu()}</Nav>
+          {this.renderIsLoggedInAsUser()}
+          {this.renderLoggedInAsUploader()}
         </Navbar.Collapse>
       </Navbar>
     );
@@ -96,4 +130,3 @@ class Menu extends Component {
 }
 
 export default Menu;
-
