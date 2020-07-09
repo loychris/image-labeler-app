@@ -6,11 +6,20 @@
   color: #ffffff;
   padding: 0em 0.5em;
   text-decoration: none;
+  margin-top: 1px;
 }
 
 .NavLink:hover {
   color: #ffffff;
   text-decoration: none;
+}
+
+.Logout {
+  color: #ffffff;
+  padding: 0em 0.5em;
+  text-decoration: none;
+  border: 1px solid #ffffff;
+  border-radius: 5px;
 }
 
 /* .button {
