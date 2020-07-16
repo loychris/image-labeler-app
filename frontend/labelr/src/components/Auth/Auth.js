@@ -15,7 +15,6 @@ function Auth(props) {
     const auth = useContext(AuthContext);
     
 
-    const [loggedIn, setLoggedIn ] = useState(false);
     const [userType, setUserType ] = useState('User') // <-> 'uploader'
     const [currentForm, setCurrentForm] = useState('login') // <-> 'signup'
     const [incorrectPW, setIncorrectPW] = useState(false);
@@ -30,7 +29,6 @@ function Auth(props) {
             headers: { 'Content-Type': 'application/json' }
         })
         .then(response => { 
-            setLoggedIn(true);
             auth.login(response.data.user, response.data.token);
         })
         .catch(error => {
@@ -54,8 +52,6 @@ function Auth(props) {
             headers: { 'Content-Type': 'application/json' }
         })
         .then(response => {
-            console.log(response);
-            setLoggedIn(true);
             auth.login(response.data.user, response.data.token);
         }).catch(e => {
             console.log(e);

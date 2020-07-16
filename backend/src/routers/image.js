@@ -138,17 +138,22 @@ router.get('/images/next', auth, async  (req, res) => {
 
 // Upload a new image
 router.post('/upload', auth, fileUpload.single('image'), async (req, res) => {
-  if(req.body.image) console.log('THERE IS AN IMAGE ');
-  if(req.file) console.log('THERE IS AN FILE');
-  console.log(req.file);
+  if(!req.body.label){
+    res.status(400).send({message: 'No label provided'});
+  }
   if  (req.file !== undefined){
     const img = new Image({
       data: req.file.buffer,
       owner: req.user._id,
-      labels: [{label:req.body.label, votes:[true]}]
+      labels: [{label:req.body.label, votes:[]}]
     })
-    await img.save();
-    res.status(201).send({ msg: 'image added successfully' });
+    try{
+      await img.save();
+      res.status(201).send({message: 'Image saved successfully', img: img});
+    }catch(e){
+      console.log(e)
+      res.status(500).send({message: 'Something went wrong while saving the Image'});
+    }
   }
   else{
     res.status(400).send('Please add a file to upload');

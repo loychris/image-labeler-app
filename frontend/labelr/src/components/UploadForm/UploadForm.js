@@ -56,8 +56,8 @@ function  UploadForm() {
     }
 
 
+
     const handleOnDrop = async (acceptedFiles, rejectedFiles) => {
-        console.log(acceptedFiles);
         setFilenames(acceptedFiles.map(x => x.name));
         if(acceptedFiles && acceptedFiles.length > 0){
             let imgs = [];
@@ -72,31 +72,22 @@ function  UploadForm() {
                 })(acceptedFiles[i]);
             }
             setTimeout(() => {
-
-                const currentToken = JSON.parse(localStorage.getItem('userData')).token;
-                
+                setImages(imgs);
+            }, acceptedFiles.length * 5);                const currentToken = JSON.parse(localStorage.getItem('userData')).token;
+            for(let i=0;i<acceptedFiles.length;i++){
                 const formData = new FormData();
-                formData.append('image', acceptedFiles[0]);
-                console.log('NAME',acceptedFiles[0].name);
+                formData.append('image', acceptedFiles[1]);
                 formData.append('label', name);
 
-                const responseData = sendRequest(
+                const responseData = await sendRequest(
                     'http://localhost:3000/upload', 
                     'POST', 
                     formData,
                     {'Authorization': `Bearer ${currentToken}`}
                 )
-                console.log('#####################');
-                console.log(responseData)
+                console.log(responseData);
 
-
-
-
-
-
-
-                setImages(imgs); 
-            }, acceptedFiles.length * 5);
+            }
         }
     }
 
