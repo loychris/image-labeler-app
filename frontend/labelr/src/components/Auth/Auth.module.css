@@ -15,6 +15,10 @@
     transition: 0.4s ease;
 }
 
+.SwitchText{
+    cursor: pointer; 
+}
+
 .hidden{
     transform: translate3d(-50%, -200vh, 0);
     opacity: 0;

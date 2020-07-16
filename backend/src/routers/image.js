@@ -4,6 +4,7 @@ const moment = require('moment');
 
 const router = express.Router();
 
+const fileUpload = require('../middleware/file-upload');
 const auth = require('../middleware/auth')
 const achievements = require('../middleware/achievements')
 const Image = require('../models/image')
@@ -125,8 +126,21 @@ router.get('/images/next', auth, async  (req, res) => {
 
 // ------------------------ POST ROUTES ------------------------
 
+
+
+
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+
+
+
 // Upload a new image
-router.post('/upload', auth, upload.single('image'), async (req, res) => {
+router.post('/upload', auth, fileUpload.single('image'), async (req, res) => {
+  if(req.body.image) console.log('THERE IS AN IMAGE ');
+  if(req.file) console.log('THERE IS AN FILE');
+  console.log(req.file);
   if  (req.file !== undefined){
     const img = new Image({
       data: req.file.buffer,
@@ -143,6 +157,14 @@ router.post('/upload', auth, upload.single('image'), async (req, res) => {
 }, (error, req, res, next) => {
   res.status(415).send({ error: "Non valid file type" })
 })
+
+
+
+
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
 
 // Vote for image
 router.post('/images/:id',auth, achievements,async (req, res) => {

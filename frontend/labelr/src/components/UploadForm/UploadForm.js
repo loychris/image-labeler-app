@@ -1,9 +1,18 @@
+import fs, { createReadStream } from "fs";
+import request from "request";
 import React, { useState, Fragment } from 'react';
 import Dropzone from 'react-dropzone'
+import axios from 'axios';
+
+
+
+
 
 import ImgPreview from './ImgPreview/ImgPreview';
 import classes from './UploadForm.module.css';
 
+import { useHttpClient } from './http-hook';
+import Achievements from "../Achievements/Achievements";
 
 
 const imageMaxSize = 1000000000; // bytes
@@ -11,9 +20,14 @@ const acceptedFileTypes = ['image/x-png', 'image/png', 'image/jpg', 'image/jpeg'
 
 function  UploadForm() {
 
+    const [filenames, setFilenames] = useState([]);
     const [images, setImages] = useState([]);
     const [icon, setIcon] = useState(null);
     const [name, setName] = useState('');
+
+
+    const { isLoading, error, sendRequest, clearError } = useHttpClient();
+
 
     const handleOnIconDrop = async (acceptedFiles, rejectedFiles) => {
         if(acceptedFiles && acceptedFiles.length > 0){
@@ -44,10 +58,11 @@ function  UploadForm() {
 
     const handleOnDrop = async (acceptedFiles, rejectedFiles) => {
         console.log(acceptedFiles);
+        setFilenames(acceptedFiles.map(x => x.name));
         if(acceptedFiles && acceptedFiles.length > 0){
             let imgs = [];
             for (var i = 0; i < acceptedFiles.length; i++) { //for multiple files          
-                (function(file) {
+                (file => {
                     var name = file.name;
                     var reader = new FileReader();  
                     reader.onload = function(e) {  
@@ -57,12 +72,31 @@ function  UploadForm() {
                 })(acceptedFiles[i]);
             }
             setTimeout(() => {
-                const imagesNew = [];
-                for(let i = 0; i<imgs.length; i++){
-                    imagesNew.push({src: imgs[i], id: i})
-                }
-                setImages(imagesNew);
-            }, acceptedFiles.length * 20);
+
+                const currentToken = JSON.parse(localStorage.getItem('userData')).token;
+                
+                const formData = new FormData();
+                formData.append('image', acceptedFiles[0]);
+                console.log('NAME',acceptedFiles[0].name);
+                formData.append('label', name);
+
+                const responseData = sendRequest(
+                    'http://localhost:3000/upload', 
+                    'POST', 
+                    formData,
+                    {'Authorization': `Bearer ${currentToken}`}
+                )
+                console.log('#####################');
+                console.log(responseData)
+
+
+
+
+
+
+
+                setImages(imgs); 
+            }, acceptedFiles.length * 5);
         }
     }
 
@@ -71,8 +105,41 @@ function  UploadForm() {
         setImages(imagesNew);
     }
 
-    const onStartUpload = () => {
-        
+    const onStartUpload = async () => {
+        const currentToken = JSON.parse(localStorage.getItem('userData')).token;
+        images.map(async image => {
+            const formData = new FormData();
+            formData.append('image', image);
+            formData.append('label', name);
+            axios({
+                method: 'post',
+                url: 'http://localhost:3000/upload',
+                data: formData,
+                config: { headers: { 
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${currentToken}` 
+                } }
+            }).then(res => {
+                console.log(res);
+            }).catch(err => {
+                console.log(err);
+            })
+
+
+
+            // const options = { 
+            //     method: 'POST',
+            //     url: 'http://localhost:3000/upload',
+            //     headers:
+            //     { 
+            //         'Authorization': `Bearer ${currentToken}`,       
+            //         'cache-control': 'no-cache',
+            //         'Content-Type': '',
+            //         'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' 
+            //     },
+            //     formData
+            // }
+        })
     }
 
 
@@ -116,8 +183,8 @@ function  UploadForm() {
                 <div className={classes.Previews}>
                         {
                             images.length > 0 ? 
-                            images.map((img) => (
-                                <ImgPreview src={img.src} remove={() => remove(img.id)} key={img.id}/>
+                            images.map((img, i) => (
+                                <ImgPreview src={img} key={i} num={i}/>
                             )) : null
                         }
                 </div>
@@ -144,7 +211,7 @@ function  UploadForm() {
                     )}
                 </Dropzone>
                 <div className={classes.ButtonContainer}>
-                    <button type='submit' onClick={onStartUpload}>Upload Image Set for ${images.length*0.02.toFixed(2)}</button>
+                    <button type='button' onClick={onStartUpload}>Upload Image Set for ${images.length*0.02.toFixed(2)}</button>
                 </div>
             </form>
         </main >
