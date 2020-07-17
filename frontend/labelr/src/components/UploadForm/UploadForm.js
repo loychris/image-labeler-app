@@ -1,8 +1,6 @@
-import fs, { createReadStream } from "fs";
-import request from "request";
 import React, { useState, Fragment } from 'react';
 import Dropzone from 'react-dropzone'
-import axios from 'axios';
+import uuid from 'react-uuid'
 
 
 
@@ -20,10 +18,12 @@ const acceptedFileTypes = ['image/x-png', 'image/png', 'image/jpg', 'image/jpeg'
 
 function  UploadForm() {
 
-    const [filenames, setFilenames] = useState([]);
     const [images, setImages] = useState([]);
+    const [imageIDs, setImageIDs] = useState([]);
     const [icon, setIcon] = useState(null);
     const [name, setName] = useState('');
+
+    const [files, setFiles] = useState([]);
 
 
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -56,81 +56,61 @@ function  UploadForm() {
     }
 
 
+    const deleteImage = (id) => {
+        const filesNew = files.filter(f => f.id !== id);
+        setFiles(filesNew);
+    }
+
+    const addDBId = (id, _id) => {
+        const filesNew = files.map(f => {
+            if(f.id === id ) return {...f, _id}
+            return {...f}
+        })
+        setFiles(filesNew);
+    }
 
     const handleOnDrop = async (acceptedFiles, rejectedFiles) => {
-        setFilenames(acceptedFiles.map(x => x.name));
         if(acceptedFiles && acceptedFiles.length > 0){
-            let imgs = [];
-            for (var i = 0; i < acceptedFiles.length; i++) { //for multiple files          
-                (file => {
-                    var name = file.name;
-                    var reader = new FileReader();  
-                    reader.onload = function(e) {  
-                        imgs.push(e.target.result);
-                    }
-                    reader.readAsDataURL(file, "UTF-8");
-                })(acceptedFiles[i]);
-            }
-            setTimeout(() => {
-                setImages(imgs);
-            }, acceptedFiles.length * 5);                const currentToken = JSON.parse(localStorage.getItem('userData')).token;
-            for(let i=0;i<acceptedFiles.length;i++){
-                const formData = new FormData();
-                formData.append('image', acceptedFiles[1]);
-                formData.append('label', name);
+            const arrFiles = Array.from(acceptedFiles)
+            const newFiles = arrFiles.map((file) => {
+                const src = window.URL.createObjectURL(file)
+                return { file, id: uuid(), src }
+            })
+            setFiles(files.concat(newFiles));
+        }
+    }
 
+
+    const onStartUpload = async () => {
+        const currentToken = JSON.parse(localStorage.getItem('userData')).token;
+            /////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////
+
+
+            files.forEach(async file => {
+                const formData = new FormData();
+                formData.append('image', file.file);
+                formData.append('label', name);
+    
                 const responseData = await sendRequest(
                     'http://localhost:3000/upload', 
                     'POST', 
                     formData,
                     {'Authorization': `Bearer ${currentToken}`}
-                )
-                console.log(responseData);
-
-            }
-        }
-    }
-
-    const remove = (id) => {
-        const imagesNew = images.filter(x => x.id !== id);
-        setImages(imagesNew);
-    }
-
-    const onStartUpload = async () => {
-        const currentToken = JSON.parse(localStorage.getItem('userData')).token;
-        images.map(async image => {
-            const formData = new FormData();
-            formData.append('image', image);
-            formData.append('label', name);
-            axios({
-                method: 'post',
-                url: 'http://localhost:3000/upload',
-                data: formData,
-                config: { headers: { 
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${currentToken}` 
-                } }
-            }).then(res => {
-                console.log(res);
-            }).catch(err => {
-                console.log(err);
+                )  
+                console.log(responseData.img._id);  
+                addDBId(file.id, responseData.img._id);
             })
 
 
 
-            // const options = { 
-            //     method: 'POST',
-            //     url: 'http://localhost:3000/upload',
-            //     headers:
-            //     { 
-            //         'Authorization': `Bearer ${currentToken}`,       
-            //         'cache-control': 'no-cache',
-            //         'Content-Type': '',
-            //         'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' 
-            //     },
-            //     formData
-            // }
-        })
+
+
+            /////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////
+
     }
 
 
@@ -173,9 +153,9 @@ function  UploadForm() {
 
                 <div className={classes.Previews}>
                         {
-                            images.length > 0 ? 
-                            images.map((img, i) => (
-                                <ImgPreview src={img} key={i} num={i}/>
+                            files.length > 0 ? 
+                            files.map((img) => (
+                                <ImgPreview src={img.src} key={img.id} remove={() => deleteImage(img.id)}/>
                             )) : null
                         }
                 </div>
