@@ -21,6 +21,8 @@ function  UploadForm() {
     const [images, setImages] = useState([]);
     const [icon, setIcon] = useState(null);
     const [name, setName] = useState('');
+    const [weeks, setWeeks] = useState(5);
+    const [deadline, setDeadline] = useState(new Date().toLocaleString());
 
     const [files, setFiles] = useState([]);
 
@@ -54,6 +56,13 @@ function  UploadForm() {
         }
     }
 
+    const handleOnRangeInput = (event) => {
+        var date = new Date();
+        var res = date.setTime(date.getTime() + (event.target.value * 7 * 24 * 60 * 60 * 1000));
+        setWeeks(event.target.value);
+        console.log(date);
+        setDeadline(date);
+    }
 
     const deleteImage = (id) => {
         const filesNew = files.filter(f => f.id !== id);
@@ -120,6 +129,9 @@ function  UploadForm() {
 
     }
 
+    const date = new Date(deadline)
+    const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' }) 
+    const [{ value: month },,{ value: day },,{ value: year }] = dateTimeFormat .formatToParts(date); 
 
     return(
         <main>
@@ -155,6 +167,18 @@ function  UploadForm() {
                         <input className={classes.Name} onChange={handleOnNameImput} value={name} type='text'/>
                         <span className={classes.NameLength}>{name.length} / 20</span>
                     </div>
+                    <div className={classes.Deadline}>
+                        <label>Ready in {weeks} weeks: </label>
+                        <input  type="range" onChange={handleOnRangeInput} min="1" max="5" value={weeks} list="num" />
+                        <datalist id="num">
+                            <option value="1" label="1"/>
+                            <option value="2" label="2"/>
+                            <option value="3" label="3"/>
+                            <option value="4" label="4"/>
+                            <option value="5" label="5"/>
+                        </datalist> 
+                        <div>Resulsts ready on: {`${day} ${month} ${year }`}</div>
+                    </div>
 
                 </div>
 
@@ -172,18 +196,17 @@ function  UploadForm() {
                     accept='image/*'>
                     {({getRootProps, getInputProps}) => (
                         <div {...getRootProps()}>
-
                             <input {...getInputProps()} />
                             <section className={classes.Dropzone}>
-                                <p className={classes.ZoneText}> 
+                                <div className={classes.ZoneText}> 
                                     {getUploadIcon()}
                                     { 
-                                        images.length === 0 ? 
+                                        files.length === 0 ? 
                                             <span className={classes.ChooseFile}>Choose image files </span>
                                         :   <span className={classes.ChooseFile}>Choose more images </span>
                                     }
                                     <span>or drag them here</span>
-                                </p>
+                                </div>
                             </section>
                         </div>
                     )}
