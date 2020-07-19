@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { ProgressBar } from 'react-bootstrap';
+import {ProgressBar, DropdownButton, Dropdown} from 'react-bootstrap';
 
 import classes from './AnaPreview.module.css';
 
 import img1 from './CategorieImages/check.png';
+import img2 from './CategorieImages/download-solid.svg';
 
 
 class AnaPreview extends Component {
@@ -22,12 +23,18 @@ class AnaPreview extends Component {
                         <div className={classes.description}>Deadline: {this.props.deadline}</div>
                     </div>
                     <div className={classes.progress}>
-                        <div className={classes.progressLabel}>{`${now}%`} complete
-                        {now = 100? (
-                            <img className={classes.caption} src={img1} />
+                        <div className={classes.progressLabel}>{`${now}%`} complete</div>
+                        {now = 100 ? (
+                            <img className={classes.check} src={img1} />
                         ) : null}
-                        </div>
                         <ProgressBar className={classes.progressBar} variant="success" now={50}/>
+                        {now = 100 ? (
+                            <DropdownButton className={classes.download} id="download-button" icon={img2} title="DOWNLOAD">
+                                <Dropdown.Item href="#/download-json">As JSON</Dropdown.Item>
+                                <Dropdown.Item href="#/download-csv">As CSV</Dropdown.Item>
+                            </DropdownButton>
+                        ) : null}
+                        
                     </div>
                 </div>
             </div>

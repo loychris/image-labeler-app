@@ -21,8 +21,10 @@
 }
 
 .check{
-    margin-left: 10%;
-
+    float: right;
+    position: relative;
+    top: -114px;
+    right: 12px;
 }
 
 .info {
@@ -48,19 +50,28 @@
     float: left;
     width: 70%;
     height: 100%;
-    padding-top: 4%;
 }
 
 .progressBar {
     width: 80%;
     display: inline-flex !important;
-    height: 25% !important;
+    height: 20% !important;
     border-radius: 1.25rem !important;
 }
 
 .progressLabel{
+    padding-top: 6%;
     font-size: 30px;
     color: grey;
     font-weight: 200;
     margin-bottom: 1%;
 }
+
+.download{
+    background-color: #343a40 !important;
+    border-color: #343a40 !important;
+    float: right;
+    box-shadow: 0px 10px 10px rgb(0,0,0,0.3);
+    border-radius: 10px;
+}
+
