@@ -75,6 +75,29 @@ fetch("localhost:3000/users/me/images", requestOptions)
   .then(result => console.log(result))
   .catch(error => console.log('error', error));
 ```
+
+#### Get  all statistic for specific user (authenticatied)
+ - Get an object with the counters for today, this week, this month, this year and generally (counter) 
+```javascript
+const request = require("request");
+
+const options = { method: 'GET',
+  url: 'localhost:3000/users/me/labeled/statistics',
+  headers: 
+   {'cache-control': 'no-cache',
+     Authorization: ',Bearer token',
+     'Content-Type': 'application/x-www-form-urlencoded' },
+  form: { undefined: undefined } };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+
+```
+
+
  ### POST Routes
 
 #### Create new user
