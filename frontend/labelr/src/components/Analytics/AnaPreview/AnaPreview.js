@@ -3,11 +3,13 @@ import { ProgressBar } from 'react-bootstrap';
 
 import classes from './AnaPreview.module.css';
 
+import img1 from './CategorieImages/check.png';
+
 
 class AnaPreview extends Component {
     
     render() {
-        const now = 50;
+        var now = 50;
         return (
             <div className={classes.anaPreview}>
                 <div className={classes.thumbnail}>
@@ -20,7 +22,11 @@ class AnaPreview extends Component {
                         <div className={classes.description}>Deadline: {this.props.deadline}</div>
                     </div>
                     <div className={classes.progress}>
-                        <div className={classes.progressLabel}>{`${now}%`} complete</div>
+                        <div className={classes.progressLabel}>{`${now}%`} complete
+                        {now = 100? (
+                            <img className={classes.caption} src={img1} />
+                        ) : null}
+                        </div>
                         <ProgressBar className={classes.progressBar} variant="success" now={50}/>
                     </div>
                 </div>
