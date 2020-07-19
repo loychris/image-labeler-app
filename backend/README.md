@@ -622,6 +622,12 @@ The User must be authenticated to use the private routes like uploadingan or vot
 updating his profile and ca. otherwise, the user will get an 401 authentication response code.
 
 ### Achievements middleware
+THIS MIDDLEWARE MUST COME AFTER AUTH MIDDLEWARE
 The achievements middleware will make sure every time the user vote, log in or the fetched images list removed.
 Will attach and object to the response in case there are new achievements the user acheived in this session.
 res.newAchievments is now availble to use, in it you will find the new acheivements; this list will be attached to the response only in case there are new acheivements
+
+### Uploader middleware
+THIS MIDDLEWARE MUST COME AFTER AUTH MIDDLEWARE
+The uploader middleware make sure that the authenticated user is an uploader, otherwise expect 
+code 401 and {error: 'This user is not authorize to upload.'} back.
