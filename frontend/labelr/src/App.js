@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {
-  BrowserRouter as Router,
-  Route,
-  Redirect,
-  Switch
-} from 'react-router-dom';import { AuthContext } from './components/context/auth-context';
-
+import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';import { AuthContext } from './components/context/auth-context';
+import axios from 'axios';
 import './App.css';
 
 import Auth from './components/Auth/Auth';
@@ -24,7 +19,6 @@ const App = () => {
     const [token, setToken] = useState(null); 
     const [tokenExpirationDate, setTokenExpirationDate] = useState();
     const [user, setUser] = useState(null);
-    const [redirect, setRedirect] = useState(null);
 
     const login = useCallback((user, token, expirationDate) => {
       console.log('LOGGING IN');
@@ -36,7 +30,7 @@ const App = () => {
       localStorage.setItem(
         'userData',
         JSON.stringify({
-          userId: user, 
+          user: user, 
           token: token,
           expiration: tokenExpirationDate.toISOString()
         })
@@ -45,13 +39,20 @@ const App = () => {
   
     const logout = useCallback(() => {
       console.log('Logging out');
+      const currentToken = JSON.parse(localStorage.getItem('userData')).token;
       localStorage.removeItem('userData')
+      axios.post(
+        '/users/logout',
+        {},
+        {
+          headers: { Authorization: `Bearer ${currentToken}` }
+        }
+      )
+      .then()
+      .catch(console.log)
       setToken(null);
       setUser(null);
       setTokenExpirationDate(null);
-      if(!redirect){
-        setRedirect('/login');
-      }
     }, []);
 
     useEffect(() => {
@@ -70,7 +71,7 @@ const App = () => {
         storedData.token &&
         new Date(storedData.expiration) > new Date()
       ) {
-        login(storedData.userId, storedData.token, new Date(storedData.expiration));
+        login(storedData.user, storedData.token, new Date(storedData.expiration));
       }
     }, [login]);
 
@@ -83,6 +84,9 @@ const App = () => {
         <Switch>
           <Route exact path= '/imageQueue/:category'
             component={ImageQueue}
+          />
+          <Route exact path='/overview'
+            component={Overview}
           />
           <Route exact path='/highscore'
             component={Highscore}
@@ -143,7 +147,7 @@ const App = () => {
               component={user && user.isUploader ? UploaderHome : Overview}
             />
             {routes}
-            <Auth login={login} loggedIn={JSON.parse(localStorage.getItem('userData')) ? true : false }/>
+            <Auth login={login} loggedIn={token ? true : false }/>
           </div>
         </Router>
       </AuthContext.Provider>

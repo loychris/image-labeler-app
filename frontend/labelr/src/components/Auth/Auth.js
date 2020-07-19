@@ -15,7 +15,6 @@ function Auth(props) {
     const auth = useContext(AuthContext);
     
 
-    const [ loggedIn, setLoggedIn ] = useState(false);
     const [userType, setUserType ] = useState('User') // <-> 'uploader'
     const [currentForm, setCurrentForm] = useState('login') // <-> 'signup'
     const [incorrectPW, setIncorrectPW] = useState(false);
@@ -43,7 +42,8 @@ function Auth(props) {
 
     const handleSignup = async (values, { setSubmitting }) => {
         setSubmitting(false);
-        axios.post('http://127.0.0.1:3000/users', JSON.stringify({
+
+        axios.post('/users', JSON.stringify({
             name: values.username,
             email: values.email,
             password: values.password,
@@ -52,7 +52,6 @@ function Auth(props) {
             headers: { 'Content-Type': 'application/json' }
         })
         .then(response => {
-            console.log(response);
             auth.login(response.data.user, response.data.token);
         }).catch(e => {
             console.log(e);
@@ -137,7 +136,7 @@ function Auth(props) {
                     {incorrectPW ? <span className={classes.invalidMessage}>
                         Username or password incorrect. Please try again <br/>
                     </span>  : null}
-                    <div onClick={() => setCurrentForm('user')}>Don't have an account? Sign up! ->  </div>                 
+                    <div className={classes.SwitchText} onClick={() => setCurrentForm('signup')}>Don't have an account? <strong>Sign up!</strong> ->  </div>                 
                     <button type="submit" disabled={isSubmitting}>
                     Login
                     </button>
@@ -165,7 +164,7 @@ function Auth(props) {
                 /* and other goodies */
                 }) => (
                 <form className={classes.form} onSubmit={handleSubmit}>
-                    <h3>{userType} login</h3>
+                    <h3>create an {userType} account</h3>
                     <label>Username:</label>
                     <input
                         id="username"
@@ -202,7 +201,7 @@ function Auth(props) {
                     <span className={classes.invalidMessage}>
                         {errors.password && touched.password && errors.password}<br/>
                     </span>   
-                    <div onClick={() => setCurrentForm('login')}>Already have an account? Login instead -> </div>                 
+                    <div className={classes.SwitchText} onClick={() => setCurrentForm('login')}>Already have an account? <strong>Login</strong> instead -> </div>                 
                     <button type="submit" disabled={isSubmitting}>
                         Create Account
                     </button>
@@ -222,11 +221,11 @@ function Auth(props) {
                     <AuthTab 
                         active={userType === 'User'}
                         value={'User'} 
-                        clicked={() => setUserType('user')}/>
+                        clicked={() => setUserType('User')}/>
                     <AuthTab 
                         active={userType === 'Uploader'}
                         value={'Uploader'} 
-                        clicked={() => setUserType('uploader')}/>
+                        clicked={() => setUserType('Uploader')}/>
                 </div>
                 {inputs}
             </div>

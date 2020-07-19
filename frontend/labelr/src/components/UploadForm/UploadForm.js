@@ -1,9 +1,16 @@
 import React, { useState, Fragment } from 'react';
 import Dropzone from 'react-dropzone'
+import uuid from 'react-uuid'
+
+
+
+
 
 import ImgPreview from './ImgPreview/ImgPreview';
 import classes from './UploadForm.module.css';
 
+import { useHttpClient } from './http-hook';
+import Achievements from "../Achievements/Achievements";
 
 
 const imageMaxSize = 1000000000; // bytes
@@ -12,9 +19,17 @@ const acceptedFileTypes = ['image/x-png', 'image/png', 'image/jpg', 'image/jpeg'
 function  UploadForm() {
 
     const [images, setImages] = useState([]);
+    const [imageIDs, setImageIDs] = useState([]);
     const [icon, setIcon] = useState(null);
+    const [name, setName] = useState('');
 
-    const handleIconDrop = async (acceptedFiles, rejectedFiles) => {
+    const [files, setFiles] = useState([]);
+
+
+    const { isLoading, error, sendRequest, clearError } = useHttpClient();
+
+
+    const handleOnIconDrop = async (acceptedFiles, rejectedFiles) => {
         if(acceptedFiles && acceptedFiles.length > 0){
             var reader = new FileReader();  
             reader.onload = function(e) {  
@@ -34,100 +49,140 @@ function  UploadForm() {
         )
     }
 
-
-    const handleOnDrop = async (acceptedFiles, rejectedFiles) => {
-        console.log(acceptedFiles);
-        if(acceptedFiles && acceptedFiles.length > 0){
-            let imgs = [];
-            for (var i = 0; i < acceptedFiles.length; i++) { //for multiple files          
-                (function(file) {
-                    var name = file.name;
-                    var reader = new FileReader();  
-                    reader.onload = function(e) {  
-                        imgs.push(e.target.result);
-                    }
-                    reader.readAsDataURL(file, "UTF-8");
-                })(acceptedFiles[i]);
-            }
-            setTimeout(() => {
-                const imagesNew = [];
-                for(let i = 0; i<imgs.length; i++){
-                    imagesNew.push({src: imgs[i], id: i})
-                }
-                setImages(imagesNew);
-            }, acceptedFiles.length * 20);
+    const handleOnNameImput = (event) => {
+        if(event.target.value.length <= 20){
+            setName(event.target.value);
         }
     }
 
-    const remove = (id) => {
-        const imagesNew = images.filter(x => x.id !== id);
-        setImages(imagesNew);
+
+    const deleteImage = (id) => {
+        const filesNew = files.filter(f => f.id !== id);
+        setFiles(filesNew);
     }
 
-    const onStartUpload = () => {
-        
+    const addDBId = (id, _id) => {
+        const filesNew = files.map(f => {
+            if(f.id === id ) return {...f, _id}
+            return {...f}
+        })
+        setFiles(filesNew);
+    }
+
+    const handleOnDrop = async (acceptedFiles, rejectedFiles) => {
+        if(acceptedFiles && acceptedFiles.length > 0){
+            const arrFiles = Array.from(acceptedFiles)
+            const newFiles = arrFiles.map((file) => {
+                const src = window.URL.createObjectURL(file)
+                return { file, id: uuid(), src }
+            })
+            setFiles(files.concat(newFiles));
+        }
+    }
+
+
+    const onStartUpload = async () => {
+        const currentToken = JSON.parse(localStorage.getItem('userData')).token;
+            /////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////
+
+
+            files.forEach(async file => {
+                const formData = new FormData();
+                formData.append('image', file.file);
+                formData.append('label', name);
+    
+                const responseData = await sendRequest(
+                    'http://localhost:3000/upload', 
+                    'POST', 
+                    formData,
+                    {'Authorization': `Bearer ${currentToken}`}
+                )  
+                console.log(responseData.img._id);  
+                addDBId(file.id, responseData.img._id);
+            })
+
+
+
+
+
+            /////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////
+
     }
 
 
     return(
-        <main className={classes.main}>
+        <main>
             <h1>Upload your Images</h1>
             <hr/>
             <form className={classes.uploadForm}>
                 <div className={classes.inputContainer}>
-                    <label>Icon: </label>
-                    <Dropzone 
-                        onDrop={handleIconDrop}
-                        maxSize={imageMaxSize}
-                        maxFiles={1}
-                        multiple={false}
-                        accept='image/*'>
-                        {({getRootProps, getInputProps}) => (
-                            <div {...getRootProps()}>
-                                <input {...getInputProps()} />
-                                <div className={classes.iconDropZone}>
-                                    {icon ? 
-                                        <img className={classes.Icon} src={icon} alt=''/> : 
-                                        getUploadIcon()}
+                    <div>
+                        <label>Icon: </label>
+                        <Dropzone 
+                            className={classes.IconDrop}
+                            onDrop={handleOnIconDrop}
+                            maxSize={imageMaxSize}
+                            maxFiles={1}
+                            multiple={false}
+                            accept='image/*'>
+                            {({getRootProps, getInputProps}) => (
+                                <div {...getRootProps()}>
+                                    <input {...getInputProps()} />
+                                    <div className={classes.iconDropZone}>
+                                        {
+                                            icon ? 
+                                            <img className={classes.Icon} src={icon} alt=''/> 
+                                            : getUploadIcon()
+                                        }   
+                                    </div>
                                 </div>
-                                
-                            </div>
-                        )}
-                    </Dropzone>
+                            )}
+                        </Dropzone>
+                    </div>
                     <div>
                         <label>Category name:</label>
-                        <input type='text'/>
+                        <input className={classes.Name} onChange={handleOnNameImput} value={name} type='text'/>
+                        <span className={classes.NameLength}>{name.length} / 20</span>
                     </div>
+
                 </div>
 
                 <div className={classes.Previews}>
-                    {
-                        images.length > 0 ? 
-                            images.map((img) => (
-                                <ImgPreview src={img.src} remove={() => remove(img.id)} key={img.id}/>
-                            ))
-                            : null
-                    }
-                </div> 
+                        {
+                            files.length > 0 ? 
+                            files.map((img) => (
+                                <ImgPreview src={img.src} key={img.id} remove={() => deleteImage(img.id)}/>
+                            )) : null
+                        }
+                </div>
                 <Dropzone 
                     onDrop={handleOnDrop}
                     maxSize={imageMaxSize}
                     accept='image/*'>
                     {({getRootProps, getInputProps}) => (
                         <div {...getRootProps()}>
+
                             <input {...getInputProps()} />
-                            <section className={classes.dropzone}>
-                                <p className={classes.zoneText}>
+                            <section className={classes.Dropzone}>
+                                <p className={classes.ZoneText}> 
                                     {getUploadIcon()}
-                                    <span className={classes.chooseFile}>Choose image files </span>
-                                    or drag them here
+                                    { 
+                                        images.length === 0 ? 
+                                            <span className={classes.ChooseFile}>Choose image files </span>
+                                        :   <span className={classes.ChooseFile}>Choose more images </span>
+                                    }
+                                    <span>or drag them here</span>
                                 </p>
                             </section>
                         </div>
                     )}
                 </Dropzone>
-                <div className={classes.buttonContainer}>
-                    <button type='submit' onClick={onStartUpload}>Upload Image Set for ${images.length*0.02.toFixed(2)}</button>
+                <div className={classes.ButtonContainer}>
+                    <button type='button' onClick={onStartUpload}>Upload Image Set for ${images.length*0.02.toFixed(2)}</button>
                 </div>
             </form>
         </main >

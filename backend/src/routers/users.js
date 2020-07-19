@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
         if (!users) { res.status(404).send() }
         res.status(200).send(users)
     } catch (e) {
-        res.status(500).send()
+        res.status(500).send(e)
     }
 })
 
@@ -44,7 +44,7 @@ router.get('/highscores/:n', async (req, res) => {
 
         if (users.length > n) { users = users.slice(0, n) }
 
-        users = users.map(user => ({_id: user._id, acheivements: user.acheivements, counter: user.counter}))
+        users = users.map(user => ({_id: user._id, name: user.name, achievements: user.achievements.length, counter: user.counter}))
 
         res.status(200).send(users);
     } catch (e) {
@@ -90,7 +90,7 @@ router.post('/logout', auth, async (req, res) => {
         res.status(200).send({ msg: "Logout successfully" })
 
     } catch (e) {
-        res.status(500).send()
+        res.status(500).send(e)
     }
 
 })
@@ -104,7 +104,7 @@ router.post('/logoutall', auth, async (req, res) => {
         res.status(200).send({ msg: "Logout from all devices successfully, all registered tokens have been removed" })
 
     } catch (e) {
-        res.status(500).send()
+        res.status(500).send(e)
     }
 
 })

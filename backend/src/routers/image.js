@@ -4,6 +4,7 @@ const moment = require('moment');
 
 const router = express.Router();
 
+const fileUpload = require('../middleware/file-upload');
 const auth = require('../middleware/auth')
 const achievements = require('../middleware/achievements')
 const Image = require('../models/image')
@@ -125,16 +126,34 @@ router.get('/images/next', auth, async  (req, res) => {
 
 // ------------------------ POST ROUTES ------------------------
 
+
+
+
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+
+
+
 // Upload a new image
-router.post('/upload', auth, upload.single('image'), async (req, res) => {
+router.post('/upload', auth, fileUpload.single('image'), async (req, res) => {
+  if(!req.body.label){
+    res.status(400).send({message: 'No label provided'});
+  }
   if  (req.file !== undefined){
     const img = new Image({
       data: req.file.buffer,
       owner: req.user._id,
-      labels: [{label:req.body.label, votes:[true]}]
+      labels: [{label:req.body.label, votes:[]}]
     })
-    await img.save();
-    res.status(201).send({ msg: 'image added successfully' });
+    try{
+      await img.save();
+      res.status(201).send({message: 'Image saved successfully', img: img});
+    }catch(e){
+      console.log(e)
+      res.status(500).send({message: 'Something went wrong while saving the Image'});
+    }
   }
   else{
     res.status(400).send('Please add a file to upload');
@@ -143,6 +162,14 @@ router.post('/upload', auth, upload.single('image'), async (req, res) => {
 }, (error, req, res, next) => {
   res.status(415).send({ error: "Non valid file type" })
 })
+
+
+
+
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
 
 // Vote for image
 router.post('/images/:id',auth, achievements,async (req, res) => {
