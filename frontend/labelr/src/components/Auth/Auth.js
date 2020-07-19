@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Formik } from 'formik';
-
+import Button from '@material-ui/core/Button';
 import { AuthContext } from '../context/auth-context';
 import axios from 'axios';
 
@@ -18,6 +18,16 @@ function Auth(props) {
     const [userType, setUserType ] = useState('User') // <-> 'uploader'
     const [currentForm, setCurrentForm] = useState('login') // <-> 'signup'
     const [incorrectPW, setIncorrectPW] = useState(false);
+
+    const getArrow = () => {
+        return(
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g id="arrow_forward_24px">
+                <path id="icon/navigation/arrow_forward_24px" d="M12 4L10.59 5.41L16.17 11H4V13H16.17L10.59 18.59L12 20L20 12L12 4Z" fill="#212529"/>
+                </g>
+            </svg>
+        )
+    }
 
     const handleLogin = async (values, { setSubmitting }) => {
         setSubmitting(false);
@@ -136,9 +146,9 @@ function Auth(props) {
                     {incorrectPW ? <span className={classes.invalidMessage}>
                         Username or password incorrect. Please try again <br/>
                     </span>  : null}
-                    <div className={classes.SwitchText} onClick={() => setCurrentForm('signup')}>Don't have an account? <strong>Sign up!</strong> ->  </div>                 
-                    <button type="submit" disabled={isSubmitting}>
-                    Login
+                    <div className={classes.SwitchText} onClick={() => setCurrentForm('signup')}>Don't have an account? <strong>Sign up</strong> {getArrow()} </div>        
+                    <button variant="contained" type="submit" disabled={isSubmitting} size='small'>
+                        Login
                     </button>
                 </form>
                 )}
@@ -201,8 +211,8 @@ function Auth(props) {
                     <span className={classes.invalidMessage}>
                         {errors.password && touched.password && errors.password}<br/>
                     </span>   
-                    <div className={classes.SwitchText} onClick={() => setCurrentForm('login')}>Already have an account? <strong>Login</strong> instead -> </div>                 
-                    <button type="submit" disabled={isSubmitting}>
+                <div className={classes.SwitchText} onClick={() => setCurrentForm('login')}>Already have an account? <strong>Login</strong>{getArrow()}</div>                 
+                    <button type="submit" disabled={isSubmitting} small>
                         Create Account
                     </button>
                 </form>
@@ -210,6 +220,7 @@ function Auth(props) {
             </Formik>
         )
     }
+
 
 
     let inputs = currentForm === 'login' ? getLoginForm() : getSignupForm();

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';import { AuthContext } from './components/context/auth-context';
+import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
+import { AuthContext } from './components/context/auth-context';
 import axios from 'axios';
 import './App.css';
 

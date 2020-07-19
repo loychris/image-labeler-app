@@ -1,7 +1,8 @@
 import React, { useState, Fragment } from 'react';
 import Dropzone from 'react-dropzone'
 import uuid from 'react-uuid'
-
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 
 
 
@@ -10,7 +11,6 @@ import ImgPreview from './ImgPreview/ImgPreview';
 import classes from './UploadForm.module.css';
 
 import { useHttpClient } from './http-hook';
-import Achievements from "../Achievements/Achievements";
 
 
 const imageMaxSize = 1000000000; // bytes
@@ -19,7 +19,6 @@ const acceptedFileTypes = ['image/x-png', 'image/png', 'image/jpg', 'image/jpeg'
 function  UploadForm() {
 
     const [images, setImages] = useState([]);
-    const [imageIDs, setImageIDs] = useState([]);
     const [icon, setIcon] = useState(null);
     const [name, setName] = useState('');
 
@@ -78,6 +77,14 @@ function  UploadForm() {
             })
             setFiles(files.concat(newFiles));
         }
+    }
+
+    //checking if the 
+    const checkValid = () => {
+        return files 
+            && files.length > 0 
+            && name 
+            && name.length < 20 
     }
 
 
@@ -182,7 +189,16 @@ function  UploadForm() {
                     )}
                 </Dropzone>
                 <div className={classes.ButtonContainer}>
-                    <button type='button' onClick={onStartUpload}>Upload Image Set for ${images.length*0.02.toFixed(2)}</button>
+                <Button 
+                    onClick={onStartUpload} 
+                    variant="contained"     
+                    color="#ffffff" 
+                    disabled={!checkValid()}>
+                    Upload Image Set for ${files.length*0.02.toFixed(2)}
+                </Button>
+                    {/* <button type='button' onClick={onStartUpload} disabled>
+                        Upload Image Set for ${images.length*0.02.toFixed(2)}
+                    </button> */}
                 </div>
             </form>
         </main >
