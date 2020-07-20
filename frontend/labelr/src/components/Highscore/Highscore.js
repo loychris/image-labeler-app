@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import classes from './Highscore.module.css';
+import Spinner from 'react-bootstrap/Spinner';
 
 class Highscore extends Component {
   state = {
@@ -47,32 +48,75 @@ class Highscore extends Component {
         completedCategories: 12,
       },
     ],
+    loading: true,
+    loaded: false,
+    failed: false,
   };
 
   generateTable() {
-    return this.state.topUsers.map((topUsers) => (
-      <tr>
-        <td>{topUsers.ranking}</td>
-        <td>{topUsers.username}</td>
-        <td>{topUsers.completedCategories}</td>
-        <td>{topUsers.imagesLabeled}</td>
-      </tr>
-    ));
+    if (this.state.loaded) {
+      return this.state.topUsers.map((topUsers) => (
+        <tr>
+          <td>{topUsers.ranking}</td>
+          <td>{topUsers.username}</td>
+          {/* <td>{topUsers.completedCategories}</td> */}
+          <td className={classes.ImagesLabeledColumn}>
+            {topUsers.imagesLabeled}
+          </td>
+        </tr>
+        // <div className={classes.flexitem}>
+        //   <span className={classes.Rank}>{topUsers.ranking}</span>
+        //   <span className={classes.Username}>{topUsers.username}</span>
+        //   <span className={classes.ImagesLabeled}>{topUsers.imagesLabeled}</span>
+        // </div>
+      ));
+    }
+  }
+
+  generateSpinner() {
+    if (this.state.loading) {
+      return (
+        <Spinner
+          className={classes.Spinner}
+          animation='border'
+          variant='secondary'
+        />
+      );
+    }
+  }
+
+  generateNoHighscoresNotice() {
+    if (this.state.failed) {
+      return <span>Sorry, no Highscores yet.</span>;
+    }
   }
 
   render() {
     return (
-      <main className={classes.Highscore}>
+      // <main className={classes.Highscore}>
+      <main>
+        if (loading) {}
         <h1>Highscore</h1>
         <table>
           <tr>
             <th>Ranking</th>
             <th>Username</th>
-            <th>Completed Categories</th>
-            <th>Images Labeled</th>
+            {/* <th>Completed Categories</th> */}
+            <th className={classes.ImagesLabeledColumn}>Images Labeled</th>
           </tr>
+          {this.generateSpinner()}
           {this.generateTable()}
+          {this.generateNoHighscoresNotice()}
         </table>
+        {/* <div className={classes.flexcontainer}>
+          <div className={classes.header}>
+            <span className={classes.RankHeader}>Ranking</span>
+            <span className={classes.UsernameHeader}>Username</span>
+            <span className={classes.ImagesLabeledHeader}>Images Labeled</span>
+          </div>
+          {this.generateTable()}
+        </div> */}
+        {/* // </main> */}
       </main>
     );
   }

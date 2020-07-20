@@ -1,4 +1,4 @@
-table {
+/* table {
   width: 100%;
   border-radius: 5px;
 }
@@ -18,4 +18,134 @@ tr:nth-child(even) {
 
 tr:nth-child(odd) {
   background-color: #e9e9e9;
+}
+
+.flexcontainer {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  list-style: none;
+}
+
+.flexitem {
+  margin-top: 10px;
+  margin-left: 5%;
+  margin-right: 5%;
+  line-height: 2em;
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.header {
+  margin-top: 10px;
+  margin-left: 5%;
+  margin-right: 5%;
+  line-height: 2em;
+  color: #000000;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.RankHeader {
+  margin-right: 20px;
+  padding-right: 50px;
+  text-align: left;
+  border: 1px solid #000000;
+}
+
+.UsernameHeader {
+  margin-right: 20px;
+  padding-right: 50px;
+  text-align: left;
+  border: 1px solid #000000;
+}
+
+.ImagesLabeledHeader {
+  margin-right: 20px;
+  text-align: right;
+  border: 1px solid #000000;
+}
+
+.Rank {
+  margin-right: 20px;
+  padding-right: 50px;
+  text-align: left;
+}
+
+.Username {
+  margin-right: 20px;
+  text-align: left;
+}
+
+.ImagesLabeled {
+  text-align: right;
+}
+
+.flexitem:nth-child(odd) {
+  background-color: #e9e9e9;
+  color: #343a40;
+}
+
+.flexitem:nth-child(even) {
+  background-color: #343a40;
+  color: white;
+} */
+
+.Spinner {
+  align-self: center;
+  margin-bottom: 10px;
+}
+
+.ImagesLabeledColumn {
+  justify-content: flex-end;
+}
+
+table {
+  display: flex;
+  flex-flow: column nowrap;
+  overflow: hidden;
+  padding-right: 15px;
+  /* font-size: 0.8rem; */
+  /* margin: 0.5rem; */
+  /* line-height: 1.5; */
+  /* border-bottom: 1px solid #d0d0d0; */
+  /* flex: 1 1 auto; */
+}
+
+tr {
+  /* width: 98%; */
+  display: flex;
+  flex-flow: row nowrap;
+  border-radius: 10px;
+}
+
+tr:nth-of-type(even) {
+  background-color: #343a40;
+  color: #ffffff;
+}
+
+tr:nth-of-type(odd) {
+  background-color: #e9e9e9;
+  color: #343a40;
+}
+
+th {
+  background-color: #ffffff;
+}
+
+td,
+th {
+  display: flex;
+  flex-flow: row nowrap;
+  flex-grow: 1;
+  flex-basis: 0;
+  padding: 0.5em;
+  /* word-break: break-word; */
+  overflow: hidden;
+  /* text-overflow: ellipsis; */
+  /* min-width: 0px; */
+  /* white-space: nowrap; */
+  /* border-bottom: 1px solid #d0d0d0; */
 }
