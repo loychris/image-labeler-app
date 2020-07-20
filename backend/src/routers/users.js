@@ -59,8 +59,8 @@ router.get('/me/labeled/statistics', auth ,async (req, res) => {
 
         res.status(200).send({today: today.length, week: week.length, month: month.length, year: year.length, counter});
 
-    }catch{
-    res.status(500).send();
+    }catch(e){
+        res.status(500).send(e);
     }
 });
 

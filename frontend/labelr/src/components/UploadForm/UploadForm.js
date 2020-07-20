@@ -1,6 +1,7 @@
 import React, { useState, Fragment } from 'react';
 import Dropzone from 'react-dropzone'
 import uuid from 'react-uuid'
+import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
@@ -23,6 +24,7 @@ function  UploadForm() {
     const [name, setName] = useState('');
     const [weeks, setWeeks] = useState(5);
     const [deadline, setDeadline] = useState(new Date().toLocaleString());
+    const [uploadProgress, setUploadProgress] = useState(0); 
 
     const [files, setFiles] = useState([]);
 
@@ -60,7 +62,6 @@ function  UploadForm() {
         var date = new Date();
         var res = date.setTime(date.getTime() + (event.target.value * 7 * 24 * 60 * 60 * 1000));
         setWeeks(event.target.value);
-        console.log(date);
         setDeadline(date);
     }
 
@@ -104,20 +105,65 @@ function  UploadForm() {
             /////////////////////////////////////////////////////
 
 
-            files.forEach(async file => {
-                const formData = new FormData();
-                formData.append('image', file.file);
-                formData.append('label', name);
-    
-                const responseData = await sendRequest(
-                    'http://localhost:3000/upload', 
-                    'POST', 
-                    formData,
-                    {'Authorization': `Bearer ${currentToken}`}
-                )  
-                console.log(responseData.img._id);  
-                addDBId(file.id, responseData.img._id);
+        const ids = [];
+        for(let i=0; i<files.length; i++){
+
+            const formData = new FormData();
+            formData.append('image', files[i].file);
+            formData.append('label', name);
+
+            axios({
+                method: 'post',
+                url: 'http://localhost:3000/upload', 
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${currentToken}`
+                }
             })
+            .then(res => {
+                ids.push(res.data.img._id)
+            })
+            .catch((e) => {
+                console.log(e)
+            })
+            // const responseData = await sendRequest(
+            //     'http://localhost:3000/upload', 
+            //     'POST', 
+            //     formData,
+            //     {'Authorization': `Bearer ${currentToken}`}
+            // )  
+            // if(responseData.img){
+            //     addDBId(file.id, responseData.img._id);
+            //     const newProgress = uploadProgress + 1/files.length;
+            //     setUploadProgress(newProgress);
+            //     console.log(uploadProgress);
+            // } 
+        }
+        Promise.all(ids).then(() => {
+            console.log("Images uploaded", ids);
+            const formData = new FormData();
+            formData.append('image', icon ? icon : files[0].file);
+            formData.append('deadline', deadline);
+            formData.append('label', name);
+            formData.append('imageId', ids)
+
+            axios({
+                method: 'post',
+                url: 'http://localhost:3000/set', 
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${currentToken}`
+                }
+            })
+            .then(res => {
+                console.log('Set saved', res);
+            });
+        });
+        
+
+
 
 
 
@@ -132,6 +178,8 @@ function  UploadForm() {
     const date = new Date(deadline)
     const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' }) 
     const [{ value: month },,{ value: day },,{ value: year }] = dateTimeFormat .formatToParts(date); 
+
+    const price = parseFloat(files.length* 0.01 * (4/(0.5 + Number(weeks)) + 0.3)).toFixed(2);
 
     return(
         <main>
@@ -212,12 +260,13 @@ function  UploadForm() {
                     )}
                 </Dropzone>
                 <div className={classes.ButtonContainer}>
+                {uploadProgress}
                 <Button 
                     onClick={onStartUpload} 
                     variant="contained"     
                     color="#ffffff" 
-                    disabled={!checkValid()}>
-                    Upload Image Set for ${files.length*0.02.toFixed(2)}
+                                disabled={!checkValid()}> 
+                    Upload Image Set for ${price}
                 </Button>
                     {/* <button type='button' onClick={onStartUpload} disabled>
                         Upload Image Set for ${images.length*0.02.toFixed(2)}

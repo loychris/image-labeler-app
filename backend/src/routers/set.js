@@ -4,6 +4,8 @@ const Image = require('../models/image');
 const SetOBJ = require('../models/set');
 const multer = require('multer');
 const auth = require('../middleware/auth')
+const fileUpload = require('../middleware/file-upload');
+
 
 const upload = multer({
     limits: {
@@ -71,35 +73,43 @@ router.get('/labels', async (req,res) => {
 
 
 
-router.post('/',auth, upload.single('image'), async ( req, res ) => {
-    try {
-        if  (req.file !== undefined){
-            const set = new SetOBJ({
-                owner: req.user._id,
-                imageId: req.body.imageId,
-                deadline: req.body.deadline,
-                icon: req.file.buffer,
-                label: req.body.label
-            })
-            const setCompleted = await set.save();
-            console.log(setCompleted._id);
+router.post('/',auth, fileUpload.single('image'), async ( req, res ) => {
+    if(!req.file) console.log('no icon file attached');
+    if(!req.body.imageId) console.log('no Image Ids given');
+    if(!req.body.label) console.log('no label definded');
+    
+    const set = new SetOBJ({
+        owner: req.user._id,
+        imageId: req.body.imageId,
+        deadline: req.body.deadline,
+        icon: req.file.buffer,
+        label: req.body.label
+    })
+    try{
+        const setCompleted = await set.save();
+    }catch(e){console.log('There was a propblem while saving the set', e)}
+    if(setCompleted){
+        console.log(setCompleted._id);
+        try {
             req.user.imageSets.push(setCompleted._id)
-
+        }catch(e){
+            res.status(500).send({msg: 'there was a problem while pushing the set to the user'});
+        }
+        try{
             req.body.imageId.forEach( async (_id) => {
                 const image = await Image.findOne({_id})
                 image.imageSetId = setCompleted._id
             })
-            res.status(201).send({ msg: 'set added successfully' });
+        }catch(e){
+            res.status(500).send({msg: 'There was a problem while updating the images with the setId'});
         }
-        else{
-            res.status(400).send('Please add an icon to upload');
-        }
-
-    } catch (e) {
-        res.status(500).send('Something went wrong');
-
+        res.status(201).send({ msg: 'set added successfully' });
+    }else {
+        res.status(400).send({msg: 'No Set id'});
     }
-})
+
+}); 
+
 
 router.post('/next/:setId', auth, async  (req, res) => {
     const imageSetId = req.params.setId;
