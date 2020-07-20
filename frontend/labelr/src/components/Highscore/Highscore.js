@@ -88,7 +88,6 @@ class Highscore extends Component {
   render() {
     return (
       <main>
-        if (loading) {}
         <h1>Highscore</h1>
         <table>
           <tr>
