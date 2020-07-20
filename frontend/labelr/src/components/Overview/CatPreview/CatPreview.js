@@ -12,7 +12,7 @@ class CatPreview extends Component {
     render() {
         const now = 86;
         return (
-            <Link to={'imageQueue/' + this.props.name}>
+            <Link className={classes.link} to={'imageQueue/' + this.props.name}>
                 <div className={classes.catPreview}>
                     <div className={classes.thumbnail}>
                         <img className={classes.Img} src={this.props.src} alt={this.props.name} />

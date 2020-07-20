@@ -29,12 +29,13 @@ class AnaPreview extends Component {
                         ) : null}
                         <ProgressBar className={classes.progressBar} variant="success" now={50}/>
                         {now = 100 ? (
-                            <DropdownButton className={classes.download} id="download-button" icon={img2} title="DOWNLOAD">
+                            <DropdownButton className={classes.download} id="download-button" title={
+                                <span><i className="fas fa-download"></i>DOWNLOAD</span>
+                              }>
                                 <Dropdown.Item href="#/download-json">As JSON</Dropdown.Item>
                                 <Dropdown.Item href="#/download-csv">As CSV</Dropdown.Item>
                             </DropdownButton>
                         ) : null}
-                        
                     </div>
                 </div>
             </div>

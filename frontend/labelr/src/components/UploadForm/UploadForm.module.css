@@ -95,6 +95,10 @@
     margin-right: 30px; 
 }
 
+.uploadIcon:hover{
+    cursor: pointer;
+}
+
 .inputContainer {
     display: flex;
     flex-wrap: wrap;
@@ -103,4 +107,9 @@
 .inputContainer div {
     margin-left: 10px; 
     margin-right: 10px; 
+}
+
+label{
+    font-weight: 500;
+    font-size: 20px;
 }

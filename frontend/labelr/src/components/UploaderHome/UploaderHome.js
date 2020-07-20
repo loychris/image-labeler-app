@@ -12,6 +12,7 @@ class UploaderHome extends Component {
     return (
       <main className={classes.UploaderHome}>
         <h1>Welcome</h1>
+        <hr/>
         <div className={classes.Flex}>
           <Link to='/uploadForm' className={classes.Icons}>
             <img src={img1} className={classes.Images} />
