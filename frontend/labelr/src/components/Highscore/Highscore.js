@@ -4,6 +4,9 @@ import Spinner from 'react-bootstrap/Spinner';
 
 class Highscore extends Component {
   state = {
+    loading: true,
+    loaded: false,
+    failed: false,
     topUsers: [
       {
         ranking: 1,
@@ -48,9 +51,6 @@ class Highscore extends Component {
         completedCategories: 12,
       },
     ],
-    loading: true,
-    loaded: false,
-    failed: false,
   };
 
   generateTable() {
@@ -59,16 +59,10 @@ class Highscore extends Component {
         <tr>
           <td>{topUsers.ranking}</td>
           <td>{topUsers.username}</td>
-          {/* <td>{topUsers.completedCategories}</td> */}
           <td className={classes.ImagesLabeledColumn}>
             {topUsers.imagesLabeled}
           </td>
         </tr>
-        // <div className={classes.flexitem}>
-        //   <span className={classes.Rank}>{topUsers.ranking}</span>
-        //   <span className={classes.Username}>{topUsers.username}</span>
-        //   <span className={classes.ImagesLabeled}>{topUsers.imagesLabeled}</span>
-        // </div>
       ));
     }
   }
@@ -93,7 +87,6 @@ class Highscore extends Component {
 
   render() {
     return (
-      // <main className={classes.Highscore}>
       <main>
         if (loading) {}
         <h1>Highscore</h1>
@@ -101,22 +94,12 @@ class Highscore extends Component {
           <tr>
             <th>Ranking</th>
             <th>Username</th>
-            {/* <th>Completed Categories</th> */}
             <th className={classes.ImagesLabeledColumn}>Images Labeled</th>
           </tr>
           {this.generateSpinner()}
           {this.generateTable()}
           {this.generateNoHighscoresNotice()}
         </table>
-        {/* <div className={classes.flexcontainer}>
-          <div className={classes.header}>
-            <span className={classes.RankHeader}>Ranking</span>
-            <span className={classes.UsernameHeader}>Username</span>
-            <span className={classes.ImagesLabeledHeader}>Images Labeled</span>
-          </div>
-          {this.generateTable()}
-        </div> */}
-        {/* // </main> */}
       </main>
     );
   }
