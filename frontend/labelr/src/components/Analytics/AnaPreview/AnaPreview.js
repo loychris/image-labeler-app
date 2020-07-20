@@ -10,7 +10,7 @@ import img2 from './CategorieImages/download-solid.svg';
 class AnaPreview extends Component {
     
     render() {
-        var now = 50;
+        var currentValue = 100;
         return (
             <div className={classes.anaPreview}>
                 <div className={classes.thumbnail}>
@@ -23,12 +23,12 @@ class AnaPreview extends Component {
                         <div className={classes.description}>Deadline: {this.props.deadline}</div>
                     </div>
                     <div className={classes.progress}>
-                        <div className={classes.progressLabel}>{`${now}%`} complete</div>
-                        {now = 100 ? (
+                        <div className={classes.progressLabel}>{`${currentValue}%`} complete</div>
+                        {(currentValue == 100) ? (
                             <img className={classes.check} src={img1} />
                         ) : null}
-                        <ProgressBar className={classes.progressBar} variant="success" now={50}/>
-                        {now = 100 ? (
+                        <ProgressBar className={classes.progressBar} variant="success" now={currentValue}/>
+                        {(currentValue == 100) ? (
                             <DropdownButton className={classes.download} id="download-button" title={
                                 <span><i className="fas fa-download"></i>DOWNLOAD</span>
                               }>
