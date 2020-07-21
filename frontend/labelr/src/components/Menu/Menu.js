@@ -5,6 +5,8 @@ import { NavLink, Link } from 'react-router-dom';
 
 import classes from './Menu.module.css';
 
+import logout from './Icons/logout.png';
+
 class Menu extends Component {
   /*
   Show Link to Login/Register if user is not logged in
@@ -57,7 +59,10 @@ class Menu extends Component {
             className={classes.Logout}
             onClick={this.props.logout}
           >
-            Logout
+            <span>
+              <img src={logout} className={classes.Icon} />
+            </span>
+            <span>Logout</span>
           </NavLink>
         </Nav>
       );

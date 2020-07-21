@@ -20,6 +20,15 @@
   text-decoration: none;
   border: 1px solid #ffffff;
   border-radius: 5px;
+  /* float: right; */
+  display: inline;
+}
+
+.Icon {
+  /* display: inline; */
+  margin-top: 2px;
+  margin-right: 5px;
+  /* float: left; */
 }
 
 /* .button {
