@@ -1,6 +1,6 @@
 import classes from './Achievements.module.css'
 import React, { Component } from 'react';
-import { Col } from 'react-bootstrap';
+import { Col, Spinner } from 'react-bootstrap';
 import AchPreview from './AchPreview/AchPreview';
 
 import pic1 from './AchPreview/AchievementImages/moon.svg';
@@ -21,6 +21,9 @@ import pic12 from './AchPreview/AchievementImages/fast.svg'
 class Achievements extends Component {
 
     state = {
+        loading: false,
+        loaded: false,
+        failed: true,
         achievements: [ 
         {name: 'The First of Many!' , description: 'First Image labeled',src: pic2},
         {name: 'Beginner' , description: '10 Images labeled',src: pic5},
@@ -66,6 +69,23 @@ class Achievements extends Component {
 //6 active month since signup
 //12 active month since signup
 
+generateSpinner() {
+    if (this.state.loading) {
+      return (
+        <Spinner
+          className={classes.Spinner}
+          animation='border'
+          variant='secondary'
+        />
+      );
+    }
+  }
+
+generateNoInternetNotice() {
+    if (this.state.failed) {
+      return <span>Sorry, something went wrong.</span>;
+    }
+  }
 
 render() {
     const achPreviews = this.state.achievements.map(c => {
@@ -75,6 +95,8 @@ render() {
             <main >
                 <h1>Your Achievements</h1>
                 <hr/>
+                {this.generateSpinner()}
+                {this.generateNoInternetNotice()}
                 <div className={classes.Flex}>
                     {achPreviews}
                 </div>

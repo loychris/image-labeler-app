@@ -6,7 +6,8 @@ class Highscore extends Component {
   state = {
     loading: true,
     loaded: false,
-    failed: false,
+    failed: true,
+    noHighscores: false,
     topUsers: [
       {
         ranking: 1,
@@ -80,8 +81,14 @@ class Highscore extends Component {
   }
 
   generateNoHighscoresNotice() {
-    if (this.state.failed) {
+    if (this.state.noHighscores) {
       return <span>Sorry, no Highscores yet.</span>;
+    }
+  }
+
+  generateNoInternetNotice() {
+    if (this.state.failed) {
+      return <span>Sorry, something went wrong.</span>;
     }
   }
 
@@ -98,6 +105,7 @@ class Highscore extends Component {
           {this.generateSpinner()}
           {this.generateTable()}
           {this.generateNoHighscoresNotice()}
+          {this.generateNoInternetNotice()}
         </table>
       </main>
     );
