@@ -15,7 +15,7 @@ import pic9 from './AchPreview/AchievementImages/trophy gold.svg';
 import pic10 from './AchPreview/AchievementImages/vaccine.svg'
 import pic11 from './AchPreview/AchievementImages/universe.svg'
 import pic12 from './AchPreview/AchievementImages/fast.svg'
-
+import no_internet from '../no_internet.svg';
 
 
 class Achievements extends Component {
@@ -81,9 +81,12 @@ generateSpinner() {
     }
   }
 
-generateNoInternetNotice() {
+  generateNoInternetNotice() {
     if (this.state.failed) {
-      return <span>Sorry, something went wrong.</span>;
+      return <div> 
+        <span><img src={no_internet}/></span>
+        <span><br/>Sorry, something went wrong.</span>
+        </div>;
     }
   }
 

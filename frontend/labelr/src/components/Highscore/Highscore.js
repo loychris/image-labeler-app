@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classes from './Highscore.module.css';
 import Spinner from 'react-bootstrap/Spinner';
+import no_internet from '../no_internet.svg';
 
 class Highscore extends Component {
   state = {
@@ -88,7 +89,10 @@ class Highscore extends Component {
 
   generateNoInternetNotice() {
     if (this.state.failed) {
-      return <span>Sorry, something went wrong.</span>;
+      return <div> 
+        <span><img src={no_internet}/></span>
+        <span><br/>Sorry, something went wrong.</span>
+        </div>;
     }
   }
 

@@ -25,6 +25,7 @@ import img16 from './CatPreview/CategorieImages/tree.png';
 import img17 from './CatPreview/CategorieImages/human.png';
 import img18 from './CatPreview/CategorieImages/money.png';
 import img19 from './CatPreview/CategorieImages/lamp.png';
+import no_internet from '../no_internet.svg';
 
 class Overview extends Component {
   state = {
@@ -67,9 +68,12 @@ class Overview extends Component {
     }
   }
 
-  generateFailureNotice() {
+  generateNoInternetNotice() {
     if (this.state.failed) {
-      return <span>Sorry, something went wrong.</span>;
+      return <div> 
+        <span><img src={no_internet}/></span>
+        <span><br/>Sorry, something went wrong.</span>
+        </div>;
     }
   }
 
@@ -81,7 +85,7 @@ class Overview extends Component {
       <main>
         <h1>Select a Categorie</h1>
         {this.generateSpinner()}
-        {this.generateFailureNotice()}
+        {this.generateNoInternetNotice()}
         <hr />
         <div className={classes.Flex}>{catPreviews}</div>
       </main>
