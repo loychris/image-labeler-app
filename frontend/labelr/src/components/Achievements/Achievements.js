@@ -1,6 +1,5 @@
 import classes from './Achievements.module.css'
 import React, { Component } from 'react';
-import { Col } from 'react-bootstrap';
 import AchPreview from './AchPreview/AchPreview';
 import moment from 'moment';
 

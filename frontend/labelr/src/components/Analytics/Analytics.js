@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Col } from 'react-bootstrap';
+import axios from 'axios';
 
 import AnaPreview from './AnaPreview/AnaPreview';
 
@@ -12,19 +12,60 @@ import img4 from './AnaPreview/CategorieImages/traffic-light.png';
 
 class Analytics extends Component {
 
-    state = {
-        imageSets: [
-           {name: 'Cars', uploaded:'01.04.2020' , deadline: '31.05.2020' , src: img1},
-           {name: 'Dogs', uploaded:'01.04.2020' , deadline:'31.05.2020'  , src: img2},
-           {name: 'Bridges', uploaded:'01.04.2020' , deadline: '31.05.2020' , src: img3},
-           {name: 'Traffic Lights', uploaded:'01.04.2020' , deadline:'31.05.2020'  , src: img4},
-        ]
-    }
     
+
+    state = {
+        status: 'not loaded',
+        imageSets: []
+    }
+
+    toBase64(arr) {
+      return btoa(
+         arr.reduce((data, byte) => data + String.fromCharCode(byte), '')
+      );
+   }
+    
+    componentDidMount = () => {
+        const currentToken = JSON.parse(localStorage.getItem('userData')).token;
+        if(this.state.status === 'not loaded'){
+          const config = {
+            headers: { 
+                'Access-Control-Allow-Origin': '*',
+                Authorization: `Bearer ${currentToken}` 
+              }
+          }
+          axios.get('http://127.0.0.1:3000/set/my', config)
+          .then(res => {
+            if(res.data && res.data.length > 0){
+              const sets = res.data.map(set => {
+                  const image = btoa(String.fromCharCode.apply(null, set.icon.data));
+                  return {
+                      deadline: set.deadline.split(',')[0],
+                      src: "data:image/png;base64," + image,
+                      name: set.label,
+                      uploaded: 'uploadDate'
+                  }
+              })
+              this.setState({
+                imageSets: sets,
+                status: 'loaded'
+              })
+            } else {
+                console.log('no sets sent')
+            }
+          })
+          .catch((e) => {
+            this.setState({status: 'failed'})
+            console.log(e);
+          })
+        }
+  
+      }
+
     render() {
-        const anaPreviews = this.state.imageSets.map(c => {
+        const anaPreviews = this.state.imageSets.map((c, i) => {
             return (
-                    <AnaPreview {...c} />
+                    <AnaPreview {...c} key={i}/>
             )
         })
         return (

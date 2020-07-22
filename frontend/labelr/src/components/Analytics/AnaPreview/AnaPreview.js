@@ -24,11 +24,11 @@ class AnaPreview extends Component {
                     </div>
                     <div className={classes.progress}>
                         <div className={classes.progressLabel}>{`${currentValue}%`} complete</div>
-                        {(currentValue == 100) ? (
+                        {(currentValue === 100) ? (
                             <img className={classes.check} src={img1} />
                         ) : null}
                         <ProgressBar className={classes.progressBar} variant="success" now={currentValue}/>
-                        {(currentValue == 100) ? (
+                        {(currentValue === 100) ? (
                             <DropdownButton className={classes.download} id="download-button" title={
                                 <span><i className="fas fa-download"></i>DOWNLOAD</span>
                               }>
