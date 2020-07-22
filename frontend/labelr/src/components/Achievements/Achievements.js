@@ -29,9 +29,26 @@ import pic19 from './AchPreview/AchievementImages/hustler.svg'
 
 class Achievements extends Component {
 
-      
+    state = {
+        loaded: false,
+    }
 
-
+    // componentDidMount = () => {
+    //     if(!this.state.loaded){
+    //         axios({
+    //             method: 'get',
+    //             url: '', 
+    //             data: ,
+    //             headers: {
+    //                 'Content-Type': 'multipart/form-data',
+    //                 'Authorization': `Bearer ${currentToken}`
+    //             }
+    //         })
+    //         .then(res => {
+    //             console.log(res.data);
+    //         }).catch(err => console.log(err))
+    //     }
+    // }
 
 
 render() {
