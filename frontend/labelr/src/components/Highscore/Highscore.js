@@ -38,7 +38,8 @@ class Highscore extends Component {
     return (
       <main className={classes.Highscore}>
         <h1>Highscore</h1>
-        <table>
+        <hr/>
+        <table className={classes.table}>
           <tr>
             <th>Ranking</th>
             <th>Username</th>

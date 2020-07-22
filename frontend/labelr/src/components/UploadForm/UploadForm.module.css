@@ -125,6 +125,10 @@
     margin-right: 30px; 
 }
 
+.uploadIcon:hover{
+    cursor: pointer;
+}
+
 .inputContainer {
     display: flex;
     flex-wrap: wrap;
@@ -135,6 +139,7 @@
     margin-right: 10px; 
 }
 
+<<<<<<< HEAD
 
 .Deadline {
     max-width: 300px; 
@@ -163,3 +168,9 @@ datalist option {
         -ms-flex-preferred-size: 0;
             flex-basis: 0;
 }
+=======
+label{
+    font-weight: 500;
+    font-size: 20px;
+}
+>>>>>>> frontend/moritz
