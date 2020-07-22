@@ -5,6 +5,10 @@ import { NavLink, Link } from 'react-router-dom';
 
 import classes from './Menu.module.css';
 
+import logout from './Icons/logout.svg';
+import achievements from './Icons/achievements.svg';
+import highscore from './Icons/highscore.svg';
+
 class Menu extends Component {
   /*
   Show Link to Login/Register if user is not logged in
@@ -43,13 +47,26 @@ class Menu extends Component {
       return (
         <Nav>
           <NavLink to='/highscore' className={classes.NavLink}>
-            Highscore
+            <span>
+              <img src={highscore} className={classes.Icon} />
+            </span>
+            <span>Highscore</span>
           </NavLink>
           <NavLink to='/achievements' className={classes.NavLink}>
-            Achievements
+            <span>
+              <img src={achievements} className={classes.Icon} />
+            </span>
+            <span>Achievements</span>
           </NavLink>
-          <NavLink to='/' className={classes.NavLink} onClick={this.props.logout}>
-            Logout
+          <NavLink
+            to='/'
+            className={classes.Logout}
+            onClick={this.props.logout}
+          >
+            <span>
+              <img src={logout} className={classes.Icon} />
+            </span>
+            <span>Logout</span>
           </NavLink>
         </Nav>
       );
@@ -63,11 +80,30 @@ class Menu extends Component {
     if (this.props.isUploader) {
       return (
         <Nav>
-          <NavLink to='/uploadForm' className={classes.NavLink}>
+          {/* <NavLink to='/uploadForm' className={classes.NavLink}>
             Upload Images
+          </NavLink> */}
+          <NavLink to='/highscore' className={classes.NavLink}>
+            <span>
+              <img src={highscore} className={classes.Icon} />
+            </span>
+            <span>Highscore</span>
           </NavLink>
-          <NavLink to='/' onClick={this.props.logout} className={classes.NavLink}>
-            Logout
+          <NavLink to='/achievements' className={classes.NavLink}>
+            <span>
+              <img src={achievements} className={classes.Icon} />
+            </span>
+            <span>Achievements</span>
+          </NavLink>
+          <NavLink
+            to='/'
+            className={classes.Logout}
+            onClick={this.props.logout}
+          >
+            <span>
+              <img src={logout} className={classes.Icon} />
+            </span>
+            <span>Logout</span>
           </NavLink>
         </Nav>
       );

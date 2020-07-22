@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {ProgressBar, DropdownButton, Dropdown} from 'react-bootstrap';
 
+
 import classes from './AnaPreview.module.css';
 
 import img1 from './CategorieImages/check.png';
@@ -8,6 +9,8 @@ import img2 from './CategorieImages/download-solid.svg';
 
 
 class AnaPreview extends Component {
+
+
     
     render() {
         var currentValue = 100;
@@ -15,7 +18,7 @@ class AnaPreview extends Component {
             <div className={classes.anaPreview}>
                 <div className={classes.thumbnail}>
                     <div className ={classes.image}> 
-                        <img src={this.props.src} alt={this.props.name} />
+                        <img src={this.props.src} alt={this.props.name} className={classes.Icon}/>
                     </div>
                     <div className={classes.info}>
                         <div className={classes.caption}>{this.props.name}</div>

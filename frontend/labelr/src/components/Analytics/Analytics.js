@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Spinner } from 'react-bootstrap';
 
+import no_internet from '../no_internet.svg';
 import AnaPreview from './AnaPreview/AnaPreview';
-
 import classes from './Analytics.module.css';
 
 import img1 from './AnaPreview/CategorieImages/car.png';
@@ -12,22 +13,40 @@ import img4 from './AnaPreview/CategorieImages/traffic-light.png';
 
 class Analytics extends Component {
 
-    
 
     state = {
         status: 'not loaded',
-        imageSets: []
+        imageSets: [],
+        files: []
     }
 
-    toBase64(arr) {
-      return btoa(
-         arr.reduce((data, byte) => data + String.fromCharCode(byte), '')
-      );
-   }
+    generateSpinner() {
+        return (
+          <Spinner
+            className={classes.Spinner}
+            animation='border'
+            variant='secondary'
+          />
+        );
+    }
+  
+    generateNoInternetNotice() {
+        return <div> 
+          <span><img src={no_internet}/></span>
+          <span><br/>Sorry, something went wrong.</span>
+          </div>;
+    }
+
+    imageEncode = (arrayBuffer) => {
+      let u8 = new Uint8Array(arrayBuffer)
+      let b64encoded = btoa([].reduce.call(new Uint8Array(arrayBuffer),function(p,c){return p+String.fromCharCode(c)},''))
+      let mimetype="image/jpeg"
+      return "data:"+mimetype+";base64,"+b64encoded
+  }
     
     componentDidMount = () => {
+      if(this.state.status === 'not loaded'){
         const currentToken = JSON.parse(localStorage.getItem('userData')).token;
-        if(this.state.status === 'not loaded'){
           const config = {
             headers: { 
                 'Access-Control-Allow-Origin': '*',
@@ -36,23 +55,23 @@ class Analytics extends Component {
           }
           axios.get('http://127.0.0.1:3000/set/my', config)
           .then(res => {
-            if(res.data && res.data.length > 0){
-              const sets = res.data.map(set => {
-                  const image = btoa(String.fromCharCode.apply(null, set.icon.data));
-                  return {
-                      deadline: set.deadline.split(',')[0],
-                      src: "data:image/png;base64," + image,
-                      name: set.label,
-                      uploaded: 'uploadDate'
-                  }
-              })
-              this.setState({
-                imageSets: sets,
-                status: 'loaded'
-              })
-            } else {
-                console.log('no sets sent')
-            }
+            console.log(res.data);
+            if(res.data){
+              if(res.data.length > 0){
+                const sets = res.data.map(set => {
+                    return {
+                        deadline: set.deadline.split(',')[0],
+                        name: set.label,
+                        src: this.imageEncode(set.icon.data),
+                        uploaded: 'uploadDate'
+                    }
+                })
+
+
+
+                this.setState({ imageSets: sets, status: 'loaded' });
+              }
+            } 
           })
           .catch((e) => {
             this.setState({status: 'failed'})
@@ -72,9 +91,9 @@ class Analytics extends Component {
             <main>
                 <h1>Your Image Sets</h1>
                 <hr/>
-                <div className={classes.Flex}>
-                    {anaPreviews}
-                </div>
+                {this.state.status === 'failed' ? this.generateNoInternetNotice() : null}
+                {this.state.status === 'loading' ? this.generateSpinner() : null}
+                {this.state.status === 'loaded' ? <div className={classes.Flex}>{anaPreviews}</div> : null }
             </main>
         )
     }

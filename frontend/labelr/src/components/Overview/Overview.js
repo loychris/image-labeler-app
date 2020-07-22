@@ -25,6 +25,7 @@ import img16 from './CatPreview/CategorieImages/tree.png';
 import img17 from './CatPreview/CategorieImages/human.png';
 import img18 from './CatPreview/CategorieImages/money.png';
 import img19 from './CatPreview/CategorieImages/lamp.png';
+import no_internet from '../no_internet.svg';
 
 class Overview extends Component {
   state = {
@@ -65,6 +66,16 @@ class Overview extends Component {
 
   generateFailureNotice() {
       return <span>Sorry, something went wrong.</span>
+  }
+
+  
+  generateNoInternetNotice() {
+    if (this.state.failed) {
+      return <div> 
+        <span><img src={no_internet}/></span>
+        <span><br/>Sorry, something went wrong.</span>
+        </div>;
+    }
   }
 
     

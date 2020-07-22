@@ -1,6 +1,8 @@
 import classes from './Achievements.module.css'
 import React, { Component } from 'react';
+import { Col, Spinner } from 'react-bootstrap';
 import AchPreview from './AchPreview/AchPreview';
+import axios from 'axios';
 import moment from 'moment';
 
 import pic1 from './AchPreview/AchievementImages/moon.svg';
@@ -24,31 +26,52 @@ import pic18 from './AchPreview/AchievementImages/week.png'
 import pic19 from './AchPreview/AchievementImages/hustler.svg'
 
 
+import no_internet from '../no_internet.svg';
 
 
 class Achievements extends Component {
 
     state = {
-        loaded: false,
+        status: 'not loaded',
+        statistics: null
     }
 
-    // componentDidMount = () => {
-    //     if(!this.state.loaded){
-    //         axios({
-    //             method: 'get',
-    //             url: '', 
-    //             data: ,
-    //             headers: {
-    //                 'Content-Type': 'multipart/form-data',
-    //                 'Authorization': `Bearer ${currentToken}`
-    //             }
-    //         })
-    //         .then(res => {
-    //             console.log(res.data);
-    //         }).catch(err => console.log(err))
-    //     }
-    // }
+    componentDidMount = () => {
+        if(this.state.status === 'not loaded'){
+          const currentToken = JSON.parse(localStorage.getItem('userData')).token;
+            axios({
+                method: 'get',
+                url: '/users/me/labeled/statistics', 
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${currentToken}`
+                }
+            })
+            .then(res => {
+              this.setState({
+                status: 'loaded',
+                statistics: res.data
+              })
+            }).catch(err => console.log(err))
+        }
+    }
 
+    generateSpinner() {
+        return (
+          <Spinner
+            className={classes.Spinner}
+            animation='border'
+            variant='secondary'
+          />
+        );
+    }
+  
+    generateNoInternetNotice() {
+        return (<div> 
+          <span><img src={no_internet}/></span>
+          <span><br/>Sorry, something went wrong.</span>
+          </div>);
+    }
 
 render() {
 
@@ -111,23 +134,17 @@ render() {
         //12 active month since signup
     ]
 
-
-    
-
-    
-
     const achPreviews = achievements.map(c => {
         return <AchPreview {...c} />
     })
-
-    return (
-        <main >
-            <h1>Your Achievements</h1>
-            <hr/>
-            <div className={classes.Flex}>
-                {achPreviews}
-            </div>
-        </main>
+        return (
+            <main >
+                <h1>Your Achievements</h1>
+                <hr/>
+                {this.state.status === 'loading' ? this.generateSpinner() : null}
+                {this.state.status === 'error' ? this.generateNoInternetNotice(): null}
+                {this.state.status === 'loaded' ? <div className={classes.Flex}>{achPreviews}</div>: null}
+            </main>
     )
 
     }
