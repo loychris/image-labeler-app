@@ -332,6 +332,17 @@ router.delete('/images/:id', auth, async (req, res) => {
   }
 })
 
+router.delete('/images/', async (req, res, next) => {
+  try{
+      Image.remove({}, () => {
+          console.log('Deleted all Images');
+          res.status(200).send({msg: 'deleted All images'});
+      })
+  }catch(e){
+      res.status(500).send({message: 'something went wrong while deleting all Images'});
+  }
+})
+
 
 
 

@@ -19,7 +19,6 @@ const acceptedFileTypes = ['image/x-png', 'image/png', 'image/jpg', 'image/jpeg'
 
 function  UploadForm() {
 
-    const [images, setImages] = useState([]);
     const [icon, setIcon] = useState(null);
     const [name, setName] = useState('');
     const [weeks, setWeeks] = useState(5);
@@ -33,13 +32,8 @@ function  UploadForm() {
 
 
     const handleOnIconDrop = async (acceptedFiles, rejectedFiles) => {
-        if(acceptedFiles && acceptedFiles.length > 0){
-            var reader = new FileReader();  
-            reader.onload = function(e) {  
-                setIcon(e.target.result);
-            }
-            reader.readAsDataURL(acceptedFiles[0], "UTF-8");
-        }
+        console.log(acceptedFiles);
+        setIcon(acceptedFiles[0]);
     }
 
     const getUploadIcon = () => {
@@ -70,13 +64,6 @@ function  UploadForm() {
         setFiles(filesNew);
     }
 
-    const addDBId = (id, _id) => {
-        const filesNew = files.map(f => {
-            if(f.id === id ) return {...f, _id}
-            return {...f}
-        })
-        setFiles(filesNew);
-    }
 
     const handleOnDrop = async (acceptedFiles, rejectedFiles) => {
         if(acceptedFiles && acceptedFiles.length > 0){
@@ -97,15 +84,17 @@ function  UploadForm() {
             && name.length < 20 
     }
 
+    const getIds = () => {
+        files.map(x => x._ids)
+    }
 
     const onStartUpload = async () => {
         const currentToken = JSON.parse(localStorage.getItem('userData')).token;
             /////////////////////////////////////////////////////
             /////////////////////////////////////////////////////
             /////////////////////////////////////////////////////
-
-
-        const ids = [];
+        let ids = [];
+        let imgsNew = files;
         for(let i=0; i<files.length; i++){
 
             const formData = new FormData();
@@ -122,50 +111,40 @@ function  UploadForm() {
                 }
             })
             .then(res => {
-                ids.push(res.data.img._id)
+                imgsNew[i]._id = res.data.img._id;
+                ids.push(res.data.img._id);
+                if(ids.length === files.length){
+                    console.log('#files', files.length);
+                    console.log('#ids', ids.length);
+                    setFiles(imgsNew);
+                    const formData = new FormData();
+                    formData.append('image', icon ? icon : files[0].file);
+                    formData.append('deadline', deadline);
+                    formData.append('label', name);
+                    console.log('ImageIds', files.map(f => f._id));
+                    formData.append('imageId', ids)
+        
+                    axios({
+                        method: 'post',
+                        url: 'http://localhost:3000/set', 
+                        data: formData,
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            'Authorization': `Bearer ${currentToken}`
+                        }
+                    })
+                    .then(res => {
+                        console.log('Set saved', res);
+                    })
+                    .catch(e => {
+                        if (e.response)  console.log(e.response.data)
+                    });
+                }
             })
             .catch((e) => {
                 console.log(e)
-            })
-            // const responseData = await sendRequest(
-            //     'http://localhost:3000/upload', 
-            //     'POST', 
-            //     formData,
-            //     {'Authorization': `Bearer ${currentToken}`}
-            // )  
-            // if(responseData.img){
-            //     addDBId(file.id, responseData.img._id);
-            //     const newProgress = uploadProgress + 1/files.length;
-            //     setUploadProgress(newProgress);
-            //     console.log(uploadProgress);
-            // } 
+            }) 
         }
-        Promise.all(ids).then(() => {
-            console.log("Images uploaded", ids);
-            const formData = new FormData();
-            formData.append('image', icon ? icon : files[0].file);
-            formData.append('deadline', deadline);
-            formData.append('label', name);
-            formData.append('imageId', ids)
-
-            axios({
-                method: 'post',
-                url: 'http://localhost:3000/set', 
-                data: formData,
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${currentToken}`
-                }
-            })
-            .then(res => {
-                console.log('Set saved', res);
-            });
-        });
-        
-
-
-
-
 
 
 
@@ -260,7 +239,6 @@ function  UploadForm() {
                     )}
                 </Dropzone>
                 <div className={classes.ButtonContainer}>
-                {uploadProgress}
                 <Button 
                     onClick={onStartUpload} 
                     variant="contained"     

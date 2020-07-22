@@ -49,6 +49,7 @@
 }
 
 
+
 .NameLength {
     float: right;
 }
@@ -57,6 +58,10 @@
 .uploadForm {
     text-align: left;
 } 
+
+.uploadForm input[type=text]:focus {
+    outline: none;
+}
 
 .uploadForm input[type=text] {
     height: 40px;

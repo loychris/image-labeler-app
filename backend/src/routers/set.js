@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const Image = require('../models/image');
 const SetOBJ = require('../models/set');
@@ -63,8 +64,8 @@ router.get('/labels', async (req,res) => {
         const labels = sets.map( set => {
             console.log(set.label);
             return set.label
-        } );
-        res.status(200).send(Array.from(new Set(labels)));
+        } )
+        res.status(200).send(Array.from(new Set(labels)))
     }
     catch (e) {
         res.status(500).send(e)
@@ -74,40 +75,48 @@ router.get('/labels', async (req,res) => {
 
 
 router.post('/',auth, fileUpload.single('image'), async ( req, res ) => {
-    if(!req.file) console.log('no icon file attached');
-    if(!req.body.imageId) console.log('no Image Ids given');
-    if(!req.body.label) console.log('no label definded');
-    
+    if(!req.file) res.status(400).send({msg: 'no icon file attached'})
+    if(!req.body.imageId) res.status(400).send({msg: 'no Image Ids given'})
+    if(!req.body.label) res.status(400).send({msg:'no label definded'})
+    if(!req.body.deadline) res.status(400).send({msg:'no deadline definded'})
     const set = new SetOBJ({
         owner: req.user._id,
-        imageId: req.body.imageId,
+        imageId: req.body.imageId.split(','),
         deadline: req.body.deadline,
         icon: req.file.buffer,
         label: req.body.label
     })
+    let setCompleted
+    const imageIds = req.body.imageId.split(',')
+    let images
     try{
-        const setCompleted = await set.save();
-    }catch(e){console.log('There was a propblem while saving the set', e)}
-    if(setCompleted){
-        console.log(setCompleted._id);
-        try {
-            req.user.imageSets.push(setCompleted._id)
-        }catch(e){
-            res.status(500).send({msg: 'there was a problem while pushing the set to the user'});
-        }
-        try{
-            req.body.imageId.forEach( async (_id) => {
-                const image = await Image.findOne({_id})
-                image.imageSetId = setCompleted._id
-            })
-        }catch(e){
-            res.status(500).send({msg: 'There was a problem while updating the images with the setId'});
-        }
-        res.status(201).send({ msg: 'set added successfully' });
-    }else {
-        res.status(400).send({msg: 'No Set id'});
+        setCompleted = await set.save()
+    }catch(e){
+        console.log(e)
     }
+    req.user.imageSets.push(setCompleted._id)
+    try{
+        images = await Image.find().where('_id').in(imageIds).exec()
+    }catch(e){        
+        console.log(e)
+    }
+    images.map(img => {
+        img.imageSetId = setCompleted._id
+        return img
+    })
+    try {
+        const sess = await mongoose.startSession();
+        sess.startTransaction();
+        await req.user.save({session: sess});
+        for(let i=0;i<images.length; i++){
+            await images[i].save({session: sess});
+        }
+        await sess.commitTransaction();
 
+    }catch(e){
+        console.log(e)
+    }
+    res.send({ setCompleted })
 }); 
 
 
@@ -143,7 +152,18 @@ router.delete('/:id', async (req, res) => {
     }catch (e) {
         res.status(500).send({error: "Something went wrong, the set was not removed"})
     }
+})
 
+
+router.delete('/', async (req, res, next) => {
+    try{
+        SetOBJ.remove({}, () => {
+            console.log('Deleted all sets');
+            res.status(200).send({msg: 'deleted All sets'});
+        })
+    }catch(e){
+        res.status(500).send({message: 'something went wrong while deleting all sets'});
+    }
 })
 
 
