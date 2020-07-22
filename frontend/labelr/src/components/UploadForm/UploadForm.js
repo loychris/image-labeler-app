@@ -81,7 +81,7 @@ function  UploadForm() {
         return files 
             && files.length > 0 
             && name 
-            && name.length < 20 
+            && name.length <= 20 
     }
 
     const getIds = () => {
@@ -114,16 +114,12 @@ function  UploadForm() {
                 imgsNew[i]._id = res.data.img._id;
                 ids.push(res.data.img._id);
                 if(ids.length === files.length){
-                    console.log('#files', files.length);
-                    console.log('#ids', ids.length);
                     setFiles(imgsNew);
                     const formData = new FormData();
                     formData.append('image', icon ? icon : files[0].file);
                     formData.append('deadline', deadline);
                     formData.append('label', name);
-                    console.log('ImageIds', files.map(f => f._id));
                     formData.append('imageId', ids)
-        
                     axios({
                         method: 'post',
                         url: 'http://localhost:3000/set', 
@@ -137,7 +133,7 @@ function  UploadForm() {
                         console.log('Set saved', res);
                     })
                     .catch(e => {
-                        if (e.response)  console.log(e.response.data)
+                        console.log(e.response ? e.response.data: e)
                     });
                 }
             })

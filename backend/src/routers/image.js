@@ -1,5 +1,4 @@
 const express = require('express');
-const multer = require('multer');
 const moment = require('moment');
 
 const router = express.Router();
@@ -8,34 +7,16 @@ const fileUpload = require('../middleware/file-upload');
 const auth = require('../middleware/auth')
 const achievements = require('../middleware/achievements')
 const Image = require('../models/image')
-
-// CONFIGURE UPLOADE FILES
-const upload = multer({
-  limits: {
-    fileSize: 10000000    // 10mb
-  },
-  fileFilter(req, file, callback) {
-    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-      return callback(new Error('Non valid file type'))
-    }
-    callback(undefined, true);
-  }
-})
-
+const Set = require('../models/set')
 
 // ------------------------ GET ROUTES ------------------------
 
 // Get all available labels- no duplicates
 router.get('/labels', async (req, res) => {
   try {
-    const images = await Image.find()
-    let labelsList = [];
-    const labels = images.map( image => {
-      if (image.labels.length > 0 ){
-        labelsList = labelsList.concat(image.labels.map( label => label.label ));
-      }
-    })
-    res.status(200).send(Array.from(new Set(labelsList)));
+    const sets = await Set.find()
+    let labels = sets.map(s => s.label)
+    res.status(200).send(labels);
   }
   catch (e) {
     res.status(500).send(e)
