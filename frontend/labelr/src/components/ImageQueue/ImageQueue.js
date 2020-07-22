@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+import axios from 'axios';
+
+
 import ImageContainer from './ImageContianer/ImageContainer';
 import BackButton from '../BackButton/BackButton';
 
@@ -9,38 +12,37 @@ import arrow from './arrow.png';
 import arrowright from './arrowright.png';
 
 
-
-import pic0 from './DummyImages/Cars/0.png';
-import pic1 from './DummyImages/Cars/1.png';
-import pic2 from './DummyImages/Cars/2.png';
-import pic3 from './DummyImages/Cars/3.png';
-import pic4 from './DummyImages/Cars/4.png';
-import pic5 from './DummyImages/Cars/5.png';
-import pic6 from './DummyImages/Cars/6.png';
-import pic7 from './DummyImages/Cars/7.png';
-import pic8 from './DummyImages/Cars/8.png';
-import pic9 from './DummyImages/Cars/9.png';
-
-const images = [pic0, pic1, pic2, pic3, pic4, pic5, pic6, pic7, pic8, pic9];
-
 class ImageQueue extends Component {
 
     state = {
         queue: [
-            {pos: 0, show: 'left', id: 0, pic: pic0},
-            {pos: 1, show: 'middle', id: 1, pic: pic1},
-            {pos: 2, show: 'middle', id: 2, pic: pic2},
-            {pos: 3, show: 'middle', id: 3, pic: pic3},
-            {pos: 4, show: 'middle', id: 4, pic: pic4},
-            {pos: 5, show: 'middle', id: 5, pic: pic5},
-            {pos: 6, show: 'middle', id: 6, pic: pic6},
-            {pos: 7, show: 'middle', id: 7, pic: pic7},
-            {pos: 8, show: 'middle', id: 8, pic: pic8}, 
-            {pos: 9, show: 'middle', id: 9, pic: pic9}
+            {pos: 0, show: 'left', id: "5f04f1bdad32b512d3840356"},
+            {pos: 1, show: 'middle', id:"5f04f1bdad32b512d3840357"},
+            {pos: 2, show: 'middle', id: 2},
+            {pos: 3, show: 'middle', id: 3},
+            {pos: 4, show: 'middle', id: 4},
+            {pos: 5, show: 'middle', id: 5},
+            {pos: 6, show: 'middle', id: 6},
+            {pos: 7, show: 'middle', id: 7},
+            {pos: 8, show: 'middle', id: 8}, 
+            {pos: 9, show: 'middle', id: 9}
         ],
         nextPicId: 10,
-        timeStampLastLabel: 0
+        timeStampLastLabel: 0,
+        idsLoaded: false
     }
+
+    componentDidMount() {
+        console.log('--------------------');
+        const category = this.props.match.params.category; 
+        console.log(category);
+        console.log('--------------------');
+        if(!this.state.idsLoaded){
+            console.log("LOADING IMAGES");
+        }
+        document.addEventListener("keyup", this.keypressHandler, false);
+    }
+
 
     getButtonBackgroundSVG = (dir) => {
         return(
@@ -100,15 +102,7 @@ class ImageQueue extends Component {
         )
     }
 
-    componentDidMount() {
-        console.log('--------------------');
-        const category = this.props.match.params.category;
-        console.log('Category: ', this.props.match.params.category);
-        console.log('--------------------');
 
-        document.addEventListener("keyup", this.keypressHandler, false);
-        // TODO: fetch next ids from Server and fill state.queue
-    }
 
     // When left-key / right-key is pressed the first image also gets labeled
     keypressHandler = (event) => {
@@ -133,7 +127,7 @@ class ImageQueue extends Component {
                     return ({ ...x, show, pos: newPos });
                 })
                 .filter(x => {return x.pos >= 0});
-            newQueue.push({pos: 9, show: '', id: this.state.nextPicId, pic: images[this.state.nextPicId%10]})
+            newQueue.push({pos: 9, show: '', id: this.state.nextPicId})
             const newNextPicId = this.state.nextPicId+1;
             this.setState({
                 queue: newQueue, 
@@ -145,7 +139,7 @@ class ImageQueue extends Component {
 
     render(){
         const imageContainers = this.state.queue.map(i => {
-            return <ImageContainer {...i} key={i.id}/>
+            return <ImageContainer {...i} key={i.pos}/>
         })
         const leftButtonClasses = [classes.leftButton, classes.button]
         const rightButtonClasses = [classes.rightButton, classes.button]

@@ -9,35 +9,31 @@ class Menu extends Component {
   /*
   Show Link to Login/Register if user is not logged in
   */
-  // renderLoginSignup() {
-  //   if (!this.props.loggedIn) {
-  //     return <Nav.Link href='/login'>Login/Signup</Nav.Link>;
-  //   }
-  // }
 
   /*
   Show User's Menu if user or uploader is logged in
   */
-  // renderUserMenu() {
-  //   if (this.props.loggedIn) {
-  //     return (
-  //       <NavDropdown
-  //         alignRight
-  //         title={this.props.userName}
-  //         id='collasible-nav-dropdown'
-  //       >
-  //         <NavDropdown.Item href=''>User Profile</NavDropdown.Item>
-  //         <NavDropdown.Item>Achievements</NavDropdown.Item>
-  //         <NavDropdown.Divider />
-  //         <NavDropdown.Item hrerf=''>Delete Account</NavDropdown.Item>
-  //         <NavDropdown.Divider />
-  //         <NavDropdown.Item hrerf='' onClick={this.props.logout}>
-  //           Logout
-  //         </NavDropdown.Item>
-  //       </NavDropdown>
-  //     );
-  //   }
-  // }
+  renderUserMenu() {
+    if (this.props.loggedIn) {
+      return (
+        <NavDropdown
+          alignRight
+          title={this.props.userName}
+          id='collasible-nav-dropdown'
+        >
+          <NavDropdown.Item href=''>User Profile</NavDropdown.Item>
+          <NavDropdown.Item >Achievements</NavDropdown.Item>
+          <NavDropdown.Item >Analytics</NavDropdown.Item>
+          <NavDropdown.Divider />
+          <NavDropdown.Item hrerf=''>Delete Account</NavDropdown.Item>
+          <NavDropdown.Divider />
+          <NavDropdown.Item hrerf='' onClick={this.props.logout}>
+            Logout
+          </NavDropdown.Item>
+        </NavDropdown>
+      );
+    }
+  }
 
   /*
   Show Highscore, Achievement and Logout if user is logged in
@@ -52,11 +48,7 @@ class Menu extends Component {
           <NavLink to='/achievements' className={classes.NavLink}>
             Achievements
           </NavLink>
-          <NavLink
-            to='/'
-            className={classes.Logout}
-            onClick={this.props.logout}
-          >
+          <NavLink to='/' className={classes.NavLink} onClick={this.props.logout}>
             Logout
           </NavLink>
         </Nav>
@@ -74,11 +66,7 @@ class Menu extends Component {
           <NavLink to='/uploadForm' className={classes.NavLink}>
             Upload Images
           </NavLink>
-          <NavLink
-            to='/'
-            className={classes.Logout}
-            onClick={this.props.logout}
-          >
+          <NavLink to='/' onClick={this.props.logout} className={classes.NavLink}>
             Logout
           </NavLink>
         </Nav>
