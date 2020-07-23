@@ -1,6 +1,7 @@
 import React, { useState, Fragment } from 'react';
 import Dropzone from 'react-dropzone'
 import uuid from 'react-uuid'
+import { useHistory } from "react-router-dom";
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -19,6 +20,7 @@ const acceptedFileTypes = ['image/x-png', 'image/png', 'image/jpg', 'image/jpeg'
 
 function  UploadForm() {
 
+    const [goal, setGoal] = useState(1);
     const [icon, setIcon] = useState(null);
     const [name, setName] = useState('');
     const [weeks, setWeeks] = useState(5);
@@ -29,6 +31,8 @@ function  UploadForm() {
 
 
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    const history = useHistory();
+
 
 
     const handleOnIconDrop = async (acceptedFiles, rejectedFiles) => {
@@ -52,11 +56,15 @@ function  UploadForm() {
         }
     }
 
-    const handleOnRangeInput = (event) => {
+    const handleOnWeeksInput = (event) => {
         var date = new Date();
-        var res = date.setTime(date.getTime() + (event.target.value * 7 * 24 * 60 * 60 * 1000));
+        date.setTime(date.getTime() + (event.target.value * 7 * 24 * 60 * 60 * 1000));
         setWeeks(event.target.value);
         setDeadline(date);
+    }
+
+    const handleOnRangeInput = (event) => {
+        setGoal(event.target.value);
     }
 
     const deleteImage = (id) => {
@@ -90,9 +98,6 @@ function  UploadForm() {
 
     const onStartUpload = async () => {
         const currentToken = JSON.parse(localStorage.getItem('userData')).token;
-            /////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////
         let ids = [];
         let imgsNew = files;
         for(let i=0; i<files.length; i++){
@@ -119,7 +124,8 @@ function  UploadForm() {
                     formData.append('image', icon ? icon : files[0].file);
                     formData.append('deadline', deadline);
                     formData.append('label', name);
-                    formData.append('imageId', ids)
+                    formData.append('imageId', ids);
+                    formData.append('goal', goal*files.length);
                     axios({
                         method: 'post',
                         url: 'http://localhost:3000/set', 
@@ -131,6 +137,7 @@ function  UploadForm() {
                     })
                     .then(res => {
                         console.log('Set saved', res);
+                        history.push("/analytics");
                     })
                     .catch(e => {
                         console.log(e.response ? e.response.data: e)
@@ -141,20 +148,13 @@ function  UploadForm() {
                 console.log(e)
             }) 
         }
-
-
-
-            /////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////
-
     }
 
     const date = new Date(deadline)
     const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' }) 
     const [{ value: month },,{ value: day },,{ value: year }] = dateTimeFormat .formatToParts(date); 
 
-    const price = parseFloat(files.length* 0.01 * (4/(0.5 + Number(weeks)) + 0.3)).toFixed(2);
+    const price = parseFloat(goal * files.length* 0.01 * (4/(0.5 + Number(weeks)) + 0.3)).toFixed(2);
 
     return(
         <main>
@@ -192,8 +192,8 @@ function  UploadForm() {
                     </div>
                     <div className={classes.Deadline}>
                         <label>Ready in {weeks} weeks: </label>
-                        <input  type="range" onChange={handleOnRangeInput} min="1" max="5" value={weeks} list="num" />
-                        <datalist id="num">
+                        <input  type="range" onChange={handleOnWeeksInput} min="1" max="5" value={weeks} list="weeks" />
+                        <datalist id="weeks">
                             <option value="1" label="1"/>
                             <option value="2" label="2"/>
                             <option value="3" label="3"/>
@@ -202,7 +202,22 @@ function  UploadForm() {
                         </datalist> 
                         <div>Resulsts ready on: {`${day} ${month} ${year }`}</div>
                     </div>
-
+                    <div>
+                        <label>How many people should label each Image?</label>
+                        <input  type="range" onChange={handleOnRangeInput} min="1" max="10" value={goal} list="num" />
+                        <datalist id="num">
+                            <option value="1" label="1"/>
+                            <option value="2" label="2"/>
+                            <option value="3" label="3"/>
+                            <option value="4" label="4"/>
+                            <option value="5" label="5"/>
+                            <option value="6" label="6"/>
+                            <option value="7" label="7"/>
+                            <option value="8" label="8"/>
+                            <option value="9" label="9"/>
+                            <option value="10" label="10"/>
+                        </datalist> 
+                    </div>
                 </div>
 
                 <div className={classes.Previews}>

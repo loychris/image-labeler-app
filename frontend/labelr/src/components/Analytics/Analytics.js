@@ -20,6 +20,43 @@ class Analytics extends Component {
         files: []
     }
 
+  componentDidMount = () => {
+    if(this.state.status === 'loading'){
+      const currentToken = JSON.parse(localStorage.getItem('userData')).token;
+        const config = {
+          headers: { 
+              'Access-Control-Allow-Origin': '*',
+              Authorization: `Bearer ${currentToken}` 
+            }
+        }
+        axios.get('http://127.0.0.1:3000/set/my', config)
+        .then(res => {
+          console.log(res.data);
+          if(res.data){
+            if(res.data.length > 0){
+              const sets = res.data.map(set => {
+                  console.log(set); 
+                  return {
+                      deadline: set.deadline.split(',')[0],
+                      name: set.label,
+                      src: this.imageEncode(set.icon.data),
+                      uploaded: 'uploadDate',
+                      progress: set.counter / set.goal
+                  }
+              })
+
+              this.setState({ imageSets: sets, status: 'loaded' });
+            }
+          } 
+        })
+        .catch((e) => {
+          this.setState({status: 'failed'})
+          console.log(e);
+        })
+      }
+
+    }
+
     generateSpinner() {
         return (
           <Spinner
@@ -44,39 +81,7 @@ class Analytics extends Component {
       return "data:"+mimetype+";base64,"+b64encoded
   }
     
-    componentDidMount = () => {
-      if(this.state.status === 'loading'){
-        const currentToken = JSON.parse(localStorage.getItem('userData')).token;
-          const config = {
-            headers: { 
-                'Access-Control-Allow-Origin': '*',
-                Authorization: `Bearer ${currentToken}` 
-              }
-          }
-          axios.get('http://127.0.0.1:3000/set/my', config)
-          .then(res => {
-            console.log(res.data);
-            if(res.data){
-              if(res.data.length > 0){
-                const sets = res.data.map(set => {
-                    return {
-                        deadline: set.deadline.split(',')[0],
-                        name: set.label,
-                        src: this.imageEncode(set.icon.data),
-                        uploaded: 'uploadDate'
-                    }
-                })
-                this.setState({ imageSets: sets, status: 'loaded' });
-              }
-            } 
-          })
-          .catch((e) => {
-            this.setState({status: 'failed'})
-            console.log(e);
-          })
-        }
-  
-      }
+
 
     render() {
         const anaPreviews = this.state.imageSets.map((c, i) => {
