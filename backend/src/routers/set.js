@@ -82,7 +82,6 @@ router.post('/',auth, upload.single('image'), async ( req, res ) => {
                 label: req.body.label
             })
             const setCompleted = await set.save();
-            console.log(setCompleted._id);
             req.user.imageSets.push(setCompleted._id)
 
             req.body.imageId.forEach( async (_id) => {

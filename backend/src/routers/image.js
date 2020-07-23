@@ -27,7 +27,7 @@ const upload = multer({
 // Get all available labels- no duplicates
 router.get('/labels', async (req, res) => {
   try {
-    const images = await Image.find()
+    const images = await Image.find({},{labels:1})
     let labelsList = [];
     const labels = images.map( image => {
       if (image.labels.length > 0 ){
@@ -40,6 +40,7 @@ router.get('/labels', async (req, res) => {
     res.status(500).send(e)
   }
 })
+
 
 // Get image by id
 router.get('/images/id/:id', async (req, res) => {
