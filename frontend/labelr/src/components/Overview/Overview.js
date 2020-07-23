@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Col, Spinner } from 'react-bootstrap';
+import axios from 'axios';
 
 import CatPreview from './CatPreview/CatPreview';
 
@@ -29,7 +30,7 @@ import no_internet from '../no_internet.svg';
 
 class Overview extends Component {
   state = {
-    status: 'loaded',
+    status: 'loading',
     categories: [
         { name: 'Basketballs', route: '/cat1', src: img0,progress:'430/500 images labeled' , time:'3 days left' },
         { name: 'Bicycle', route: '/cat2', src: img1,progress:'430/500 images labeled' , time:'3 days left' },
@@ -52,6 +53,40 @@ class Overview extends Component {
         { name: 'Cash', route: '/cat19', src: img18,progress:'430/500 images labeled' , time:'3 days left' },
         { name: 'Lamps', route: '/cat20', src: img19,progress:'430/500 images labeled' , time:'3 days left' },
     ]
+}
+
+componentDidMount() {
+  if(this.state.status === 'loaded'){
+    const currentToken = JSON.parse(localStorage.getItem('userData')).token;
+    const config = {
+      headers: { 
+          'Access-Control-Allow-Origin': '*',
+          Authorization: `Bearer ${currentToken}` 
+        }
+    }
+    axios.get('http://127.0.0.1:3000/set/my', config)
+    .then(res => {
+      console.log(res.data);
+      if(res.data){
+        if(res.data.length > 0){
+          const sets = res.data.map(set => {
+              return {
+                  deadline: set.deadline.split(',')[0],
+                  name: set.label,
+                  src: this.imageEncode(set.icon.data),
+                  uploaded: 'uploadDate'
+              }
+          })
+          this.setState({ imageSets: sets, status: 'loaded' });
+        }
+      } 
+    })
+    .catch((e) => {
+      this.setState({status: 'failed'})
+      console.log(e);
+    })
+  }
+
 }
 
   generateSpinner() {

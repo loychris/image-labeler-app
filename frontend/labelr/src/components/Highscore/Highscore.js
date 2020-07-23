@@ -36,8 +36,8 @@ class Highscore extends Component {
     }
 
   generateTable() {
-      return this.state.topUsers.map( user => (
-        <tr>
+      return this.state.topUsers.map( (user, i) => (
+        <tr key={i}>
           <td>{user.ranking}</td>
           <td>{user.name}</td>
           <td className={classes.ImagesLabeledColumn}>{user.achievements}</td>
@@ -75,15 +75,19 @@ class Highscore extends Component {
         <h1>Highscore</h1>
         <hr/>
         <table className={classes.table}>
+        <thead >
           <tr>
             <th>Ranking</th>
             <th>Username</th>
             <th>Achievements</th>
             <th>Images Labeled</th>
           </tr>
+        </thead>
+        <tbody>
           {this.state.status === 'loading' ? this.generateSpinner() : null}
           {this.state.status === 'loaded' ? this.generateTable() : null}
           {this.state.status === 'failed' ? this.generateNoHighscoresNotice() : null}
+        </tbody>
         </table>
       </main>
     );
