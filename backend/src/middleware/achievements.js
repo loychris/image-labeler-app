@@ -190,7 +190,7 @@ const achievements = async (req, res, next) => {
     switch (registeredAt) {
         case (moment(registeredAt) >= moment().subtract(730, "days") &&  !exsistingAcheivements.includes("Two years anniversary")):
             achievement = {
-                achievement: "Two years anniversary",
+                achievement: "2 Years!",
                 date: moment().format().substr(0,10)
             }
             acheivements.push(achievement);
