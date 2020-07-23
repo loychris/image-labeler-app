@@ -10,9 +10,31 @@
     border-radius: 10px;
     padding: 10px;
     z-index: 10;
+    transition: 0.15s ease;
+    position: relative;
+}
+
+.Dropzone:hover {
+    outline: 2px dashed grey;
+    outline-offset: -15px;
+
+}
+
+.Dropzone:hover path {
+    fill-opacity: 0.2;
+}
+
+.Dropzone:hover .ChooseFile{
+    color: #a5a5a5; 
 }
 
 .ZoneText {
+    position: absolute;
+    margin: auto; 
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
     font-size: 20px;
 }
 
@@ -27,17 +49,19 @@
 }
 
 
+
 .NameLength {
     float: right;
 }
 
-.ChooseFile:hover {
-    color: #a5a5a5;
-}
 
 .uploadForm {
     text-align: left;
 } 
+
+.uploadForm input[type=text]:focus {
+    outline: none;
+}
 
 .uploadForm input[type=text] {
     height: 40px;
@@ -58,19 +82,25 @@
     right: 0px;
     color: #ffffff;
     background: #343a40;
+}
+/*
     box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
     cursor: pointer; 
     padding: 10px 50px; 
     font-size: 16pt; 
     border: none;
+}*/
+
+.uploadForm label {
+    display: block; 
 }
 
 .ButtonContainer{
     position: relative;
     display: block; 
     min-height: 150px;
-}
+} 
 
 .Previews {
     display: flex;
@@ -107,6 +137,35 @@
 .inputContainer div {
     margin-left: 10px; 
     margin-right: 10px; 
+}
+
+
+.Deadline {
+    max-width: 300px; 
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.Deadline input {
+    width: 100%;
+}
+
+datalist {
+    width: 121%;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+datalist option {
+    -webkit-box-flex: 1;
+    -webkit-flex-grow: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
+    -webkit-flex-basis: 0;
+        -ms-flex-preferred-size: 0;
+            flex-basis: 0;
 }
 
 label{

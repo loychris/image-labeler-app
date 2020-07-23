@@ -1,5 +1,4 @@
 const express = require('express');
-const multer = require('multer');
 const moment = require('moment');
 
 const router = express.Router();
@@ -8,34 +7,16 @@ const fileUpload = require('../middleware/file-upload');
 const auth = require('../middleware/auth')
 const achievements = require('../middleware/achievements')
 const Image = require('../models/image')
-
-// CONFIGURE UPLOADE FILES
-const upload = multer({
-  limits: {
-    fileSize: 10000000    // 10mb
-  },
-  fileFilter(req, file, callback) {
-    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-      return callback(new Error('Non valid file type'))
-    }
-    callback(undefined, true);
-  }
-})
-
+const Set = require('../models/set')
 
 // ------------------------ GET ROUTES ------------------------
 
 // Get all available labels- no duplicates
 router.get('/labels', async (req, res) => {
   try {
-    const images = await Image.find()
-    let labelsList = [];
-    const labels = images.map(image => {
-      if (image.labels.length > 0) {
-        labelsList = labelsList.concat(image.labels.map(label => label.label));
-      }
-    })
-    res.status(200).send(Array.from(new Set(labelsList)));
+    const sets = await Set.find()
+    let labels = sets.map(s => s.label)
+    res.status(200).send(labels);
   }
   catch (e) {
     res.status(500).send(e)
@@ -136,12 +117,15 @@ router.get('/images/next', auth, async (req, res) => {
 
 
 // Upload a new image
-router.post('/upload', auth, upload.single('image'), async (req, res) => {
-  if (req.file !== undefined) {
+router.post('/upload', auth, fileUpload.single('image'), async (req, res) => {
+  if(!req.body.label){
+    res.status(400).send({message: 'No label provided'});
+  }
+  if  (req.file !== undefined){
     const img = new Image({
       data: req.file.buffer,
       owner: req.user._id,
-      labels: [{ label: req.body.label, votes: [true] }]
+      labels: [{label:req.body.label, votes:[]}]
     })
     try{
       await img.save();
@@ -326,6 +310,17 @@ router.delete('/images/:id', auth, async (req, res) => {
     res.status(201).send({ msg: "Image deleted" });
   } catch (e) {
     res.status(500).send({ error: e, message: "something went wrong, could not delete image" });
+  }
+})
+
+router.delete('/images/', async (req, res, next) => {
+  try{
+      Image.remove({}, () => {
+          console.log('Deleted all Images');
+          res.status(200).send({msg: 'deleted All images'});
+      })
+  }catch(e){
+      res.status(500).send({message: 'something went wrong while deleting all Images'});
   }
 })
 

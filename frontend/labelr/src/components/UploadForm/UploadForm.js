@@ -1,7 +1,9 @@
 import React, { useState, Fragment } from 'react';
 import Dropzone from 'react-dropzone'
 import uuid from 'react-uuid'
-
+import axios from 'axios';
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 
 
 
@@ -10,7 +12,6 @@ import ImgPreview from './ImgPreview/ImgPreview';
 import classes from './UploadForm.module.css';
 
 import { useHttpClient } from './http-hook';
-import Achievements from "../Achievements/Achievements";
 
 
 const imageMaxSize = 1000000000; // bytes
@@ -18,10 +19,11 @@ const acceptedFileTypes = ['image/x-png', 'image/png', 'image/jpg', 'image/jpeg'
 
 function  UploadForm() {
 
-    const [images, setImages] = useState([]);
-    const [imageIDs, setImageIDs] = useState([]);
     const [icon, setIcon] = useState(null);
     const [name, setName] = useState('');
+    const [weeks, setWeeks] = useState(5);
+    const [deadline, setDeadline] = useState(new Date().toLocaleString());
+    const [uploadProgress, setUploadProgress] = useState(0); 
 
     const [files, setFiles] = useState([]);
 
@@ -30,13 +32,8 @@ function  UploadForm() {
 
 
     const handleOnIconDrop = async (acceptedFiles, rejectedFiles) => {
-        if(acceptedFiles && acceptedFiles.length > 0){
-            var reader = new FileReader();  
-            reader.onload = function(e) {  
-                setIcon(e.target.result);
-            }
-            reader.readAsDataURL(acceptedFiles[0], "UTF-8");
-        }
+        console.log(acceptedFiles);
+        setIcon(acceptedFiles[0]);
     }
 
     const getUploadIcon = () => {
@@ -55,19 +52,18 @@ function  UploadForm() {
         }
     }
 
+    const handleOnRangeInput = (event) => {
+        var date = new Date();
+        var res = date.setTime(date.getTime() + (event.target.value * 7 * 24 * 60 * 60 * 1000));
+        setWeeks(event.target.value);
+        setDeadline(date);
+    }
 
     const deleteImage = (id) => {
         const filesNew = files.filter(f => f.id !== id);
         setFiles(filesNew);
     }
 
-    const addDBId = (id, _id) => {
-        const filesNew = files.map(f => {
-            if(f.id === id ) return {...f, _id}
-            return {...f}
-        })
-        setFiles(filesNew);
-    }
 
     const handleOnDrop = async (acceptedFiles, rejectedFiles) => {
         if(acceptedFiles && acceptedFiles.length > 0){
@@ -80,30 +76,71 @@ function  UploadForm() {
         }
     }
 
+    //checking if the 
+    const checkValid = () => {
+        return files 
+            && files.length > 0 
+            && name 
+            && name.length <= 20 
+    }
+
+    const getIds = () => {
+        files.map(x => x._ids)
+    }
 
     const onStartUpload = async () => {
         const currentToken = JSON.parse(localStorage.getItem('userData')).token;
             /////////////////////////////////////////////////////
             /////////////////////////////////////////////////////
             /////////////////////////////////////////////////////
+        let ids = [];
+        let imgsNew = files;
+        for(let i=0; i<files.length; i++){
 
+            const formData = new FormData();
+            formData.append('image', files[i].file);
+            formData.append('label', name);
 
-            files.forEach(async file => {
-                const formData = new FormData();
-                formData.append('image', file.file);
-                formData.append('label', name);
-    
-                const responseData = await sendRequest(
-                    'http://localhost:3000/upload', 
-                    'POST', 
-                    formData,
-                    {'Authorization': `Bearer ${currentToken}`}
-                )  
-                console.log(responseData.img._id);  
-                addDBId(file.id, responseData.img._id);
+            axios({
+                method: 'post',
+                url: 'http://localhost:3000/upload', 
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${currentToken}`
+                }
             })
-
-
+            .then(res => {
+                imgsNew[i]._id = res.data.img._id;
+                ids.push(res.data.img._id);
+                if(ids.length === files.length){
+                    setFiles(imgsNew);
+                    const formData = new FormData();
+                    formData.append('image', icon ? icon : files[0].file);
+                    formData.append('deadline', deadline);
+                    formData.append('label', name);
+                    formData.append('imageId', ids)
+                    axios({
+                        method: 'post',
+                        url: 'http://localhost:3000/set', 
+                        data: formData,
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            'Authorization': `Bearer ${currentToken}`
+                        }
+                    })
+                    .then(res => {
+                        console.log('Set saved', res);
+                    })
+                    .catch(e => {
+                        console.log(e.response ? e.response.data: e)
+                    });
+                }
+            })
+            .catch((e) => {
+                console.log(e)
+            }) 
+        }
 
 
 
@@ -113,6 +150,11 @@ function  UploadForm() {
 
     }
 
+    const date = new Date(deadline)
+    const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' }) 
+    const [{ value: month },,{ value: day },,{ value: year }] = dateTimeFormat .formatToParts(date); 
+
+    const price = parseFloat(files.length* 0.01 * (4/(0.5 + Number(weeks)) + 0.3)).toFixed(2);
 
     return(
         <main>
@@ -148,6 +190,18 @@ function  UploadForm() {
                         <input className={classes.Name} onChange={handleOnNameImput} value={name} type='text'/>
                         <span className={classes.NameLength}>{name.length} / 20</span>
                     </div>
+                    <div className={classes.Deadline}>
+                        <label>Ready in {weeks} weeks: </label>
+                        <input  type="range" onChange={handleOnRangeInput} min="1" max="5" value={weeks} list="num" />
+                        <datalist id="num">
+                            <option value="1" label="1"/>
+                            <option value="2" label="2"/>
+                            <option value="3" label="3"/>
+                            <option value="4" label="4"/>
+                            <option value="5" label="5"/>
+                        </datalist> 
+                        <div>Resulsts ready on: {`${day} ${month} ${year }`}</div>
+                    </div>
 
                 </div>
 
@@ -165,24 +219,32 @@ function  UploadForm() {
                     accept='image/*'>
                     {({getRootProps, getInputProps}) => (
                         <div {...getRootProps()}>
-
                             <input {...getInputProps()} />
                             <section className={classes.Dropzone}>
-                                <p className={classes.ZoneText}> 
+                                <div className={classes.ZoneText}> 
                                     {getUploadIcon()}
                                     { 
-                                        images.length === 0 ? 
+                                        files.length === 0 ? 
                                             <span className={classes.ChooseFile}>Choose image files </span>
                                         :   <span className={classes.ChooseFile}>Choose more images </span>
                                     }
                                     <span>or drag them here</span>
-                                </p>
+                                </div>
                             </section>
                         </div>
                     )}
                 </Dropzone>
                 <div className={classes.ButtonContainer}>
-                    <button type='button' onClick={onStartUpload}>Upload Image Set for ${images.length*0.02.toFixed(2)}</button>
+                <Button 
+                    onClick={onStartUpload} 
+                    variant="contained"     
+                    color="#ffffff" 
+                                disabled={!checkValid()}> 
+                    Upload Image Set for ${price}
+                </Button>
+                    {/* <button type='button' onClick={onStartUpload} disabled>
+                        Upload Image Set for ${images.length*0.02.toFixed(2)}
+                    </button> */}
                 </div>
             </form>
         </main >

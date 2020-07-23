@@ -25,38 +25,36 @@ import img16 from './CatPreview/CategorieImages/tree.png';
 import img17 from './CatPreview/CategorieImages/human.png';
 import img18 from './CatPreview/CategorieImages/money.png';
 import img19 from './CatPreview/CategorieImages/lamp.png';
+import no_internet from '../no_internet.svg';
 
 class Overview extends Component {
   state = {
-    loading: false,
-    loaded: false,
-    failed: true,
+    status: 'loaded',
     categories: [
-      { name: 'Basketballs', route: '/cat1', src: img0 },
-      { name: 'Bicycle', route: '/cat2', src: img1 },
-      { name: 'Books', route: '/cat3', src: img2 },
-      { name: 'Cars', route: '/cat4', src: img3 },
-      { name: 'Cats', route: '/cat5', src: img4 },
-      { name: 'Dogs', route: '/cat6', src: img5 },
-      { name: 'Eyes', route: '/cat7', src: img6 },
-      { name: 'Footballs', route: '/cat8', src: img7 },
-      { name: 'Guitars', route: '/cat9', src: img8 },
-      { name: 'Food', route: '/cat10', src: img9 },
-      { name: 'Bridges', route: '/cat11', src: img10 },
-      { name: 'Phones', route: '/cat12', src: img11 },
-      { name: 'Boats', route: '/cat13', src: img12 },
-      { name: 'Shoes', route: '/cat14', src: img13 },
-      { name: 'Traffic Lights', route: '/cat15', src: img14 },
-      { name: 'Trains', route: '/cat16', src: img15 },
-      { name: 'Trees', route: '/cat17', src: img16 },
-      { name: 'Humans', route: '/cat18', src: img17 },
-      { name: 'Cash', route: '/cat19', src: img18 },
-      { name: 'Lamps', route: '/cat20', src: img19 },
-    ],
-  };
+        { name: 'Basketballs', route: '/cat1', src: img0,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Bicycle', route: '/cat2', src: img1,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Books', route: '/cat3', src: img2,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Cars', route: '/cat4', src: img3,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Cats', route: '/cat5', src: img4,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Dogs', route: '/cat6', src: img5,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Eyes', route: '/cat7', src: img6,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Footballs', route: '/cat8', src: img7,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Guitars', route: '/cat9', src: img8,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Food', route: '/cat10', src: img9,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Bridges', route: '/cat11', src: img10,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Phones', route: '/cat12', src: img11,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Boats', route: '/cat13', src: img12,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Shoes', route: '/cat14', src: img13,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Traffic Lights', route: '/cat15', src: img14,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Trains', route: '/cat16', src: img15,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Trees', route: '/cat17', src: img16,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Humans', route: '/cat18', src: img17,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Cash', route: '/cat19', src: img18,progress:'430/500 images labeled' , time:'3 days left' },
+        { name: 'Lamps', route: '/cat20', src: img19,progress:'430/500 images labeled' , time:'3 days left' },
+    ]
+}
 
   generateSpinner() {
-    if (this.state.loading) {
       return (
         <Spinner
           className={classes.Spinner}
@@ -64,14 +62,24 @@ class Overview extends Component {
           variant='secondary'
         />
       );
-    }
   }
 
   generateFailureNotice() {
+      return <span>Sorry, something went wrong.</span>
+  }
+
+  
+  generateNoInternetNotice() {
     if (this.state.failed) {
-      return <span>Sorry, something went wrong.</span>;
+      return <div> 
+        <span><img src={no_internet}/></span>
+        <span><br/>Sorry, something went wrong.</span>
+        </div>;
     }
   }
+
+    
+
 
   render() {
     const catPreviews = this.state.categories.map((c) => {
@@ -80,10 +88,10 @@ class Overview extends Component {
     return (
       <main>
         <h1>Select a Categorie</h1>
-        {this.generateSpinner()}
-        {this.generateFailureNotice()}
         <hr />
-        <div className={classes.Flex}>{catPreviews}</div>
+        {this.state.status === 'loading' ? this.generateSpinner() : null}
+        {this.state.status === 'failed' ? this.generateFailureNotice() : null }
+        {this.state.status === 'loaded' ? <div className={classes.Flex}>{catPreviews}</div> : null}        
       </main>
     );
   }

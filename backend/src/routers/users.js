@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/user');
 const auth = require('../middleware/auth')
 const acheivements = require('../middleware/achievements')
+const moment = require('moment');
 
 // ------------------------ GET ROUTES ------------------------
 
@@ -15,7 +16,7 @@ router.get('/', async (req, res) => {
 
         res.status(200).send(users)
     } catch (e) {
-        res.status(500).send("server error on ' GET('/') '")
+        res.status(500).send(e)
     }
 })
 
@@ -36,6 +37,34 @@ router.get('/me/profile', auth, async (req, res) => {
     res.status(200).send(req.user)
 });
 
+// Get my labeling statistics
+router.get('/me/labeled/statistics', auth ,async (req, res) => {
+    try{
+        const startOfTheWeek = moment().startOf('week').format('l');
+        const endOfTheWeek = moment().endOf('week').format('l');
+
+        const startOfTheMonth = moment().startOf('month').format('l');
+        const endOfTheMonth = moment().endOf('month').format('l');
+
+        const startOfTheYear = moment().startOf('year').format('l');
+        const endOfTheYear = moment().endOf('year').format('l');
+
+        const counter = req.user.counter;
+        const labeled = req.user.labeledImagesID.map( image => moment(image.timestamp).format('l') );
+
+        const today = labeled.filter(image => image === moment().format('l') );
+        const week = labeled.filter(image => moment(image).isBetween(startOfTheWeek, endOfTheWeek, undefined, []));
+        const month = labeled.filter(image => moment(image).isBetween(startOfTheMonth, endOfTheMonth, undefined, []));
+        const year = labeled.filter(image => moment(image).isBetween(startOfTheYear, endOfTheYear, undefined, []));
+
+        res.status(200).send({today: today.length, week: week.length, month: month.length, year: year.length, counter});
+
+    }catch(e){
+        res.status(500).send(e);
+    }
+});
+
+
 
 // Get n highest score
 router.get('/highscores/:n', async (req, res) => {
@@ -47,7 +76,7 @@ router.get('/highscores/:n', async (req, res) => {
 
         if (users.length > n) { users = users.slice(0, n) }
 
-        users = users.map(user => ({ _id: user._id, acheivements: user.acheivements, counter: user.counter }))
+        users = users.map(user => ({_id: user._id, name: user.name, achievements: user.achievements.length, counter: user.counter}))
 
         res.status(200).send(users);
     } catch (e) {

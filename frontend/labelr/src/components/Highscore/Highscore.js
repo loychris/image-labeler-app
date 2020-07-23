@@ -3,89 +3,50 @@ import axios from 'axios';
 
 import classes from './Highscore.module.css';
 import Spinner from 'react-bootstrap/Spinner';
+import no_internet from '../no_internet.svg';
 
 class Highscore extends Component {
   state = {
-    loading: true,
-    loaded: false,
-    failed: false,
-    topUsers: [
-      {
-        ranking: 1,
-        username: 'Martin',
-        imagesLabeled: 1100,
-        completedCategories: 36,
-      },
-      {
-        ranking: 2,
-        username: 'Chris',
-        imagesLabeled: 2200,
-        completedCategories: 13,
-      },
-      {
-        ranking: 3,
-        username: 'Tamir',
-        imagesLabeled: 5500,
-        completedCategories: 21,
-      },
-      {
-        ranking: 4,
-        username: 'Pascal',
-        imagesLabeled: 9000,
-        completedCategories: 110,
-      },
-      {
-        ranking: 5,
-        username: 'Antonia',
-        imagesLabeled: 15500,
-        completedCategories: 10,
-      },
-      {
-        ranking: 6,
-        username: 'Moritz',
-        imagesLabeled: 15500,
-        completedCategories: 10,
-      },
-      {
-        ranking: 7,
-        username: 'Marcus',
-        imagesLabeled: 3210,
-        completedCategories: 12,
-      },
-    ],
+    status: 'not loaded', // 'loaded', 'loading', 'failed'
+    topUsers: [],
   };
 
 
     componentDidMount = () => {
+      if(this.state.status === 'not loaded'){
         const config = {
-            headers: { 
-                'Access-Control-Allow-Origin': '*',
-                Authorization: `Bearer ${this.props.token}` 
+          headers: { 
+              'Access-Control-Allow-Origin': '*',
+              Authorization: `Bearer ${this.props.token}` 
             }
         }
         axios.get('http://127.0.0.1:3000/users/highscores/2', config)
         .then(res => {
-            this.setState({topUsers: res.data.map((user, i) => { return {...user, ranking: i+1} })
-        });
-        }).catch(() => alert('Something went wrong. Try again later.'))
+            this.setState({
+              topUsers: res.data.map((user, i) => { return {...user, ranking: i+1}}),
+              status: 'loaded'
+            })
+        })
+        .catch((e) => {
+          this.setState({status: 'failed'})
+          console.log(e);
+        })
+      }
+
     }
 
   generateTable() {
-    if (this.state.loaded) {
-      return this.state.topUsers.map((topUsers) => (
+      return this.state.topUsers.map( user => (
         <tr>
-          <td>{topUsers.ranking}</td>
-          <td>{topUsers.username}</td>
-          <td className={classes.ImagesLabeledColumn}>
-            {topUsers.imagesLabeled}
-          </td>
+          <td>{user.ranking}</td>
+          <td>{user.name}</td>
+          <td className={classes.ImagesLabeledColumn}>{user.achievements}</td>
+          <td className={classes.ImagesLabeledColumn}>{user.counter}</td>
         </tr>
       ));
-    }
   }
 
   generateSpinner() {
-    if (this.state.loading) {
       return (
         <Spinner
           className={classes.Spinner}
@@ -93,12 +54,18 @@ class Highscore extends Component {
           variant='secondary'
         />
       );
-    }
   }
 
   generateNoHighscoresNotice() {
-    if (this.state.failed) {
       return <span>Sorry, no Highscores yet.</span>;
+  }
+
+  generateNoInternetNotice() {
+    if (this.state.failed) {
+      return <div> 
+        <span><img src={no_internet}/></span>
+        <span><br/>Sorry, something went wrong.</span>
+        </div>;
     }
   }
 
@@ -111,11 +78,12 @@ class Highscore extends Component {
           <tr>
             <th>Ranking</th>
             <th>Username</th>
-            <th className={classes.ImagesLabeledColumn}>Images Labeled</th>
+            <th>Achievements</th>
+            <th>Images Labeled</th>
           </tr>
-          {this.generateSpinner()}
-          {this.generateTable()}
-          {this.generateNoHighscoresNotice()}
+          {this.state.status === 'loading' ? this.generateSpinner() : null}
+          {this.state.status === 'loaded' ? this.generateTable() : null}
+          {this.state.status === 'failed' ? this.generateNoHighscoresNotice() : null}
         </table>
       </main>
     );

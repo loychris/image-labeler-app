@@ -3,9 +3,37 @@ import classes from './ImageContainer.module.css';
 
 import axios from 'axios';
 
+import Spinner from 'react-bootstrap/Spinner';
+import no_internet from '../../no_internet.svg';
 
 
 class ImageContainer extends Component {
+    state = {
+        loading: true,
+        loaded: false,
+        failed: true,
+    }
+
+    generateSpinner() {
+        if (this.state.loading) {
+          return (
+            <Spinner
+              className={classes.Spinner}
+              animation='border'
+              variant='secondary'
+            />
+          );
+        }
+    }
+
+    generateNoInternetNotice() {
+        if (this.state.failed) {
+          return <div> 
+            <span><img src={no_internet}/></span>
+            <span><br/>Sorry, something went wrong.</span>
+            </div>;
+        }
+    }
 
     state = {
         imageLoaded: false,
@@ -39,7 +67,9 @@ class ImageContainer extends Component {
 
         return(
             <div style={inlineStyles} className={styleClasses.join(' ')}>
-                {this.state.imageLoaded ? <img className={classes.pic} src={this.state.image} alt=''/> : "spinner"}
+                <img className={classes.pic} src={this.props.pic} alt=''/>
+                {this.generateSpinner()}
+                {this.generateNoInternetNotice()}
             </div>
         )
     }

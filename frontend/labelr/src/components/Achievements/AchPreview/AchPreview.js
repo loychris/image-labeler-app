@@ -7,7 +7,6 @@ import classes from './AchPreview.module.css';
 class AchPreview extends Component {
     
     render() {
-        const now = 50;
         return (
             <div className={classes.achPreview}>
                 <div className={classes.thumbnail}>

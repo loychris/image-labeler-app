@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import classes from './UploaderHome.module.css';
 import { Link } from 'react-router-dom';
 
-import img1 from './Icons/1.png';
-import img2 from './Icons/2.png';
-import img3 from './Icons/3.png';
-import img4 from './Icons/4.png';
+import img1 from './Icons/upload.svg';
+import img2 from './Icons/monitor_sets.svg';
+import img3 from './Icons/label_images.svg';
+import img4 from './Icons/labeled_image_sets.svg';
 
 class UploaderHome extends Component {
   render() {
