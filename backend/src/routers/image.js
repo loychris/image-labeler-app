@@ -7,7 +7,21 @@ const fileUpload = require('../middleware/file-upload');
 const auth = require('../middleware/auth')
 const achievements = require('../middleware/achievements')
 const Image = require('../models/image')
-const Set = require('../models/set')
+const SetOBJ = require('../models/set')
+
+// CONFIGURE UPLOADE FILES
+const upload = multer({
+  limits: {
+    fileSize: 10000000    // 10mb
+  },
+  fileFilter(req, file, callback) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      return callback(new Error('Non valid file type'))
+    }
+    callback(undefined, true);
+  }
+})
+
 
 // ------------------------ GET ROUTES ------------------------
 
@@ -22,6 +36,7 @@ router.get('/labels', async (req, res) => {
     res.status(500).send(e)
   }
 })
+
 
 // Get image by id
 router.get('/images/id/:id', async (req, res) => {
@@ -159,10 +174,14 @@ router.post('/images/:id', auth, achievements, async (req, res) => {
   let flag = true;
 
   try {
-    let image = await Image.findOne({ _id: req.params.id });
+    let image = await Image.findOne({_id: req.params.id});
+    let setObj = await SetOBJ.findOne({_id: image.imageSetId})
 
     if (!image) {
       return res.status(401).send({ error: 'No image with this ID was found' })
+    }
+    if (!setObj) {
+      return res.status(401).send({error: 'No image with this ID was found'})
     }
 
     image.labels.map(labels => {
@@ -181,8 +200,12 @@ router.post('/images/:id', auth, achievements, async (req, res) => {
     if (flag) {return res.status(400).send("Invalid labels"); }
 
     user.counter = user.counter + 1;
+    setObj.counter = setObj.counter +1;
+
     await image.save();
     await user.save();
+    await setObj.save();
+
     res.status(200).send(image.labels)
   } catch (e) {
     res.status(500).send(e);
@@ -199,11 +222,11 @@ router.post('/images/next/:n/id', auth, async (req, res) => {
 
   try {
     let toReturn = []
-    let images = await Image.find({ "labels.label": label })
+    let images = await Image.find({"labels.label" : label}, {_id:1, goal:1, counter:1})
 
     // IMGS which have not been fetched or labeled by user return id and labels
-    images.forEach(image => {
-      if (!labeledImagesID.includes(image._id) && !fetchedImagesID.includes(image._id)) {
+    images.forEach( image => {
+      if (!labeledImagesID.includes(image._id) && !fetchedImagesID.includes(image._id) && image.goal > image.counter){
         toReturn.push(image._id)
       }
     })
@@ -230,16 +253,16 @@ router.post('/images/next/id', auth, async (req, res) => {
   const labeledImagesID = req.user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
   let fetchedImagesID = req.user.fetchedImagesID;
   const label = req.body.label;
-  console.log(req.user.fetchedImagesID);
+
 
   try {
 
     const toReturn = []
-    let images = await Image.find({ "labels.label": label })
+    let images = await Image.find({"labels.label" : label},  {_id:1, goal:1, counter:1})
 
     // IMGS which have not been fetched or labeled by user return id and labels
-    images.forEach(image => {
-      if (!labeledImagesID.includes(image._id) && !fetchedImagesID.includes(image._id)) {
+    images.forEach( image => {
+      if (!labeledImagesID.includes(image._id) && !fetchedImagesID.includes(image._id) && image.goal > image.counter){
         toReturn.push(image._id)
       }
     })

@@ -1,9 +1,16 @@
 const express = require("express");
-const router = express.Router();
-const User = require('../models/user');
-const auth = require('../middleware/auth')
-const acheivements = require('../middleware/achievements')
 const moment = require('moment');
+
+const User = require('../models/user');
+const Image = require('../models/image');
+const ImageSet = require('../models/set')
+
+const acheivements = require('../middleware/achievements')
+const auth = require('../middleware/auth')
+const uploader = require('../middleware/uploader')
+
+
+const router = express.Router();
 
 // ------------------------ GET ROUTES ------------------------
 
@@ -33,9 +40,7 @@ router.get('/:id', async (req, res) => {
 })
 
 // Get my account
-router.get('/me/profile', auth, async (req, res) => {
-    res.status(200).send(req.user)
-});
+router.get('/me/profile', auth, async (req, res) => { res.status(200).send(req.user) });
 
 // Get my labeling statistics
 router.get('/me/labeled/statistics', auth ,async (req, res) => {
@@ -64,7 +69,38 @@ router.get('/me/labeled/statistics', auth ,async (req, res) => {
     }
 });
 
+// Get input for a machine or app (json/cvs)
+router.get('/me/statistics', auth, uploader , async (req, res) => {
+    try {
+        const imageSets =await ImageSet.find({owner: req.user._id});
+        let images =await Image.find({owner: req.user._id});
 
+
+        if (!images || !imageSets){
+            res.status(401).send({error: "Images/Image sets were not found"});
+        }
+        images = images.map( image => ({_id: image._id, votes: image.labels[0].votes, label: image.labels[0].label }))
+
+        const populatedSets = imageSets.map( (imageSet) => {
+
+            // Aggregation - all images of current set
+            const currentSet = images.filter( image => image.imageSetId === imageSet._id);
+
+            // Adding to the return obj labeledAsTrue counter and labeledAsFalse counter
+            const returnVal = currentSet.map( image =>
+                ({...image,
+                    labeledAsTrue:image.votes.reduce((trues, current) => current, 0),
+                    labeledAsFalse:image.votes.reduce((trues, current) => !current, 0)
+                }))
+
+            return returnVal
+        })
+        res.status(200).send({loaderId: req.user._id, populatedSets})
+    }catch (e) {
+        res.status(500).send(e)
+    }
+
+})
 
 // Get n highest score
 router.get('/highscores/:n', async (req, res) => {
@@ -83,8 +119,6 @@ router.get('/highscores/:n', async (req, res) => {
         res(500).send({ e });
     }
 })
-
-
 
 // ------------------------ POST ROUTES ------------------------
 

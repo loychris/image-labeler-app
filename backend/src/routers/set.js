@@ -157,7 +157,7 @@ router.post('/next/:setId', auth, async  (req, res) => {
     } catch (e) { res.status(500).send(e) }
 });
 
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         await SetOBJ.findOneAndDelete({_id:req.params.id})
         res.status(201).send({message: "removed"});
@@ -177,6 +177,5 @@ router.delete('/', async (req, res, next) => {
         res.status(500).send({message: 'something went wrong while deleting all sets'});
     }
 })
-
 
 module.exports = router;

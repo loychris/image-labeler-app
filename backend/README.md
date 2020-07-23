@@ -76,7 +76,7 @@ fetch("localhost:3000/users/me/images", requestOptions)
   .catch(error => console.log('error', error));
 ```
 
-#### Get  all statistic for specific user (authenticatied)
+#### Get  all labeling statistic for specific user (authenticatied)
  - Get an object with the counters for today, this week, this month, this year and generally (counter) 
 ```javascript
 const request = require("request");
@@ -96,6 +96,37 @@ request(options, function (error, response, body) {
 });
 
 ```
+
+
+#### Get  all statistic for specific user (authenticatied)
+ - Get an object with statistics for the uploader
+ response in form of
+ ```javascript
+{
+    "loaderId": "loader id",
+    "populatedSets": [ [] ]
+}  
+````
+ 
+```javascript
+const request = require("request");
+
+const options = { method: 'GET',
+  url: 'http://127.0.0.1:3000/users/me/statistics',
+  headers: 
+   { 'cache-control': 'no-cache',
+     Authorization: 'Bearer token' } };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+
+
+```
+
+
 
 
  ### POST Routes
