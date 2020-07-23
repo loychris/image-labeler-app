@@ -192,11 +192,11 @@ router.post('/images/next/:n/id', auth, async  (req, res) => {
 
   try {
     let toReturn = []
-    let images = await Image.find({"labels.label" : label})
+    let images = await Image.find({"labels.label" : label}, {_id:1, goal:1, counter:1})
 
     // IMGS which have not been fetched or labeled by user return id and labels
     images.forEach( image => {
-      if (!labeledImagesID.includes(image._id) && !fetchedImagesID.includes(image._id)){
+      if (!labeledImagesID.includes(image._id) && !fetchedImagesID.includes(image._id) && image.goal > image.counter){
         toReturn.push(image._id)
       }
     })
