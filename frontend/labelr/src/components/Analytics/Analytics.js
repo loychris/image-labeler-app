@@ -15,7 +15,7 @@ class Analytics extends Component {
 
 
     state = {
-        status: 'not loaded',
+        status: 'loading',
         imageSets: [],
         files: []
     }
@@ -45,7 +45,7 @@ class Analytics extends Component {
   }
     
     componentDidMount = () => {
-      if(this.state.status === 'not loaded'){
+      if(this.state.status === 'loading'){
         const currentToken = JSON.parse(localStorage.getItem('userData')).token;
           const config = {
             headers: { 
