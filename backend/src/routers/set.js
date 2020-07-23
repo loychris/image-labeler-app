@@ -70,7 +70,6 @@ router.get('/labels', async (req,res) => {
 })
 
 
-
 router.post('/',auth, upload.single('image'), async ( req, res ) => {
     try {
         if  (req.file !== undefined){
@@ -79,7 +78,8 @@ router.post('/',auth, upload.single('image'), async ( req, res ) => {
                 imageId: req.body.imageId,
                 deadline: req.body.deadline,
                 icon: req.file.buffer,
-                label: req.body.label
+                label: req.body.label,
+                counter: req.body.counter
             })
             const setCompleted = await set.save();
             req.user.imageSets.push(setCompleted._id)
@@ -123,8 +123,6 @@ router.post('/next/:setId', auth, async  (req, res) => {
     } catch (e) { res.status(500).send(e) }
 });
 
-
-
 router.delete('/:id', async (req, res) => {
     try {
         await SetOBJ.findOneAndDelete({_id:req.params.id})
@@ -134,6 +132,5 @@ router.delete('/:id', async (req, res) => {
     }
 
 })
-
 
 module.exports = router;

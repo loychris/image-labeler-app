@@ -7,6 +7,7 @@ const router = express.Router();
 const auth = require('../middleware/auth')
 const achievements = require('../middleware/achievements')
 const Image = require('../models/image')
+const SetOBJ = require('../models/set')
 
 // CONFIGURE UPLOADE FILES
 const upload = multer({
@@ -154,8 +155,12 @@ router.post('/images/:id',auth, achievements,async (req, res) => {
 
   try {
     let image = await Image.findOne({_id: req.params.id});
+    let setObj = await SetOBJ.findOne({_id: image.imageSetId})
 
     if (!image) {
+      return res.status(401).send({error: 'No image with this ID was found'})
+    }
+    if (!setObj) {
       return res.status(401).send({error: 'No image with this ID was found'})
     }
 
@@ -174,8 +179,12 @@ router.post('/images/:id',auth, achievements,async (req, res) => {
     if (flag){ res.status(400).send("Unvalid labels"); }
 
     user.counter = user.counter + 1;
+    setObj.counter = setObj.counter +1;
+
     await image.save();
     await user.save();
+    await setObj.save();
+
     res.status(200).send(image.labels)
   } catch (e) {
     res.status(500).send(e);
@@ -223,16 +232,16 @@ router.post('/images/next/id', auth, async  (req, res) => {
   const labeledImagesID = req.user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
   let fetchedImagesID = req.user.fetchedImagesID;
   const label = req.body.label;
-  console.log(req.user.fetchedImagesID);
+
 
   try {
 
     const toReturn = []
-    let images = await Image.find({"labels.label" : label})
+    let images = await Image.find({"labels.label" : label},  {_id:1, goal:1, counter:1})
 
     // IMGS which have not been fetched or labeled by user return id and labels
     images.forEach( image => {
-      if (!labeledImagesID.includes(image._id) && !fetchedImagesID.includes(image._id)){
+      if (!labeledImagesID.includes(image._id) && !fetchedImagesID.includes(image._id) && image.goal > image.counter){
         toReturn.push(image._id)
       }
     })
