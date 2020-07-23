@@ -8,16 +8,22 @@ const achievements = async (req, res, next) => {
     const exsistingAcheivements = req.user.achievements.map( achv => achv.achievement);
 
     if (!!label){
-        const today = moment().format('L');
-        const thisWeek = moment().subtract(7, 'days').calendar();
-        const newCount = req.user.labeledImagesID.length+1;
-        const labeledToday = req.user.labeledImagesID.filter(
-            image =>  moment(image.timestamp).format('L') === moment(today).format('L')).length + 1;
-        const labeledThisWeek = req.user.labeledImagesID.filter(
-            image => {
-                return ((moment(image.timestamp).format('L') >= moment(thisWeek).format('L')
-                    && moment(image.timestamp).format('L') <= moment(today).format('L')))
-            }).length + 1;
+        const startOfTheWeek = moment().startOf('week').format('l');
+        const endOfTheWeek = moment().endOf('week').format('l');
+
+        const startOfTheMonth = moment().startOf('month').format('l');
+        const endOfTheMonth = moment().endOf('month').format('l');
+
+        const startOfTheYear = moment().startOf('year').format('l');
+        const endOfTheYear = moment().endOf('year').format('l');
+
+        const labeled = req.user.labeledImagesID.map( image => moment(image.timestamp).format('l') );
+
+        const counter = req.user.counter+1;
+        const today = labeled.filter(image => image === moment().format('l') ) + 1;
+        const week = labeled.filter(image => moment(image).isBetween(startOfTheWeek, endOfTheWeek, undefined, [])) + 1;
+        const month = labeled.filter(image => moment(image).isBetween(startOfTheMonth, endOfTheMonth, undefined, [])) +1;
+        const year = labeled.filter(image => moment(image).isBetween(startOfTheYear, endOfTheYear, undefined, [])) + 1;
 
         // Switch case for counter ( first section of the demand list )
         switch (newCount) {
@@ -105,7 +111,7 @@ const achievements = async (req, res, next) => {
 
 
         // Switch case for weekly labelings ( second section of the demand list )
-        switch (labeledThisWeek) {
+        switch (week) {
             case 5000:
                 achievement = {
                     achievement: "Hell of a week!",
@@ -138,7 +144,7 @@ const achievements = async (req, res, next) => {
                 break;
         }
         //Switch case for monthly labelings
-        switch (labeledThisMonth) {
+        switch (month) {
             case 10000:
                 achievement = {
                     achievement: "Unstoppable Force",
