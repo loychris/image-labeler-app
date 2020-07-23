@@ -64,7 +64,8 @@ class Achievements extends Component {
                 today: response1.data.today,
                 thisWeek: response1.data.week,
                 thisMonth: response1.data.month,
-                thisYear: response1.data.year
+                thisYear: response1.data.year,
+                user: response2.data
               })
             })
           ).catch(err => {
