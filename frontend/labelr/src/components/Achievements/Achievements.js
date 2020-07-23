@@ -23,7 +23,8 @@ import pic16 from './AchPreview/AchievementImages/rocket.png'
 import pic17 from './AchPreview/AchievementImages/month.png'
 import pic18 from './AchPreview/AchievementImages/week.png'
 import pic19 from './AchPreview/AchievementImages/hustler.svg'
-
+import pic20 from './AchPreview/AchievementImages/mountain.svg'
+import pic21 from './AchPreview/AchievementImages/bowling.svg'
 
 
 
@@ -61,10 +62,10 @@ render() {
         {name: 'Newcomer' , description: '100 Images labeled',src:pic7, progress: counter > 99 ? 100 : counter},
         {name: 'Mom would be proud' , description: '500 Images labeled',src:pic8, progress: counter > 499 ? 100 : counter/500 * 100},
         {name: 'You are a Winner!' , description: '1000 Images labeled',src:pic9, progress: counter > 999 ? 100 : counter/1000 * 100},
-        // {name: 'Labelr' , description: '5000 Images labeled',src:pic7},
-        // {name: 'Elite' , description: '10000 Images labeled',src:pic7},
+        {name: 'Strike!' , description: '5000 Images labeled',src:pic21,progress: counter > 4999 ? 100 : counter/1000 * 100},
+        {name: 'Grand Master' , description: '10000 Images labeled',src:pic4,progress: counter > 9999 ? 100 : counter/1000 * 100},
         {name: 'Cyborg' , description: '20000 Images labeled',src:pic3, progress: counter > 19999 ? 100 : counter/20000 * 100},
-        {name: 'Grand Master' , description: '50000 Images labeled',src:pic4, progress: counter > 49999 ? 100 : counter/50000 * 100},
+        {name: 'At the top' , description: '50000 Images labeled',src:pic20, progress: counter > 49999 ? 100 : counter/50000 * 100},
         {name: 'Master of the universe' , description: '100000 Images labeled',src:pic11, progress: counter > 100000 ? 100 : counter/100000 * 100},
         // {name: 'They wont label themselfs' , description: '50 Images labeled 1 in one day',src:pic7},
         {name: 'Too Fast!' , description: '100 Images labeled 1 in one day',src:pic12, progress: counter > 99 ? 100 : counter},
