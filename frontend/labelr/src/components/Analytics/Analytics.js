@@ -66,9 +66,6 @@ class Analytics extends Component {
                         uploaded: 'uploadDate'
                     }
                 })
-
-
-
                 this.setState({ imageSets: sets, status: 'loaded' });
               }
             } 

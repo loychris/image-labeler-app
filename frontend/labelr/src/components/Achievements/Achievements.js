@@ -33,7 +33,6 @@ class Achievements extends Component {
 
     state = {
         status: 'loading',
-        statistics: null,
         counter: 0,
         today: 0,
         thisWeek: 0,
@@ -44,24 +43,31 @@ class Achievements extends Component {
     componentDidMount = () => {
         if(this.state.status === 'loading'){
           const currentToken = JSON.parse(localStorage.getItem('userData')).token;
-            axios({
-                method: 'get',
-                url: '/users/me/labeled/statistics', 
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${currentToken}`
-                }
-            })
-            .then(res => {
+          const config = {
+            headers: { 
+                'Access-Control-Allow-Origin': '*',
+                Authorization: `Bearer ${currentToken}` 
+              }
+          }
+          const request1 = axios.get('http://127.0.0.1:3000/users/me/labeled/statistics', config);
+          const request2 = axios.get('http://127.0.0.1:3000/users/me/profile', config);
+          axios.all([request1, request2])
+          .then(
+            axios.spread((...responses) => {
+              const response1 = responses[0];
+              const response2 = responses[1]
+              console.log('1', response1.data);
+              console.log('2', response2.data);
               this.setState({
                 status: 'loaded',
-                counter: res.data.counter,
-                today: res.data.today,
-                thisWeek: res.data.week,
-                thisMonth: res.data.month,
-                thisYear: res.data.year
+                counter: response1.data.counter,
+                today: response1.data.today,
+                thisWeek: response1.data.week,
+                thisMonth: response1.data.month,
+                thisYear: response1.data.year
               })
-            }).catch(err => {
+            })
+          ).catch(err => {
               this.setState({ status: 'failed' })
               console.log(err)
             })
@@ -86,16 +92,15 @@ class Achievements extends Component {
     }
 
     generateAchievements() {
-      const storedData = JSON.parse(localStorage.getItem('userData'));
 
       //██████████████████████████████████████████████████████████
-      const doneAchievements = storedData.user.achievements; 
+      const doneAchievements = this.state.user.achievements; 
       console.log(doneAchievements);
       //██████████████████████████████████████████████████████████
 
 
       //Number that represents the date on which the user signed up
-      const createdAt = parseInt(storedData.user.createdAt.timestamp.replace('-', '').replace('-', ''));
+      const createdAt = parseInt(this.state.user.createdAt.timestamp.replace('-', '').replace('-', ''));
   
       // Number that represents the current Date -100 days
       const hundredDaysago = parseInt(moment().subtract(100, 'day').format().substr(0,10).replace('-', '').replace('-', ''))
