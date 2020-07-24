@@ -26,19 +26,17 @@ class AnaPreview extends Component {
                         <div className={classes.description}>Deadline: {this.props.deadline}</div>
                     </div>
                     <div className={classes.progress}>
-                        <div className={classes.progressLabel}>{`${currentValue}%`} complete</div>
-                        {(currentValue === 100) ? (
-                            <img className={classes.check} src={img1} />
-                        ) : null}
-                        <ProgressBar className={classes.progressBar} variant="success" now={currentValue}/>
-                        {(currentValue === 100) ? (
+                        <div className={classes.progressLabel}>{`${this.props.progress}%`} complete</div>
+                        {this.props.progress === 100 ? <img className={classes.check} src={img1} /> : null}
+                        <ProgressBar className={classes.progressBar} variant="success" now={this.props.progress}/>
+                        {this.props.progress === 100 ? 
                             <DropdownButton className={classes.download} id="download-button" title={
                                 <span><i className="fas fa-download"></i>DOWNLOAD</span>
                               }>
                                 <Dropdown.Item href="#/download-json">As JSON</Dropdown.Item>
                                 <Dropdown.Item href="#/download-csv">As CSV</Dropdown.Item>
                             </DropdownButton>
-                        ) : null}
+                        : null}
                     </div>
                 </div>
             </div>

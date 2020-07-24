@@ -93,12 +93,14 @@ router.post('/',auth, fileUpload.single('image'), async ( req, res ) => {
     if(!req.body.imageId) res.status(400).send({msg: 'no Image Ids given'})
     if(!req.body.label) res.status(400).send({msg:'no label definded'})
     if(!req.body.deadline) res.status(400).send({msg:'no deadline definded'})
+    if(!req.body.goal) res.status(400).send({msg: 'No goal set'});
     const set = new SetOBJ({
         owner: req.user._id,
         imageId: req.body.imageId.split(','),
         deadline: req.body.deadline,
         icon: req.file.buffer,
-        label: req.body.label
+        label: req.body.label,
+        goal: req.body.goal
     })
     let setCompleted
     const imageIds = req.body.imageId.split(',')

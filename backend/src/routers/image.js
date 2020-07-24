@@ -9,18 +9,7 @@ const achievements = require('../middleware/achievements')
 const Image = require('../models/image')
 const SetOBJ = require('../models/set')
 
-// CONFIGURE UPLOADE FILES
-const upload = multer({
-  limits: {
-    fileSize: 10000000    // 10mb
-  },
-  fileFilter(req, file, callback) {
-    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-      return callback(new Error('Non valid file type'))
-    }
-    callback(undefined, true);
-  }
-})
+
 
 
 // ------------------------ GET ROUTES ------------------------
@@ -214,37 +203,39 @@ router.post('/images/:id', auth, achievements, async (req, res) => {
 
 // Get next n Images IDS - only images that the user did not voted for yet
 router.post('/images/next/:n/id', auth, async (req, res) => {
-
-  const labeledImagesID = req.user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
-  let fetchedImagesID = req.user.fetchedImagesID;
+  console.log(req.body); 
+  if(!req.body.label) console.log('NO LABEL PROVIDED');
+  const labeledImagesIDs = req.user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
+  let fetchedImagesIDs = req.user.fetchedImagesID;
   const label = req.body.label;
   const n = req.params.n;
+  console.log('LABEL', label);
+  console.log('N', n);
+  console.log('LABELED IDS', labeledImagesIDs)
+  console.log('FETCHED', req.user.fetchedImagesID);
 
+  let images;
   try {
-    let toReturn = []
-    let images = await Image.find({"labels.label" : label}, {_id:1, goal:1, counter:1})
-
-    // IMGS which have not been fetched or labeled by user return id and labels
-    images.forEach( image => {
-      if (!labeledImagesID.includes(image._id) && !fetchedImagesID.includes(image._id) && image.goal > image.counter){
-        toReturn.push(image._id)
+    images = await Image.find( { _id: { $nin: labeledImagesIDs}}, {"labels.label" : label}, {_id:1, goal:1, counter:1})  
+    let toReturn = await images
+      //.filter(i => i.goal > i.counter)
+      .map(i => i._id)
+      .slice(0,n)
+    const diff = n - toReturn.length
+    console.log('DIFF', diff);
+    if(diff > 0){
+      for(let i = 0;i<diff; i++){
+        toReturn.push('no more');
       }
-    })
-
-    if (toReturn.length < 1) { res.status(400).send('no images found'); }
-    else {
-      if (toReturn.length > n) { toReturn = toReturn.slice(0, n) }
-      req.user.fetchedImagesID = req.user.fetchedImagesID.concat(toReturn)
-      await req.user.save();
-      console.log(req.user.fetchedImagesID);
-      res.status(200).send(toReturn);
     }
-
-
+    console.log('IMAGES', images);
+    console.log('TO RETURN', toReturn);
+    req.user.fetchedImagesID = toReturn;
+    await req.user.save();
+    res.status(200).send(toReturn);
   } catch (e) {
     res.status(500).send(e)
   }
-
 })
 
 // Get next Imgae - only images that the user did not voted for yet

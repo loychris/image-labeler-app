@@ -56,7 +56,7 @@ class Overview extends Component {
 }
 
 componentDidMount() {
-  if(this.state.status === 'loaded'){
+  if(this.state.status === 'loading' && localStorage.getItem('userData')){
     const currentToken = JSON.parse(localStorage.getItem('userData')).token;
     const config = {
       headers: { 
@@ -64,20 +64,21 @@ componentDidMount() {
           Authorization: `Bearer ${currentToken}` 
         }
     }
-    axios.get('http://127.0.0.1:3000/set/my', config)
+    axios.get('http://127.0.0.1:3000/set/', config)
     .then(res => {
       console.log(res.data);
       if(res.data){
         if(res.data.length > 0){
           const sets = res.data.map(set => {
               return {
-                  deadline: set.deadline.split(',')[0],
+                  time: set.deadline.split(',')[0],
                   name: set.label,
+                  route: `/${set.label}`,
                   src: this.imageEncode(set.icon.data),
-                  uploaded: 'uploadDate'
+                  progress: set.counter / set.goal * 100
               }
           })
-          this.setState({ imageSets: sets, status: 'loaded' });
+          this.setState({ categories: sets, status: 'loaded' });
         }
       } 
     })
@@ -87,6 +88,13 @@ componentDidMount() {
     })
   }
 
+}
+
+imageEncode = (arrayBuffer) => {
+  let u8 = new Uint8Array(arrayBuffer)
+  let b64encoded = btoa([].reduce.call(new Uint8Array(arrayBuffer),function(p,c){return p+String.fromCharCode(c)},''))
+  let mimetype="image/jpeg"
+  return "data:"+mimetype+";base64,"+b64encoded
 }
 
   generateSpinner() {
@@ -117,8 +125,8 @@ componentDidMount() {
 
 
   render() {
-    const catPreviews = this.state.categories.map((c) => {
-      return <CatPreview {...c} />;
+    const catPreviews = this.state.categories.map((c, i) => {
+      return <CatPreview {...c} key={i}/>;
     });
     return (
       <main>

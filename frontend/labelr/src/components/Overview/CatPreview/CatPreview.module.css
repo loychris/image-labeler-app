@@ -10,6 +10,12 @@
     margin: 30px;
 }
 
+.Img {
+    height: 100px;
+    width: 100px; 
+    border-radius: 100%;    
+}
+
 .link:hover{
     text-decoration: none;
 }

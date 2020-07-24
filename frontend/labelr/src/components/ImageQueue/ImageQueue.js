@@ -15,30 +15,42 @@ import arrowright from './arrowright.png';
 class ImageQueue extends Component {
 
     state = {
-        queue: [
-            {pos: 0, show: 'left', id: "5f04f1bdad32b512d3840356"},
-            {pos: 1, show: 'middle', id:"5f04f1bdad32b512d3840357"},
-            {pos: 2, show: 'middle', id: 2},
-            {pos: 3, show: 'middle', id: 3},
-            {pos: 4, show: 'middle', id: 4},
-            {pos: 5, show: 'middle', id: 5},
-            {pos: 6, show: 'middle', id: 6},
-            {pos: 7, show: 'middle', id: 7},
-            {pos: 8, show: 'middle', id: 8}, 
-            {pos: 9, show: 'middle', id: 9}
-        ],
+        queue: [],
+        lable: '',
         nextPicId: 10,
         timeStampLastLabel: 0,
-        idsLoaded: false
+        initialLoad: 'loading'
     }
 
     componentDidMount() {
-        console.log('--------------------');
-        const category = this.props.match.params.category; 
-        console.log(category);
-        console.log('--------------------');
-        if(!this.state.idsLoaded){
-            console.log("LOADING IMAGES");
+        if(this.state.initialLoad === 'loading'){
+            const category = this.props.match.params.category; 
+            const currentToken = JSON.parse(localStorage.getItem('userData')).token;
+            const config = {
+              headers: { 
+                  'Access-Control-Allow-Origin': '*',
+                  Authorization: `Bearer ${currentToken}` 
+                }
+            }
+            const body = {
+                label: category
+            }
+            axios.post('http://127.0.0.1:3000/images/next/9/id', body, config)
+            .then(res => {
+              console.log('DATA', res.data);
+              if(res.data){
+                if(res.data.length > 0){
+                  let queue = [{pos: 0, show: 'left', id: ''}];
+                  res.data.forEach((id, i) => {
+                      queue.push({ pos: i+1, show: 'middle', id })
+                  })
+                  this.setState({ queue: queue, initialLoad: 'loaded' });
+                }
+              } 
+            })
+            .catch((e) => {
+              this.setState({initialLoad: 'failed'})
+            })
         }
         document.addEventListener("keyup", this.keypressHandler, false);
     }
@@ -116,10 +128,7 @@ class ImageQueue extends Component {
     labelFirst = (direction) => {
         //TODO: send POST-req with the result to the server
         const currentTimeStamp = Date.now();
-        console.log('last: ',this.state.timeStampLastLabel); 
-        console.log('current: ',currentTimeStamp);
         if(currentTimeStamp - 400 > this.state.timeStampLastLabel){
-            console.log(direction);
             const newQueue = this.state.queue
                 .map(x => {
                     const newPos = x.pos-1;
@@ -139,7 +148,7 @@ class ImageQueue extends Component {
 
     render(){
         const imageContainers = this.state.queue.map(i => {
-            return <ImageContainer {...i} key={i.pos}/>
+            return <ImageContainer {...i} key={i.pos} queueStatus={this.state.initialLoad}/>
         })
         const leftButtonClasses = [classes.leftButton, classes.button]
         const rightButtonClasses = [classes.rightButton, classes.button]
@@ -147,7 +156,7 @@ class ImageQueue extends Component {
         return(
             <div className={classes.imageQueue}>
                 <BackButton to='/'/>
-                <h1>Is there a {this.props.category} in this picture?</h1> 
+                <h1>Is there a {this.props.match.params.category} in this picture?</h1> 
                 {imageContainers}
                 <div 
                     className={leftButtonClasses.join(' ')} 

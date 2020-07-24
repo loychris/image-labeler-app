@@ -6,10 +6,6 @@ import no_internet from '../no_internet.svg';
 import AnaPreview from './AnaPreview/AnaPreview';
 import classes from './Analytics.module.css';
 
-import img1 from './AnaPreview/CategorieImages/car.png';
-import img2 from './AnaPreview/CategorieImages/dog.png';
-import img3 from './AnaPreview/CategorieImages/bridge.png';
-import img4 from './AnaPreview/CategorieImages/traffic-light.png';
 
 class Analytics extends Component {
 
@@ -41,7 +37,7 @@ class Analytics extends Component {
                       name: set.label,
                       src: this.imageEncode(set.icon.data),
                       uploaded: 'uploadDate',
-                      progress: set.counter / set.goal
+                      progress: Math.floor(set.counter / set.goal * 100)
                   }
               })
 
