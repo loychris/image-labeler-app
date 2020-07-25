@@ -18,7 +18,7 @@ const SetOBJ = require('../models/set')
 // Get all available labels- no duplicates
 router.get('/labels', async (req, res) => {
   try {
-    const sets = await Set.find()
+    const sets = await SetOBJ.find()
     let labels = sets.map(s => s.label)
     res.status(200).send(labels);
   }
