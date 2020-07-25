@@ -9,9 +9,7 @@ code {
 }
 
 main {
-  max-width: 1300px; 
-  margin-left: auto; 
-  margin-right: auto; 
+  margin: 56px 2vw 10px 2vw;
 }
 
 h2, h3, h4 {
@@ -25,8 +23,8 @@ h1 {
 }
 
 main > h1 {
-  margin-top: 120px; 
-  margin-bottom: 30px; 
-  font-size: 50pt;
+  margin: 0;
+  font-size: 7vh;
+  padding: 1rem 0 0 0;
   /* font-family: 'Roboto', sans-serif; */
 }
