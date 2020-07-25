@@ -7,7 +7,7 @@ const setSchema = new mongoose.Schema({
     imageId: [{ type: String, required: true }],
     deadline:  { type: String },
     icon: { type: Buffer },
-    goal: {type: Number, default: 0},
+    goal: {type: Number, default: 1},
     counter: {type: Number, default: 0},
 });
 

@@ -9,6 +9,8 @@
     border-radius: 20px; 
     transition: ease 0.5s;
     opacity: 100%;
+    min-height: 300px;
+    min-width: 300px; 
 }
 
 .moveBack {

@@ -14,15 +14,8 @@ const imageSchema = new mongoose.Schema({
         votes: [{ type: Boolean }]
     }],
     imageSetId: {type: String },
-    counter: {
-        type: Number,
-        default: 0
-    },
-    goal: {
-        require: true,
-        type: Number,
-        default: 5
-    },
+    counter: { type: Number, default: 0 },
+    goal: { require: true, type: Number, default: 5 },
 });
 
 const Image = mongoose.model('Image', imageSchema);

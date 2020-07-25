@@ -177,13 +177,10 @@ router.post('/images/:id', auth, achievements, async (req, res) => {
   let fetchedImagesIDs = req.user.fetchedImagesID;
   const labeledImagesIDs = req.user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
 
-  console.log('LABELED IDS',labeledImagesIDs.length);
   console.log('LABELED IDS',labeledImagesIDs);
-  console.log('fetched IDS', fetchedImagesIDs.length);
   console.log('fetched IDS', fetchedImagesIDs);
 
   const notToLoad = labeledImagesIDs.concat(fetchedImagesIDs);
-  console.log(notToLoad.length);
   console.log(notToLoad);
 
 
@@ -256,7 +253,6 @@ router.post('/images/next/:n/id', auth, async (req, res) => {
     }
     console.log('IMAGES', images);
     console.log('TO RETURN', toReturn);
-    req.user.fetchedImagesID = toReturn;
     await req.user.save();
     res.status(200).send(toReturn);
   } catch (e) {
