@@ -146,68 +146,65 @@ router.post('/images/:id', auth, achievements, async (req, res) => {
   const vote = req.body.vote === 'left';
   const { label } = req.body;
 
-  console.log('VOTE', vote);
-  console.log('LABELED ID: ', req.params.id)
+  let user = req.user;
 
   let image;
   let setObj;
 
+  console.log(label);
+
   try {
     image = await Image.findOne({_id: req.params.id});
     setObj = await SetOBJ.findOne({_id: image.imageSetId})
+    console.log(image._id)
+
+    if (!image) {
+      return res.status(401).send({ error: 'No image with this ID was found' })
+    }
+    if (!setObj) {
+      return res.status(401).send({error: 'No image with this ID was found'})
+    }
+    console.log(vote)
+    image.labels[0].votes.push(vote);
+    user.labeledImagesID.push({ imageID: req.params.id, timestamp: moment().format('L') });
+    await user.save();
+
+
+    image.counter = image.counter + 1;
+    req.user.counter = req.user.counter + 1;
+    setObj.counter = setObj.counter +1;
+    await user.save();
+
+
+    let fetchedImagesIDs = user.fetchedImagesID;
+    const labeledImagesIDs = user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
+
+
+    const notToLoad = labeledImagesIDs.concat(fetchedImagesIDs);
+
+    nextImage = await Image.findOne({
+      $and: [
+        {_id: { $nin: notToLoad}},
+        {imageSetId: setObj._id},
+      ]
+    })
+
+    const nextId = nextImage ? nextImage._id : 'no more';
+    console.log('NEXT IMAGE ID', nextId);
+    req.user.fetchedImagesID.push(nextId);
+    console.log(labeledImagesIDs);
+
+    await user.save();
+    await image.save();
+    await setObj.save();
+
+    res.status(200).send(nextId);
+
   } catch(e){
     console.log('There was a problem while finding the set or iamge');
   }
-  if (!image) {
-    return res.status(401).send({ error: 'No image with this ID was found' })
-  }
-  if (!setObj) {
-    return res.status(401).send({error: 'No image with this ID was found'})
-  }
-
-  image.labels[0].votes.push(vote);
-  req.user.labeledImagesID.push({ imageID: req.params.id, timestamp: moment().format('L') });
-
-  image.counter = image.counter + 1;
-  req.user.counter = req.user.counter + 1;
-  setObj.counter = setObj.counter +1;
-  console.log('IAMGE: ', image);
-  console.log(req.user.counter)
-
-  let fetchedImagesIDs = req.user.fetchedImagesID;
-  const labeledImagesIDs = req.user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
-
-  console.log('LABELED IDS',labeledImagesIDs);
-  console.log('fetched IDS', fetchedImagesIDs);
-
-  const notToLoad = labeledImagesIDs.concat(fetchedImagesIDs);
-  console.log(notToLoad);
 
 
-  nextImage = await Image.findOne({
-    $and: [
-      {_id: { $nin: notToLoad}},
-      {imageSetId: setObj._id},
-    ]
-  })
-
-  const nextId = nextImage ? nextImage._id : 'no more';
-  console.log('NEXT IMAGE ID', nextId);
-  req.user.fetchedImagesID.push(nextId);
-  console.log(labeledImagesIDs);
-
-  try{
-    const sess = await mongoose.startSession();
-    sess.startTransaction();
-    await image.save({session: sess});
-    await req.user.save({session: sess});
-    await setObj.save({session: sess});
-    await sess.commitTransaction();
-    res.status(200).send(nextId);
-  } catch (e) {
-    console.log(e);
-    res.status(500).send(e);
-  }
 })
 
 // Get next n Images IDS - only images that the user did not voted for yet
