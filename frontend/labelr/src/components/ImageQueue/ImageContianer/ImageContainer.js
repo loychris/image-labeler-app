@@ -39,7 +39,7 @@ class ImageContainer extends Component {
     }
 
     componentDidMount() {
-        if (this.state.status === 'loading' && this.props.id !== '') {
+        if (this.state.status === 'loading' && this.props.id !== 'no more') {
           console.log('#####################');
           const currentToken = JSON.parse(localStorage.getItem('userData')).token;
           console.log('ID', this.props.id);
@@ -60,6 +60,14 @@ class ImageContainer extends Component {
           })
         }
       }
+    
+    getNoMoreImages = () => {
+      return(
+        <div>
+          <h3>There are no more Images in this category for you to be labeled</h3>
+        </div>
+      )
+    }
 
 
     render(){
@@ -78,6 +86,13 @@ class ImageContainer extends Component {
         const inlineStyles = {zIndex: 10-this.props.pos}
         ///////////
 
+        if(this.props.id === 'no more'){
+          return(
+            <div style={inlineStyles} className={styleClasses.join(' ')}>
+              {this.getNoMoreImages()}
+            </div>
+          )
+        } 
         return(
             <div style={inlineStyles} className={styleClasses.join(' ')}>
                 {this.state.status === 'loaded' ? <img className={classes.pic} src={this.state.image} alt=''/> : null }

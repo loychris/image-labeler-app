@@ -17,7 +17,6 @@ class ImageQueue extends Component {
     state = {
         queue: [],
         lable: '',
-        next: null,
         timeStampLastLabel: 0,
         initialLoad: 'loading'
     }
@@ -40,16 +39,12 @@ class ImageQueue extends Component {
               console.log('DATA', res.data);
               if(res.data){
                 if(res.data.length > 0){
-                  let queue = [{pos: 0, show: 'left', id: ''}];
+                  let queue = [{pos: 0, show: 'left', id: 'no more'}];
                   res.data.forEach((id, i) => {
                       queue.push({ pos: i+1, show: 'middle', id })
                   })
                   console.log('QUEUE', queue);
-                  let next = queue.pop();
-                  next.pos = next.pos -1;
-                  console.log('NEXT', next);
-                  console.log('QUEUE', queue);
-                  this.setState({ queue: queue, initialLoad: 'loaded', next: next });
+                  this.setState({ queue: queue, initialLoad: 'loaded'});
                 }
               } 
             })
@@ -133,8 +128,9 @@ class ImageQueue extends Component {
     labelFirst = (direction) => {
         //TODO: send POST-req with the result to the server
         const currentTimeStamp = Date.now();
-        if(currentTimeStamp - 400 > this.state.timeStampLastLabel){
-
+        const currentId = this.state.queue[1].id;
+        console.log('CURRENT ID', currentId);
+        if(currentTimeStamp - 700 > this.state.timeStampLastLabel && currentId !== 'no more'){
             // update Queue & insert next element stored in State
             const newQueue = this.state.queue
                 .map(x => {
@@ -147,26 +143,29 @@ class ImageQueue extends Component {
                 queue: newQueue, 
                 timeStampLastLabel: currentTimeStamp
             });
+
             //send vote to Server and refil next in State
             const currentToken = JSON.parse(localStorage.getItem('userData')).token;
-            axios.post(
-                `http://127.0.0.1:3000/images/${this.state.queue[1].id}`,
-                { vote: direction, label: this.props.match.params.category }, 
-                {headers: { 
-                    'Access-Control-Allow-Origin': '*',
-                    Authorization: `Bearer ${currentToken}` 
-                }})
-            .then(res => {
-              console.log('DATA', res.data);
-              if(res.data){
-                let queue = this.state.queue;
-                queue.push({ pos: queue.length, show: 'middle', id: res.data })
-                this.setState({ queue: queue });
-              } 
-            })
-            .catch((e) => {
-              this.setState({initialLoad: 'failed'})
-            })
+            if(this.state.queue[1].id !== 'no more'){
+                axios.post(
+                    `http://127.0.0.1:3000/images/${this.state.queue[1].id}`,
+                    { vote: direction, label: this.props.match.params.category }, 
+                    {headers: { 
+                        'Access-Control-Allow-Origin': '*',
+                        Authorization: `Bearer ${currentToken}` 
+                    }})
+                .then(res => {
+                console.log('DATA', res.data);
+                if(res.data){
+                    let queue = this.state.queue;
+                    queue.push({ pos: queue.length, show: 'middle', id: res.data })
+                    this.setState({ queue: queue });
+                } 
+                })
+                .catch((e) => {
+                this.setState({initialLoad: 'failed'})
+                })
+            }
         }
     }
 
@@ -179,7 +178,6 @@ class ImageQueue extends Component {
 
         return(
             <div className={classes.imageQueue}>
-                <BackButton to='/'/>
                 <h1>Is there a {this.props.match.params.category} in this picture?</h1> 
                 {imageContainers}
                 <div 

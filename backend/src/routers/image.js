@@ -148,6 +148,7 @@ router.post('/images/:id', auth, achievements, async (req, res) => {
   const { label } = req.body;
   const user = req.user;
   console.log('VOTE', vote);
+  console.log('LABELED ID: ', req.params.id)
   let image;
   let setObj;
   try {
@@ -170,11 +171,9 @@ router.post('/images/:id', auth, achievements, async (req, res) => {
   user.counter = user.counter + 1;
   setObj.counter = setObj.counter +1;
   console.log('IAMGE: ', image);
-  console.log('USER: ', user.counter);
 
   let fetchedImagesIDs = user.fetchedImagesID;
   const labeledImagesIDs = req.user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
-  labeledImagesIDs.push(req.params.id);
   console.log('LABELED IDS', labeledImagesIDs);
   nextImage = await Image.findOne({
     $and: [
