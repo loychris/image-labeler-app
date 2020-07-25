@@ -1,26 +1,16 @@
 const express = require('express');
-const multer = require('multer');
 const moment = require('moment');
+const mongoose = require('mongoose');
 
 const router = express.Router();
 
+const fileUpload = require('../middleware/file-upload');
 const auth = require('../middleware/auth')
 const achievements = require('../middleware/achievements')
 const Image = require('../models/image')
 const SetOBJ = require('../models/set')
 
-// CONFIGURE UPLOADE FILES
-const upload = multer({
-  limits: {
-    fileSize: 10000000    // 10mb
-  },
-  fileFilter(req, file, callback) {
-    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-      return callback(new Error('Non valid file type'))
-    }
-    callback(undefined, true);
-  }
-})
+
 
 
 // ------------------------ GET ROUTES ------------------------
@@ -28,14 +18,9 @@ const upload = multer({
 // Get all available labels- no duplicates
 router.get('/labels', async (req, res) => {
   try {
-    const images = await Image.find({},{labels:1})
-    let labelsList = [];
-    const labels = images.map( image => {
-      if (image.labels.length > 0 ){
-        labelsList = labelsList.concat(image.labels.map( label => label.label ));
-      }
-    })
-    res.status(200).send(Array.from(new Set(labelsList)));
+    const sets = await SetOBJ.find()
+    let labels = sets.map(s => s.label)
+    res.status(200).send(labels);
   }
   catch (e) {
     res.status(500).send(e)
@@ -45,14 +30,13 @@ router.get('/labels', async (req, res) => {
 
 // Get image by id
 router.get('/images/id/:id', async (req, res) => {
-  try{
-
-    const image = await Image.find({_id:req.params.id});
-    if(!image){ res.status(404).send('No image with given ID found'); }
+  try {
+    const image = await Image.find({ _id: req.params.id });
+    if (!image) {return res.status(404).send('No image with given ID found'); }
 
     res.status(200).send(image);
 
-  }catch(e){
+  } catch (e) {
     res.status(500).send(e)
   }
 })
@@ -61,9 +45,8 @@ router.get('/images/id/:id', async (req, res) => {
 router.get('/images', async (req, res) => {
   try {
     const images = await Image.find();
-    if(!images){
-      res.status(404).send('No images found');
-    }
+    if (!images) {return res.status(404).send('No images found');}
+
     res.status(200).send(images);
   } catch (e) {
     res.status(500).send(e);
@@ -73,7 +56,7 @@ router.get('/images', async (req, res) => {
 // Get all images of a user id
 router.get('/users/me/images', auth, async (req, res) => {
   try {
-    const images = await Image.find({owner:req.user._id});
+    const images = await Image.find({ owner: req.user._id });
     res.status(200).send(images);
   } catch (e) {
     res.status(500).send(e);
@@ -81,7 +64,7 @@ router.get('/users/me/images', auth, async (req, res) => {
 })
 
 // Get next n Images - only images that the user did not voted for yet
-router.get('/images/next/:n', auth, async  (req, res) => {
+router.get('/images/next/:n', auth, async (req, res) => {
 
   const labeledImagesID = req.user.labeledImagesID; // images the user already have been labeled
   const n = req.params.n;
@@ -89,56 +72,66 @@ router.get('/images/next/:n', auth, async  (req, res) => {
   try {
     let images = await Image.find()
 
-    images = images.map( image => !labeledImagesID.includes(image._id) && image  )
+    images = images.map(image => !labeledImagesID.includes(image._id) && image)
 
-    if (!images){ res.status(400).send('no images found'); }
+    if (!images) {return res.status(400).send('no images found'); }
 
-    if (images.length < n){ res.status(200).send(images.slice(0,images.length)); }
+    if (images.length < n) {return res.status(200).send(images.slice(0, images.length)); }
 
-    res.status(200).send(images.slice(0,n));
+    res.status(200).send(images.slice(0, n));
   } catch (e) {
     res.status(500).send(e)
   }
 
-} )
+})
 
 // Get next Imgae - only images that the user did not voted for yet
-router.get('/images/next', auth, async  (req, res) => {
+router.get('/images/next', auth, async (req, res) => {
 
   const labeledImagesID = req.user.labeledImagesID; // images the user already have been labeled
 
   try {
     let images = await Image.find();
-    if (!images){ res.status(400).send('no images found'); }
+    if (!images) { res.status(400).send('no images found'); }
 
-    images = images.map( image => !labeledImagesID.includes(image._id) && image  );
+    images = images.map(image => !labeledImagesID.includes(image._id) && image);
     console.log(images);
 
-    if (!images.length){ res.status(400).send(`no image left to label`); }
+    if (!images.length) {return res.status(400).send(`no image left to label`); }
 
-    res.status(200).send(images.slice(0,1));
+    res.status(200).send(images.slice(0, 1));
   } catch (e) {
     res.status(500).send(e)
   }
 
-} )
+})
 
 
 
 // ------------------------ POST ROUTES ------------------------
 
+
+
 // Upload a new image
-router.post('/upload', auth, upload.single('image'), async (req, res) => {
+router.post('/upload', auth, fileUpload.single('image'), async (req, res) => {
+  if(!req.body.label){
+    res.status(400).send({message: 'No label provided'});
+  }
   if  (req.file !== undefined){
     const img = new Image({
       data: req.file.buffer,
       owner: req.user._id,
-      labels: [{label:req.body.label, votes:[true]}]
+      labels: [{label:req.body.label, votes:[]}]
     })
-    await img.save();
-    res.status(201).send({ msg: 'image added successfully' });
+    try{
+      await img.save();
+      res.status(201).send({message: 'Image saved successfully', img: img});
+    }catch(e){
+      console.log(e)
+      res.status(500).send({message: 'Something went wrong while saving the Image'});
+    }
   }
-  else{
+  else {
     res.status(400).send('Please add a file to upload');
   }
 
@@ -146,88 +139,134 @@ router.post('/upload', auth, upload.single('image'), async (req, res) => {
   res.status(415).send({ error: "Non valid file type" })
 })
 
-// Vote for image
-router.post('/images/:id',auth, achievements,async (req, res) => {
 
-  const {vote, label} = req.body;
-  const user = req.user;
-  let flag = true;
+// Vote for image
+router.post('/images/:id', auth, achievements, async (req, res) => {
+
+  const vote = req.body.vote === 'left';
+  const { label } = req.body;
+
+  console.log('VOTE', vote);
+  console.log('LABELED ID: ', req.params.id)
+
+  let image;
+  let setObj;
 
   try {
-    let image = await Image.findOne({_id: req.params.id});
-    let setObj = await SetOBJ.findOne({_id: image.imageSetId})
+    image = await Image.findOne({_id: req.params.id});
+    setObj = await SetOBJ.findOne({_id: image.imageSetId})
+  } catch(e){
+    console.log('There was a problem while finding the set or iamge');
+  }
+  if (!image) {
+    return res.status(401).send({ error: 'No image with this ID was found' })
+  }
+  if (!setObj) {
+    return res.status(401).send({error: 'No image with this ID was found'})
+  }
 
-    if (!image) {
-      return res.status(401).send({error: 'No image with this ID was found'})
-    }
-    if (!setObj) {
-      return res.status(401).send({error: 'No image with this ID was found'})
-    }
+  image.labels[0].votes.push(vote);
+  req.user.labeledImagesID.push({ imageID: req.params.id, timestamp: moment().format('L') });
 
-    image.labels.map(labels => {
-      if (labels.label === label){
-        user.labeledImagesID.forEach( image => {
-          if (image.imageID === req.params.id){ res.status(400).send("Already voted for this picture"); } })
-        if (user.labeledImagesID.includes({imageID: req.params.id})){ res.status(400).send("Already voted for this picture"); }
+  image.counter = image.counter + 1;
+  req.user.counter = req.user.counter + 1;
+  setObj.counter = setObj.counter +1;
+  console.log('IAMGE: ', image);
+  console.log(req.user.counter)
 
-        labels.votes.push(vote);
-        user.labeledImagesID.push({imageID: req.params.id, timestamp: moment().format('L')});
-        flag = false;
-      }
-    });
+  let fetchedImagesIDs = req.user.fetchedImagesID;
+  const labeledImagesIDs = req.user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
 
-    if (flag){ res.status(400).send("Unvalid labels"); }
+  console.log('LABELED IDS',labeledImagesIDs.length);
+  console.log('LABELED IDS',labeledImagesIDs);
+  console.log('fetched IDS', fetchedImagesIDs.length);
+  console.log('fetched IDS', fetchedImagesIDs);
 
-    user.counter = user.counter + 1;
-    setObj.counter = setObj.counter +1;
+  const notToLoad = labeledImagesIDs.concat(fetchedImagesIDs);
+  console.log(notToLoad.length);
+  console.log(notToLoad);
 
-    await image.save();
-    await user.save();
-    await setObj.save();
 
-    res.status(200).send(image.labels)
+  nextImage = await Image.findOne({
+    $and: [
+      {_id: { $nin: notToLoad}},
+      {imageSetId: setObj._id},
+    ]
+  })
+
+  const nextId = nextImage ? nextImage._id : 'no more';
+  console.log('NEXT IMAGE ID', nextId);
+  req.user.fetchedImagesID.push(nextId);
+  console.log(labeledImagesIDs);
+
+  try{
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await image.save({session: sess});
+    await req.user.save({session: sess});
+    await setObj.save({session: sess});
+    await sess.commitTransaction();
+    res.status(200).send(nextId);
   } catch (e) {
+    console.log(e);
     res.status(500).send(e);
   }
 })
 
 // Get next n Images IDS - only images that the user did not voted for yet
-router.post('/images/next/:n/id', auth, async  (req, res) => {
+router.post('/images/next/:n/id', auth, async (req, res) => {
 
-  const labeledImagesID = req.user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
-  let fetchedImagesID = req.user.fetchedImagesID;
+
+  if(!req.body.label) console.log('NO LABEL PROVIDED');
+  const labeledImagesIDs = req.user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
   const label = req.body.label;
   const n = req.params.n;
 
+  console.log('LABEL', label);
+  console.log('N', n);
+  console.log('LABELED IDS', labeledImagesIDs)
+  console.log('FETCHED', req.user.fetchedImagesID);
+
+
+  let images;
+  let set;
   try {
-    let toReturn = []
-    let images = await Image.find({"labels.label" : label}, {_id:1, goal:1, counter:1})
-
-    // IMGS which have not been fetched or labeled by user return id and labels
-    images.forEach( image => {
-      if (!labeledImagesID.includes(image._id) && !fetchedImagesID.includes(image._id) && image.goal > image.counter){
-        toReturn.push(image._id)
-      }
+    set = await SetOBJ.findOne({label: label});
+    if(!set) console.log('no set found');
+    images = await Image.find({ 
+      $and: [
+        {_id: { $nin: labeledImagesIDs}},
+        {imageSetId: set._id},
+      ]
     })
-
-    if (toReturn.length < 1){ res.status(400).send('no images found'); }
-    else{
-      if (toReturn.length > n){toReturn = toReturn.slice(0,n)}
-      req.user.fetchedImagesID = req.user.fetchedImagesID.concat(toReturn)
-      await req.user.save();
-      console.log(req.user.fetchedImagesID);
-      res.status(200).send(toReturn);
+    if(!images) {
+      console.log('no images found');
     }
 
-
+    let toReturn = await images
+      //.filter(i => i.goal > i.counter)
+      .map(i => i._id)
+      .slice(0,n)
+    const diff = n - toReturn.length
+    console.log('DIFF', diff);
+    if(diff > 0){
+      for(let i = 0;i<diff; i++){
+        toReturn.push('no more');
+      }
+    }
+    console.log('IMAGES', images);
+    console.log('TO RETURN', toReturn);
+    req.user.fetchedImagesID = toReturn;
+    await req.user.save();
+    res.status(200).send(toReturn);
   } catch (e) {
+    console.log(e);
     res.status(500).send(e)
   }
-
-} )
+})
 
 // Get next Imgae - only images that the user did not voted for yet
-router.post('/images/next/id', auth, async  (req, res) => {
+router.post('/images/next/id', auth, async (req, res) => {
 
   const labeledImagesID = req.user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
   let fetchedImagesID = req.user.fetchedImagesID;
@@ -246,8 +285,8 @@ router.post('/images/next/id', auth, async  (req, res) => {
       }
     })
 
-    if (toReturn.length < 1){ res.status(400).send('no images found'); }
-    else{
+    if (toReturn.length < 1) { res.status(400).send('no images found'); }
+    else {
       const image = toReturn.pop();
       console.log(image)
       req.user.fetchedImagesID.push(image)
@@ -259,14 +298,14 @@ router.post('/images/next/id', auth, async  (req, res) => {
   } catch (e) {
     res.status(500).send(e)
   }
-} )
+})
 
 // Get image by label
 router.post('/images', async (req, res) => {
 
   try {
-    const images = await Image.find({"labels.label" : req.body.label})
-    console.log(images);
+    const images = await Image.find({ "labels.label": req.body.label })
+    console.log(images); //for debugging i guess, needs to be removed when not in use TODO
 
     res.status(200).send(images);
   } catch (e) {
@@ -308,10 +347,21 @@ router.delete('/images/:id', auth, async (req, res) => {
       _id: req.params.id,
       owner: req.user._id
     });
-    if (!image) { return res.status(401).send({error: 'No image with this ID was found'}) }
-    res.status(201).send({msg:"Image deleted"});
+    if (!image) { return res.status(401).send({ error: 'No image with this ID was found' }) }
+    res.status(201).send({ msg: "Image deleted" });
   } catch (e) {
-    res.status(500).send(e);
+    res.status(500).send({ error: e, message: "something went wrong, could not delete image" });
+  }
+})
+
+router.delete('/images/', async (req, res, next) => {
+  try{
+      Image.remove({}, () => {
+          console.log('Deleted all Images');
+          res.status(200).send({msg: 'deleted All images'});
+      })
+  }catch(e){
+      res.status(500).send({message: 'something went wrong while deleting all Images'});
   }
 })
 
