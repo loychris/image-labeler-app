@@ -17,7 +17,7 @@ class ImageQueue extends Component {
     state = {
         queue: [],
         lable: '',
-        nextPicId: 10,
+        next: null,
         timeStampLastLabel: 0,
         initialLoad: 'loading'
     }
@@ -44,7 +44,12 @@ class ImageQueue extends Component {
                   res.data.forEach((id, i) => {
                       queue.push({ pos: i+1, show: 'middle', id })
                   })
-                  this.setState({ queue: queue, initialLoad: 'loaded' });
+                  console.log('QUEUE', queue);
+                  let next = queue.pop();
+                  next.pos = next.pos -1;
+                  console.log('NEXT', next);
+                  console.log('QUEUE', queue);
+                  this.setState({ queue: queue, initialLoad: 'loaded', next: next });
                 }
               } 
             })
@@ -129,26 +134,45 @@ class ImageQueue extends Component {
         //TODO: send POST-req with the result to the server
         const currentTimeStamp = Date.now();
         if(currentTimeStamp - 400 > this.state.timeStampLastLabel){
+
+            // update Queue & insert next element stored in State
             const newQueue = this.state.queue
                 .map(x => {
                     const newPos = x.pos-1;
                     const show = newPos === 0 ? direction : 'middle'
                     return ({ ...x, show, pos: newPos });
                 })
-                .filter(x => {return x.pos >= 0});
-            newQueue.push({pos: 9, show: '', id: this.state.nextPicId})
-            const newNextPicId = this.state.nextPicId+1;
+                .filter( x => x.pos >= 0 )
             this.setState({
                 queue: newQueue, 
-                nextPicId: newNextPicId,
                 timeStampLastLabel: currentTimeStamp
             });
+            //send vote to Server and refil next in State
+            const currentToken = JSON.parse(localStorage.getItem('userData')).token;
+            axios.post(
+                `http://127.0.0.1:3000/images/${this.state.queue[1].id}`,
+                { vote: direction, label: this.props.match.params.category }, 
+                {headers: { 
+                    'Access-Control-Allow-Origin': '*',
+                    Authorization: `Bearer ${currentToken}` 
+                }})
+            .then(res => {
+              console.log('DATA', res.data);
+              if(res.data){
+                let queue = this.state.queue;
+                queue.push({ pos: queue.length, show: 'middle', id: res.data })
+                this.setState({ queue: queue });
+              } 
+            })
+            .catch((e) => {
+              this.setState({initialLoad: 'failed'})
+            })
         }
     }
 
     render(){
         const imageContainers = this.state.queue.map(i => {
-            return <ImageContainer {...i} key={i.pos} queueStatus={this.state.initialLoad}/>
+            return <ImageContainer {...i} key={i.id} queueStatus={this.state.initialLoad}/>
         })
         const leftButtonClasses = [classes.leftButton, classes.button]
         const rightButtonClasses = [classes.rightButton, classes.button]

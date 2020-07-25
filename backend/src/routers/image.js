@@ -1,5 +1,6 @@
 const express = require('express');
 const moment = require('moment');
+const mongoose = require('mongoose');
 
 const router = express.Router();
 
@@ -112,14 +113,6 @@ router.get('/images/next', auth, async (req, res) => {
 
 
 
-
-////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////
-
-
-
-
 // Upload a new image
 router.post('/upload', auth, fileUpload.single('image'), async (req, res) => {
   if(!req.body.label){
@@ -148,55 +141,61 @@ router.post('/upload', auth, fileUpload.single('image'), async (req, res) => {
 })
 
 
-
-
-////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////
-
-
 // Vote for image
 router.post('/images/:id', auth, achievements, async (req, res) => {
 
-  const { vote, label } = req.body;
+  const vote = req.body.vote === 'left';
+  const { label } = req.body;
   const user = req.user;
-  let flag = true;
-
+  console.log('VOTE', vote);
+  let image;
+  let setObj;
   try {
-    let image = await Image.findOne({_id: req.params.id});
-    let setObj = await SetOBJ.findOne({_id: image.imageSetId})
+    image = await Image.findOne({_id: req.params.id});
+    setObj = await SetOBJ.findOne({_id: image.imageSetId})
+  } catch(e){
+    console.log('There was a problem while finding the set or iamge');
+  }
+  if (!image) {
+    return res.status(401).send({ error: 'No image with this ID was found' })
+  }
+  if (!setObj) {
+    return res.status(401).send({error: 'No image with this ID was found'})
+  }
 
-    if (!image) {
-      return res.status(401).send({ error: 'No image with this ID was found' })
-    }
-    if (!setObj) {
-      return res.status(401).send({error: 'No image with this ID was found'})
-    }
+  image.labels[0].votes.push(vote);
+  user.labeledImagesID.push({ imageID: req.params.id, timestamp: moment().format('L') });
 
-    image.labels.map(labels => {
-      if (labels.label === label) {
-        user.labeledImagesID.forEach(image => {
-          if (image.imageID === req.params.id) { res.status(400).send("Already voted for this picture"); }
-        })
-        if (user.labeledImagesID.includes({ imageID: req.params.id })) { res.status(400).send("Already voted for this picture"); }
+  image.counter = image.counter + 1;
+  user.counter = user.counter + 1;
+  setObj.counter = setObj.counter +1;
+  console.log('IAMGE: ', image);
+  console.log('USER: ', user.counter);
 
-        labels.votes.push(vote);
-        user.labeledImagesID.push({ imageID: req.params.id, timestamp: moment().format('L') });
-        flag = false;
-      }
-    });
-
-    if (flag) {return res.status(400).send("Invalid labels"); }
-
-    user.counter = user.counter + 1;
-    setObj.counter = setObj.counter +1;
-
-    await image.save();
-    await user.save();
-    await setObj.save();
-
-    res.status(200).send(image.labels)
+  let fetchedImagesIDs = user.fetchedImagesID;
+  const labeledImagesIDs = req.user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
+  labeledImagesIDs.push(req.params.id);
+  console.log('LABELED IDS', labeledImagesIDs);
+  nextImage = await Image.findOne({
+    $and: [
+      {_id: { $nin: labeledImagesIDs}},
+      {_id: { $nin: fetchedImagesIDs}},
+      {imageSetId: setObj._id},
+    ]
+  })  
+  const nextId = nextImage ? nextImage._id : 'no more';
+  console.log('NEXT IMAGE ID', nextId);
+  user.fetchedImagesID.push(nextId);
+  try{
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await image.save({session: sess});
+    await user.save({session: sess});
+    await setObj.save({session: sess});
+    await sess.commitTransaction();
+    res.status(200).send(nextId);
   } catch (e) {
+    console.log(e);
     res.status(500).send(e);
   }
 })
@@ -206,7 +205,6 @@ router.post('/images/next/:n/id', auth, async (req, res) => {
   console.log(req.body); 
   if(!req.body.label) console.log('NO LABEL PROVIDED');
   const labeledImagesIDs = req.user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
-  let fetchedImagesIDs = req.user.fetchedImagesID;
   const label = req.body.label;
   const n = req.params.n;
   console.log('LABEL', label);
@@ -215,8 +213,17 @@ router.post('/images/next/:n/id', auth, async (req, res) => {
   console.log('FETCHED', req.user.fetchedImagesID);
 
   let images;
+  let set;
   try {
-    images = await Image.find( { _id: { $nin: labeledImagesIDs}}, {"labels.label" : label}, {_id:1, goal:1, counter:1})  
+    set = await SetOBJ.findOne({label: label});
+    if(!set) console.log('no set found');
+    images = await Image.find({ 
+      $and: [
+        {_id: { $nin: labeledImagesIDs}},
+        {imageSetId: set._id},
+      ]
+    })
+    if(!images) console.log('no images found');
     let toReturn = await images
       //.filter(i => i.goal > i.counter)
       .map(i => i._id)
@@ -234,6 +241,7 @@ router.post('/images/next/:n/id', auth, async (req, res) => {
     await req.user.save();
     res.status(200).send(toReturn);
   } catch (e) {
+    console.log(e);
     res.status(500).send(e)
   }
 })

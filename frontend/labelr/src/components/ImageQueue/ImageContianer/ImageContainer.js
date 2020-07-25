@@ -39,7 +39,7 @@ class ImageContainer extends Component {
     }
 
     componentDidMount() {
-        if (this.state.status === 'loading') {
+        if (this.state.status === 'loading' && this.props.id !== '') {
           console.log('#####################');
           const currentToken = JSON.parse(localStorage.getItem('userData')).token;
           console.log('ID', this.props.id);
