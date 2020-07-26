@@ -1,8 +1,16 @@
 const express = require("express");
-const router = express.Router();
+const moment = require('moment');
+
 const User = require('../models/user');
-const auth = require('../middleware/auth')
+const Image = require('../models/image');
+const ImageSet = require('../models/set')
+
 const acheivements = require('../middleware/achievements')
+const auth = require('../middleware/auth')
+const uploader = require('../middleware/uploader')
+
+
+const router = express.Router();
 
 // ------------------------ GET ROUTES ------------------------
 
@@ -15,7 +23,7 @@ router.get('/', async (req, res) => {
 
         res.status(200).send(users)
     } catch (e) {
-        res.status(500).send("server error on ' GET('/') '")
+        res.status(500).send(e)
     }
 })
 
@@ -32,10 +40,67 @@ router.get('/:id', async (req, res) => {
 })
 
 // Get my account
-router.get('/me/profile', auth, async (req, res) => {
-    res.status(200).send(req.user)
+router.get('/me/profile', auth, async (req, res) => { res.status(200).send(req.user) });
+
+// Get my labeling statistics
+router.get('/me/labeled/statistics', auth ,async (req, res) => {
+    try{
+        const startOfTheWeek = moment().startOf('week').format('l');
+        const endOfTheWeek = moment().endOf('week').format('l');
+
+        const startOfTheMonth = moment().startOf('month').format('l');
+        const endOfTheMonth = moment().endOf('month').format('l');
+
+        const startOfTheYear = moment().startOf('year').format('l');
+        const endOfTheYear = moment().endOf('year').format('l');
+
+        const counter = req.user.counter;
+        const labeled = req.user.labeledImagesID.map( image => moment(image.timestamp).format('l') );
+
+        const today = labeled.filter(image => image === moment().format('l') );
+        const week = labeled.filter(image => moment(image).isBetween(startOfTheWeek, endOfTheWeek, undefined, []));
+        const month = labeled.filter(image => moment(image).isBetween(startOfTheMonth, endOfTheMonth, undefined, []));
+        const year = labeled.filter(image => moment(image).isBetween(startOfTheYear, endOfTheYear, undefined, []));
+
+        res.status(200).send({today: today.length, week: week.length, month: month.length, year: year.length, counter});
+
+    }catch(e){
+        res.status(500).send(e);
+    }
 });
 
+// Get input for a machine or app (json/cvs)
+router.get('/me/statistics', auth, uploader , async (req, res) => {
+    try {
+        const imageSets =await ImageSet.find({owner: req.user._id});
+        let images =await Image.find({owner: req.user._id});
+
+
+        if (!images || !imageSets){
+            res.status(401).send({error: "Images/Image sets were not found"});
+        }
+        images = images.map( image => ({_id: image._id, votes: image.labels[0].votes, label: image.labels[0].label }))
+
+        const populatedSets = imageSets.map( (imageSet) => {
+
+            // Aggregation - all images of current set
+            const currentSet = images.filter( image => image.imageSetId === imageSet._id);
+
+            // Adding to the return obj labeledAsTrue counter and labeledAsFalse counter
+            const returnVal = currentSet.map( image =>
+                ({...image,
+                    labeledAsTrue:image.votes.reduce((trues, current) => current, 0),
+                    labeledAsFalse:image.votes.reduce((trues, current) => !current, 0)
+                }))
+
+            return returnVal
+        })
+        res.status(200).send({loaderId: req.user._id, populatedSets})
+    }catch (e) {
+        res.status(500).send(e)
+    }
+
+})
 
 // Get n highest score
 router.get('/highscores/:n', async (req, res) => {
@@ -47,15 +112,13 @@ router.get('/highscores/:n', async (req, res) => {
 
         if (users.length > n) { users = users.slice(0, n) }
 
-        users = users.map(user => ({ _id: user._id, acheivements: user.acheivements, counter: user.counter }))
+        users = users.map(user => ({_id: user._id, name: user.name, achievements: user.achievements.length, counter: user.counter}))
 
         res.status(200).send(users);
     } catch (e) {
         res(500).send({ e });
     }
 })
-
-
 
 // ------------------------ POST ROUTES ------------------------
 

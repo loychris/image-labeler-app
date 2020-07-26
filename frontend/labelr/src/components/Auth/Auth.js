@@ -1,9 +1,8 @@
 import React, { useState, useContext } from "react";
-import { Link } from 'react-router-dom';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-
+import { Formik } from 'formik';
+import Button from '@material-ui/core/Button';
 import { AuthContext } from '../context/auth-context';
-import { useHttpClient } from './http-hook';
+import axios from 'axios';
 
 
 import classes from './Auth.module.css';
@@ -14,74 +13,59 @@ import AuthTab from './AuthTab/AuthTab';
 function Auth(props) {
 
     const auth = useContext(AuthContext);
-    const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    
 
-
-    const [userType, setUserType] = useState('User') // <-> 'uploader'
+    const [userType, setUserType ] = useState('User') // <-> 'uploader'
     const [currentForm, setCurrentForm] = useState('login') // <-> 'signup'
+    const [incorrectPW, setIncorrectPW] = useState(false);
 
-
-
-    const switchToUser = () => {
-        if(userType !== 'User'){
-            setUserType('User');
-        }
-    }
-
-    const switchToUploader = () => {
-        if(userType !== 'Uploader'){
-            setUserType('Uploader');
-        }
-    }
-
-    const switchToLogin = () => {
-        if(currentForm !== 'login'){
-            setCurrentForm('login');
-        }
-    }
-
-    const switchToSignup = () => {
-        if(currentForm !== 'signup'){
-            setCurrentForm('signup');
-        }
+    const getArrow = () => {
+        return(
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g id="arrow_forward_24px">
+                <path id="icon/navigation/arrow_forward_24px" d="M12 4L10.59 5.41L16.17 11H4V13H16.17L10.59 18.59L12 20L20 12L12 4Z" fill="#212529"/>
+                </g>
+            </svg>
+        )
     }
 
     const handleLogin = async (values, { setSubmitting }) => {
         setSubmitting(false);
-        const body = JSON.stringify({
+
+        axios.post('/users/login', JSON.stringify({
             email: values.email,
             password: values.password
+        }), {
+            headers: { 'Content-Type': 'application/json' }
         })
-        const responseData = await sendRequest(
-            'http://127.0.0.1:3000/users/login',
-            'POST',
-            body,
-            {
-            'Content-Type': 'application/json'
+        .then(response => { 
+            auth.login(response.data.user, response.data.token);
+        })
+        .catch(error => {
+            console.log("THERE WAS AN ERROR WHILE LOGGING IN")
+            console.log(error);
+            if(error.response && error.response.status === 400 && !incorrectPW){
+                setIncorrectPW(true);
             }
-        );
-        auth.login(responseData.user, responseData.token);
+        });
     }
 
     const handleSignup = async (values, { setSubmitting }) => {
         setSubmitting(false);
-        const body = JSON.stringify({
+
+        axios.post('/users', JSON.stringify({
             name: values.username,
             email: values.email,
             password: values.password,
             isUploader: userType === 'Uploader'
+        }), {
+            headers: { 'Content-Type': 'application/json' }
         })
-        const responseData = await sendRequest(
-            'http://127.0.0.1:3000/users',
-            'POST',
-            body,
-            {
-            'Content-Type': 'application/json'
-            }
-        );
-        console.log("__________________________")
-        console.log(responseData);
-        auth.login(responseData.user, responseData.token);
+        .then(response => {
+            auth.login(response.data.user, response.data.token);
+        }).catch(e => {
+            console.log(e);
+        })
     }
 
 
@@ -159,8 +143,12 @@ function Auth(props) {
                     <span className={classes.invalidMessage}>
                         {errors.password && touched.password && errors.password}<br/>
                     </span>
-                    <button type="submit" disabled={isSubmitting}>
-                    Login
+                    {incorrectPW ? <span className={classes.invalidMessage}>
+                        Username or password incorrect. Please try again <br/>
+                    </span>  : null}
+                    <div className={classes.SwitchText} onClick={() => setCurrentForm('signup')}>Don't have an account? <strong>Sign up</strong> {getArrow()} </div>        
+                    <button variant="contained" type="submit" disabled={isSubmitting} size='small'>
+                        Login
                     </button>
                 </form>
                 )}
@@ -186,7 +174,7 @@ function Auth(props) {
                 /* and other goodies */
                 }) => (
                 <form className={classes.form} onSubmit={handleSubmit}>
-                    <h3>{userType} login</h3>
+                    <h3>create an {userType} account</h3>
                     <label>Username:</label>
                     <input
                         id="username"
@@ -222,16 +210,16 @@ function Auth(props) {
                     /><br/>
                     <span className={classes.invalidMessage}>
                         {errors.password && touched.password && errors.password}<br/>
-                    </span>                    
-                    <button type="submit" disabled={isSubmitting}>
-                    Submit
+                    </span>   
+                <div className={classes.SwitchText} onClick={() => setCurrentForm('login')}>Already have an account? <strong>Login</strong>{getArrow()}</div>                 
+                    <button type="submit" disabled={isSubmitting} small>
+                        Create Account
                     </button>
                 </form>
                 )}
             </Formik>
         )
     }
- 
 
 
 
@@ -244,21 +232,11 @@ function Auth(props) {
                     <AuthTab 
                         active={userType === 'User'}
                         value={'User'} 
-                        clicked={switchToUser}/>
+                        clicked={() => setUserType('User')}/>
                     <AuthTab 
                         active={userType === 'Uploader'}
                         value={'Uploader'} 
-                        clicked={switchToUploader}/>
-                </div>
-                <div className={classes.loginSignup}>
-                    <AuthTab 
-                        active = {currentForm === 'login'} 
-                        value = {'Login'} 
-                        clicked = {switchToLogin}/>
-                    <AuthTab 
-                        active = {currentForm === 'signup'} 
-                        value = {'Signup'} 
-                        clicked = {switchToSignup}/>
+                        clicked={() => setUserType('Uploader')}/>
                 </div>
                 {inputs}
             </div>

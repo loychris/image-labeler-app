@@ -1,9 +1,12 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const Image = require('../models/image');
 const SetOBJ = require('../models/set');
 const multer = require('multer');
 const auth = require('../middleware/auth')
+const fileUpload = require('../middleware/file-upload');
+
 
 const upload = multer({
     limits: {
@@ -69,36 +72,69 @@ router.get('/', async ( req, res) => {
     }
 })
 
-router.post('/',auth, upload.single('image'), async ( req, res ) => {
+router.get('/labels', async (req,res) => {
     try {
-        if  (req.file !== undefined){
-            const set = new SetOBJ({
-                owner: req.user._id,
-                imageId: req.body.imageId,
-                deadline: req.body.deadline,
-                icon: req.file.buffer,
-                label: req.body.label
-            })
-            const setCompleted = await set.save();
-            console.log(setCompleted._id);
-            req.user.imageSets.push(setCompleted._id)
-
-            req.body.imageId.forEach( async (_id) => {
-                const image = await Image.findOne({_id})
-                image.imageSetId = setCompleted._id
-            })
-
-            res.status(201).send({ msg: 'set added successfully' });
-        }
-        else{
-            res.status(400).send('Please add an icon to upload');
-        }
-
-    } catch (e) {
-        res.status(500).send('Something went wrong');
-
+        const sets = await SetOBJ.find()
+        const labels = sets.map( set => {
+            console.log(set.label);
+            return set.label
+        } )
+        res.status(200).send(Array.from(new Set(labels)))
+    }
+    catch (e) {
+        res.status(500).send(e)
     }
 })
+
+
+
+router.post('/',auth, fileUpload.single('image'), async ( req, res ) => {
+    if(!req.file) res.status(400).send({msg: 'no icon file attached'})
+    if(!req.body.imageId) res.status(400).send({msg: 'no Image Ids given'})
+    if(!req.body.label) res.status(400).send({msg:'no label definded'})
+    if(!req.body.deadline) res.status(400).send({msg:'no deadline definded'})
+    if(!req.body.goal) res.status(400).send({msg: 'No goal set'});
+    const set = new SetOBJ({
+        owner: req.user._id,
+        imageId: req.body.imageId.split(','),
+        deadline: req.body.deadline,
+        icon: req.file.buffer,
+        label: req.body.label,
+        goal: req.body.goal
+    })
+    let setCompleted
+    const imageIds = req.body.imageId.split(',')
+    let images
+    try{
+        setCompleted = await set.save()
+    }catch(e){
+        console.log(e)
+    }
+    req.user.imageSets.push(setCompleted._id)
+    try{
+        images = await Image.find().where('_id').in(imageIds).exec()
+    }catch(e){        
+        console.log(e)
+    }
+    images.map(img => {
+        img.imageSetId = setCompleted._id
+        return img
+    })
+    try {
+        const sess = await mongoose.startSession();
+        sess.startTransaction();
+        await req.user.save({session: sess});
+        for(let i=0;i<images.length; i++){
+            await images[i].save({session: sess});
+        }
+        await sess.commitTransaction();
+
+    }catch(e){
+        console.log(e)
+    }
+    res.send({ setCompleted })
+}); 
+
 
 router.post('/next/:setId', auth, async  (req, res) => {
     const imageSetId = req.params.setId;
@@ -123,15 +159,25 @@ router.post('/next/:setId', auth, async  (req, res) => {
     } catch (e) { res.status(500).send(e) }
 });
 
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         await SetOBJ.findOneAndDelete({_id:req.params.id})
         res.status(201).send({message: "removed"});
     }catch (e) {
         res.status(500).send({error: "Something went wrong, the set was not removed"})
     }
-
 })
 
+
+router.delete('/', async (req, res, next) => {
+    try{
+        SetOBJ.remove({}, () => {
+            console.log('Deleted all sets');
+            res.status(200).send({msg: 'deleted All sets'});
+        })
+    }catch(e){
+        res.status(500).send({message: 'something went wrong while deleting all sets'});
+    }
+})
 
 module.exports = router;

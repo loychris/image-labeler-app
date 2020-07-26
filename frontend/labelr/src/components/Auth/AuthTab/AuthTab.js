@@ -3,12 +3,9 @@ import classes from './AuthTab.module.css';
 
 class AuthTab extends Component {
     render(){
-        let styleClasses = [classes.authTab];
-        if(this.props.active){ styleClasses.push(classes.active)} 
-        else {styleClasses.push(classes.inactive)}
         return(
             <div 
-                className={styleClasses.join(' ')}
+                className={`${classes.authTab} ${this.props.active ? classes.active : classes.inactive}`}
                 onClick={this.props.clicked}>
                 {this.props.value}
             </div>

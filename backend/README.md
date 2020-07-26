@@ -75,6 +75,60 @@ fetch("localhost:3000/users/me/images", requestOptions)
   .then(result => console.log(result))
   .catch(error => console.log('error', error));
 ```
+
+#### Get  all labeling statistic for specific user (authenticatied)
+ - Get an object with the counters for today, this week, this month, this year and generally (counter) 
+```javascript
+const request = require("request");
+
+const options = { method: 'GET',
+  url: 'localhost:3000/users/me/labeled/statistics',
+  headers: 
+   {'cache-control': 'no-cache',
+     Authorization: ',Bearer token',
+     'Content-Type': 'application/x-www-form-urlencoded' },
+  form: { undefined: undefined } };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+
+```
+
+
+#### Get  all statistic for specific user (authenticatied)
+ - Get an object with statistics for the uploader
+ response in form of
+ ```javascript
+{
+    "loaderId": "loader id",
+    "populatedSets": [ [] ]
+}  
+````
+ 
+```javascript
+const request = require("request");
+
+const options = { method: 'GET',
+  url: 'http://127.0.0.1:3000/users/me/statistics',
+  headers: 
+   { 'cache-control': 'no-cache',
+     Authorization: 'Bearer token' } };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+
+
+```
+
+
+
+
  ### POST Routes
 
 #### Create new user
@@ -622,6 +676,12 @@ The User must be authenticated to use the private routes like uploadingan or vot
 updating his profile and ca. otherwise, the user will get an 401 authentication response code.
 
 ### Achievements middleware
+THIS MIDDLEWARE MUST COME AFTER AUTH MIDDLEWARE
 The achievements middleware will make sure every time the user vote, log in or the fetched images list removed.
 Will attach and object to the response in case there are new achievements the user acheived in this session.
 res.newAchievments is now availble to use, in it you will find the new acheivements; this list will be attached to the response only in case there are new acheivements
+
+### Uploader middleware
+THIS MIDDLEWARE MUST COME AFTER AUTH MIDDLEWARE
+The uploader middleware make sure that the authenticated user is an uploader, otherwise expect 
+code 401 and {error: 'This user is not authorize to upload.'} back.
