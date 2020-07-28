@@ -13,6 +13,9 @@ sys.argv[4] : first day of sprint (mo, di, mi, do, fr, sa, so)
 sys.argv[5] : length of sprint in days
 """
 
+if len(sys.argv) < 2:
+    print("Usage:\n\tpython3 <scriptname> <datafile> <columns> <graphs> <start> <days>\n")
+    print("\te.g.\t python3 burndownchart3.py Sprint4 4 3 fr 14\n")
 if len(sys.argv) < 4:
     sys.argv.extend(["2", "mo", "7"])
 
@@ -30,7 +33,7 @@ if number > 7:
     diff = number-7
     for i in range(diff):
         sprintweek.append(days[(start+i)%7] + str(number//7))
-
+    print(sprintweek)
 daynumber = [i+1 for i in range(number)]
 
 sprintdays = dict(zip(sprintweek, daynumber))
@@ -126,7 +129,7 @@ ax.spines['top'].set_visible(False)
 ax.spines['left'].set_visible(True)
 
 #plt.xlabel('Time (in days)')
-plt.ylabel('Tasks (in days)\n56h = 7 days')
+plt.ylabel('Tasks (in days)\n' + str(np.round(sum_minutes/60,2)) + 'h = '+ str(np.round(sum_minutes/day_in_minutes, 2)) + ' days')
 filename = sys.argv[1].partition(".")
 plt.title('Burndown Chart ' + filename[0])
 plt.legend()
