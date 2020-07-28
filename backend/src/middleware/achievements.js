@@ -8,36 +8,63 @@ const achievements = async (req, res, next) => {
     const exsistingAcheivements = req.user.achievements.map( achv => achv.achievement);
 
     if (!!label){
-        const today = moment().format('L');
-        const thisWeek = moment().subtract(7, 'days').calendar();
-        const newCount = req.user.labeledImagesID.length+1;
-        const labeledToday = req.user.labeledImagesID.filter(
-            image =>  moment(image.timestamp).format('L') === moment(today).format('L')).length + 1;
-        const labeledThisWeek = req.user.labeledImagesID.filter(
-            image => {
-                return ((moment(image.timestamp).format('L') >= moment(thisWeek).format('L')
-                    && moment(image.timestamp).format('L') <= moment(today).format('L')))
-            }).length + 1;
+        const startOfTheWeek = moment().startOf('week').format('l');
+        const endOfTheWeek = moment().endOf('week').format('l');
+
+        const startOfTheMonth = moment().startOf('month').format('l');
+        const endOfTheMonth = moment().endOf('month').format('l');
+
+        const startOfTheYear = moment().startOf('year').format('l');
+        const endOfTheYear = moment().endOf('year').format('l');
+
+        const labeled = req.user.labeledImagesID.map( image => moment(image.timestamp).format('l') );
+
+        const counter = req.user.counter+1;
+        const today = labeled.filter(image => image === moment().format('l') ) + 1;
+        const week = labeled.filter(image => moment(image).isBetween(startOfTheWeek, endOfTheWeek, undefined, [])) + 1;
+        const month = labeled.filter(image => moment(image).isBetween(startOfTheMonth, endOfTheMonth, undefined, [])) +1;
+        const year = labeled.filter(image => moment(image).isBetween(startOfTheYear, endOfTheYear, undefined, [])) + 1;
 
         // Switch case for counter ( first section of the demand list )
         switch (newCount) {
-            case 10000:
+            case 100000:
                 achievement = {
                     achievement: "Master of the universe",
                     date: moment().format().substr(0,10)
                 }
                 acheivements.push(achievement);
                 break;
-            case 5000:
+            case 50000:
+                achievement = {
+                    achievement: "At the top",
+                    date: moment().format().substr(0,10)
+                }
+                acheivements.push(achievement);
+                break;
+            case 20000:
+                achievement = {
+                    achievement: "Cyborg",
+                    date: moment().format().substr(0,10)
+                }
+                acheivements.push(achievement);
+                break;
+            case 10000:
                 achievement = {
                     achievement: "Grand Master",
                     date: moment().format().substr(0,10)
                 }
                 acheivements.push(achievement);
                 break;
+            case 5000:
+                achievement = {
+                    achievement: "Strike!",
+                    date: moment().format().substr(0,10)
+                }
+                acheivements.push(achievement);
+                break;
             case 1000:
                 achievement = {
-                    achievement: "Labelr",
+                    achievement: "You are a Winner",
                     date: moment().format().substr(0,10)
                 }
                 acheivements.push(achievement);
@@ -56,28 +83,27 @@ const achievements = async (req, res, next) => {
                 }
                 acheivements.push(achievement);
                 break;
-            case 50:
+            case 10:
                 achievement = {
-                    achievement: "Getting the hang of it",
+                    achievement: "Beginner",
                     date: moment().format().substr(0,10)
                 }
                 acheivements.push(achievement);
                 break;
-            case 10:
+            case 1:
                 achievement = {
-                    achievement: "Starter",
+                    achievement: "The First of Many",
                     date: moment().format().substr(0,10)
                 }
-                acheivements.push(achievement);
                 break;
             default:
                 break;
         }
 
-        // 100 in a day / 500 in a week
-        if((labeledToday >= 100 || labeledThisWeek >= 500) && !exsistingAcheivements.includes("They wont label themselfs")){
+        // 100 in a day
+        if((labeledToday >= 100) && !exsistingAcheivements.includes("Too Fast!")){
             achievement = {
-                achievement: "They wont label themselfs",
+                achievement: "Too Fast!",
                 date: moment().format().substr(0,10)
             }
             acheivements.push(achievement);
@@ -85,7 +111,7 @@ const achievements = async (req, res, next) => {
 
 
         // Switch case for weekly labelings ( second section of the demand list )
-        switch (labeledThisWeek) {
+        switch (week) {
             case 5000:
                 achievement = {
                     achievement: "Hell of a week!",
@@ -95,7 +121,7 @@ const achievements = async (req, res, next) => {
                 break;
             case 2000:
                 achievement = {
-                    achievement: "Monday through sunday",
+                    achievement: "Addict",
                     date: moment().format().substr(0,10)
                 }
                 acheivements.push(achievement);
@@ -107,6 +133,53 @@ const achievements = async (req, res, next) => {
                 }
                 acheivements.push(achievement);
                 break;
+            case 500:
+                achievement = {
+                    achievement: "Hustler",
+                    date: moment().format().substr(0,10)
+                }
+                acheivements.push(achievement);
+                break;    
+            default:
+                break;
+        }
+        //Switch case for monthly labelings
+        switch (month) {
+            case 10000:
+                achievement = {
+                    achievement: "Unstoppable Force",
+                    date: moment().format().substr(0,10)
+                }
+                acheivements.push(achievement);
+                break;
+            case 5000:
+                achievement = {
+                    achievement: "Hell of a month",
+                    date: moment().format().substr(0,10)
+                }
+                acheivements.push(achievement);
+                break;
+            case 2000:
+                achievement = {
+                    achievement: "Explorer",
+                    date: moment().format().substr(0,10)
+                }
+                acheivements.push(achievement);
+                break;
+            case 1000:
+                achievement = {
+                    achievement: "Elite",
+                    date: moment().format().substr(0,10)
+                }
+                acheivements.push(achievement);
+                break;
+            case 500:
+                achievement = {
+                    achievement: "Getting the hang of it",
+                    date: moment().format().substr(0,10)
+                }
+                acheivements.push(achievement);
+                break;    
             default:
                 break;
         }
@@ -117,7 +190,7 @@ const achievements = async (req, res, next) => {
     switch (registeredAt) {
         case (moment(registeredAt) >= moment().subtract(730, "days") &&  !exsistingAcheivements.includes("Two years anniversary")):
             achievement = {
-                achievement: "Two years anniversary",
+                achievement: "2 Years!",
                 date: moment().format().substr(0,10)
             }
             acheivements.push(achievement);

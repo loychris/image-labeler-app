@@ -23,7 +23,7 @@ function  UploadForm() {
     const [icon, setIcon] = useState(null);
     const [name, setName] = useState('');
     const [weeks, setWeeks] = useState(5);
-    const [deadline, setDeadline] = useState(new Date().toLocaleString());
+    const [deadline, setDeadline] = useState(new Date().toGMTString());
     const [uploadProgress, setUploadProgress] = useState(0); 
 
     const [files, setFiles] = useState([]);
@@ -148,7 +148,6 @@ function  UploadForm() {
             }) 
         }
     }
-
     const date = new Date(deadline)
     const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' }) 
     const [{ value: month },,{ value: day },,{ value: year }] = dateTimeFormat .formatToParts(date); 

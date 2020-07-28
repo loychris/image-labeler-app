@@ -128,6 +128,7 @@ class ImageQueue extends Component {
     labelFirst = (direction) => {
         //TODO: send POST-req with the result to the server
         const currentTimeStamp = Date.now();
+        if(this.state.queue.length > 1) {
         const currentId = this.state.queue[1].id;
         console.log('CURRENT ID', currentId);
         if(currentTimeStamp - 700 > this.state.timeStampLastLabel && currentId !== 'no more'){
@@ -146,26 +147,29 @@ class ImageQueue extends Component {
 
             //send vote to Server and refil next in State
             const currentToken = JSON.parse(localStorage.getItem('userData')).token;
-            if(this.state.queue[1].id !== 'no more'){
-                axios.post(
-                    `http://127.0.0.1:3000/images/${this.state.queue[1].id}`,
-                    { vote: direction, label: this.props.match.params.category }, 
-                    {headers: { 
-                        'Access-Control-Allow-Origin': '*',
-                        Authorization: `Bearer ${currentToken}` 
-                    }})
-                .then(res => {
-                console.log('DATA', res.data);
-                if(res.data){
-                    let queue = this.state.queue;
-                    queue.push({ pos: queue.length, show: 'middle', id: res.data })
-                    this.setState({ queue: queue });
-                } 
-                })
-                .catch((e) => {
-                this.setState({initialLoad: 'failed'})
-                })
+
+                if(this.state.queue[1].id !== 'no more'){
+                    axios.post(
+                        `http://127.0.0.1:3000/images/${this.state.queue[1].id}`,
+                        { vote: direction, label: this.props.match.params.category },
+                        {headers: {
+                                'Access-Control-Allow-Origin': '*',
+                                Authorization: `Bearer ${currentToken}`
+                            }})
+                        .then(res => {
+                            console.log('DATA', res.data);
+                            if(res.data){
+                                let queue = this.state.queue;
+                                queue.push({ pos: queue.length, show: 'middle', id: res.data })
+                                this.setState({ queue: queue });
+                            }
+                        })
+                        .catch((e) => {
+                            this.setState({initialLoad: 'failed'})
+                        })
+                }
             }
+
         }
     }
 
