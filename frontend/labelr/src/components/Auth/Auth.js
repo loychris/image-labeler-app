@@ -144,7 +144,7 @@ function Auth(props) {
                         {errors.password && touched.password && errors.password}<br/>
                     </span>
                     {incorrectPW ? <span className={classes.invalidMessage}>
-                        Username or password incorrect. Please try again <br/>
+                        Email or password incorrect. Please try again <br/>
                     </span>  : null}
                     <div className={classes.SwitchText} onClick={() => setCurrentForm('signup')}>Don't have an account? <strong>Sign up</strong> {getArrow()} </div>        
                     <button variant="contained" type="submit" disabled={isSubmitting} size='small'>
