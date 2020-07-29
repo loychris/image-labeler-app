@@ -74,8 +74,8 @@
 }
 
 .download button{
-    background: #343a40;
-    border-color: #343a40;
+    background: #001628;
+    border-color: #001628;
     float: right;
     box-shadow: 0px 10px 10px rgb(0,0,0,0.3);
     border-radius: 10px;
@@ -84,24 +84,24 @@
 }
 
 .download button:hover{
-    background: #343a40 !important;
-    border-color: #343a40 !important; 
+    background: #001628 !important;
+    border-color: #001628 !important; 
     box-shadow: 0px 10px 10px rgb(0,0,0,0.3) !important;
 }
 
 #download-button.button:active:focus{
-    background: #343a40 !important;
-    border-color: #343a40 !important;
+    background: #001628 !important;
+    border-color: #001628 !important;
     box-shadow: 0px 10px 10px rgb(0,0,0,0.3) !important;
 }
 .download button:active{
-    background: #343a40 !important;
-    border-color: #343a40 !important;
+    background: #001628 !important;
+    border-color: #001628 !important;
     box-shadow: 0px 10px 10px rgb(0,0,0,0.3) !important;
 }
 
 .download button:focus{
     box-shadow: 0px 10px 10px rgb(0,0,0,0.3);
-    background: #343a40 !important;
-    border-color: #343a40 !important;
+    background: #001628 !important;
+    border-color: #001628 !important;
 }

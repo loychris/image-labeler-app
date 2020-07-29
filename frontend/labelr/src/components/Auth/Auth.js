@@ -23,7 +23,7 @@ function Auth(props) {
         return(
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g id="arrow_forward_24px">
-                <path id="icon/navigation/arrow_forward_24px" d="M12 4L10.59 5.41L16.17 11H4V13H16.17L10.59 18.59L12 20L20 12L12 4Z" fill="#212529"/>
+                <path id="icon/navigation/arrow_forward_24px" d="M12 4L10.59 5.41L16.17 11H4V13H16.17L10.59 18.59L12 20L20 12L12 4Z" fill="#001628"/>
                 </g>
             </svg>
         )
@@ -206,7 +206,7 @@ function Auth(props) {
                         name="password"
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values.passw3000ord}
+                        value={values.password}
                     /><br/>
                     <span className={classes.invalidMessage}>
                         {errors.password && touched.password && errors.password}<br/>

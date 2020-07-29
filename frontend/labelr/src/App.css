@@ -10,3 +10,7 @@ body {
   height: 100vh;
   width: 100vw;
 }
+
+.App nav {
+  background-color: #001628!important;
+}
