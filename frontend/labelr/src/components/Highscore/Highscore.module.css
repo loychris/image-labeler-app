@@ -1,3 +1,7 @@
+* {
+  font-family: 'Roboto';
+}
+
 .Spinner {
   align-self: center;
   margin-bottom: 10px;
@@ -28,10 +32,12 @@ tr:nth-of-type(even) {
 tr:nth-of-type(odd) {
   background-color: #e9e9e9;
   color: #343a40;
+  font-family: 'Roboto'!important;
 }
 
 th {
   background-color: #ffffff;
+  font-family: 'Roboto' !important;
 }
 
 td,
@@ -43,5 +49,6 @@ th {
   padding: 0.5em;
   word-break: break-word;
   overflow: hidden;
+  font-family: 'Roboto' !important;
 }
 

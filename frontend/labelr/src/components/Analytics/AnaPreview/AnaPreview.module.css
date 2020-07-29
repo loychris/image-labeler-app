@@ -1,3 +1,7 @@
+* {
+    font-family: 'Roboto';
+}
+
 .anaPreview {
     background-color: white;
     width: 90%;
@@ -38,18 +42,21 @@
     height: 100%;
     width: 15%;
     padding-top: 1.5%;
+    font-family: 'Roboto';
 }
 
 .description{
     color: grey;
     padding-bottom: 6%;
     text-align: left;
+    font-family: 'Roboto';
 }
 
 .caption{
     text-align: left;
     font-size: 40px;
     font-weight: 600;
+    font-family: 'Roboto';
 }
 
 .progress {
@@ -71,6 +78,7 @@
     color: grey;
     font-weight: 200;
     margin-bottom: 1%;
+    font-family: 'Roboto';
 }
 
 .download button{
