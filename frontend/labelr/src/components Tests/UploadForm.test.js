@@ -3,6 +3,7 @@ import { shallow } from 'enzyme'
 import UploadForm from "../components/UploadForm/UploadForm";
 
 
-test('should bring me back', () =>{
-
+test('should render', () =>{
+    const component =shallow(<UploadForm/>);
+    expect(component).not.toBe(null);
 })

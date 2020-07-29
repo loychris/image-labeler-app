@@ -3,6 +3,7 @@ import { shallow } from 'enzyme'
 import ImageQueue from "../components/ImageQueue/ImageQueue";
 
 
-test('should bring me back', () =>{
-
+test('should render', () =>{
+    const component = shallow(ImageQueue);
+    expect(component).not.toBe(null);
 })
