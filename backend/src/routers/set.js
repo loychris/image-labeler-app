@@ -23,9 +23,10 @@ const upload = multer({
 router.get('/my', auth, async ( req, res) => {
     try {
         const sets = await SetOBJ.find({owner:req.user._id});
-        if (!sets || sets.length === 0){
+        if (!sets){
             res.status(404).send({error: 'No image collection found for this user'})
         }else{
+            console.log(sets)
             res.status(200).send(sets);
         }
     }catch(e){
