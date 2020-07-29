@@ -5,5 +5,6 @@ import UploadForm from "../components/UploadForm/UploadForm";
 
 test('should render', () =>{
     const component =shallow(<UploadForm/>);
-    expect(component).not.toBe(null);
+    const element = component.find({className: 'uploadForm'});
+    expect(element.length).toBe(1);
 })
