@@ -3,46 +3,42 @@
 }
 
 .anaPreview {
-    background-color: white;
+    background-color: #ffffff;
     width: 90%;
-    height: 200px;
+    padding: 20px;
     display: block;
     border-radius: 9px;
     border: 1px solid #f3f3f3;
     box-shadow: 0px 10px 10px rgb(0,0,0,0.3);
     transition: 0.2s ease;
     margin: 30px; 
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    position: relative;
 }
-.thumbnail {
-    width: 100%;
-    height: 100%;
+
+.Icon, .Info {
+    margin-left: 10px; 
+    margin-right: 10px; 
 }
 
 .Icon {
     height: 100px;
     width: 100px; 
-    border-radius: 5px; 
+    border-radius: 100%; 
 }
-.image {
-    height: 100%;
-    width: 15%;
-    float: left;
-    padding-top: 2.5%;
-}
+
 
 .check{
-    float: right;
-    position: relative;
-    top: -114px;
-    right: 1%;
+    position: absolute; 
+    right: 14px;
+    top: 20px; 
+    margin-top: 0px;
 }
 
-.info {
-    float: left;
-    height: 100%;
-    width: 15%;
-    padding-top: 1.5%;
-    font-family: 'Roboto';
+.Info {
+    width: 200px; 
 }
 
 .description{
@@ -59,57 +55,34 @@
     font-family: 'Roboto';
 }
 
-.progress {
-    float: left;
-    width: 70%;
-    height: 100%;
+.Progress {
+    width: 100%; 
+    padding: 10px; 
 }
 
-.progressBar {
-    width: 80%;
-    display: inline-flex !important;
-    height: 20% !important;
-    border-radius: 1.25rem !important;
+.ProgressBar {
+    height: 30px; 
 }
 
 .progressLabel{
-    padding-top: 6%;
     font-size: 30px;
     color: grey;
     font-weight: 200;
-    margin-bottom: 1%;
-    font-family: 'Roboto';
 }
 
-.download button{
-    background: #343a40;
-    border-color: #343a40;
-    float: right;
-    box-shadow: 0px 10px 10px rgb(0,0,0,0.3);
-    border-radius: 10px;
-    position: relative;
-    right: -4%;
+.Download {
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+   float: right; 
+   padding: 3px 10px; 
+   outline: none;
 }
 
-.download button:hover{
-    background: #343a40 !important;
-    border-color: #343a40 !important; 
-    box-shadow: 0px 10px 10px rgb(0,0,0,0.3) !important;
-}
+.Progress button {
+    color: #ffffff!important;
+    background: #001628;
+    outline: none;
 
-#download-button.button:active:focus{
-    background: #343a40 !important;
-    border-color: #343a40 !important;
-    box-shadow: 0px 10px 10px rgb(0,0,0,0.3) !important;
-}
-.download button:active{
-    background: #343a40 !important;
-    border-color: #343a40 !important;
-    box-shadow: 0px 10px 10px rgb(0,0,0,0.3) !important;
-}
-
-.download button:focus{
-    box-shadow: 0px 10px 10px rgb(0,0,0,0.3);
-    background: #343a40 !important;
-    border-color: #343a40 !important;
 }

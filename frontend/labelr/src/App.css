@@ -9,4 +9,16 @@ body {
   text-align: center;
   height: 100vh;
   width: 100vw;
+
+}
+
+.App nav {
+  background-color: #001628!important;
+}
+
+.Background {
+  position: fixed;
+  z-index: 0;
+  background-color: #f4f4f4;
+
 }

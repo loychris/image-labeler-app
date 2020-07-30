@@ -8,14 +8,22 @@ code {
 }
 
 main {
+  max-width: 1200px;
+
   margin: 56px 2vw 10px 2vw;
+  padding-left: 10px; 
+  padding-right: 10px;
+  margin-left: auto;
+  margin-right: auto;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap'); 
+
 
 h2, h3, h4 {
   font-family: 'Roboto';
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap'); 
 
 h1 {
   font-family: 'Roboto';

@@ -73,7 +73,7 @@ componentDidMount() {
               return {
                   time: set.deadline.split(',')[0],
                   name: set.label,
-                  route: `/${set.label}`,
+                  route: `/${set.label}/${set._id}`,
                   src: this.imageEncode(set.icon.data),
                   progress: set.counter / set.goal * 100
               }

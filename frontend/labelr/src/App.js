@@ -83,7 +83,7 @@ const App = () => {
       if(user.isUploader){
         routes = 
         <Switch>
-          <Route exact path= '/imageQueue/:category'
+          <Route exact path= '/imageQueue/:category/:cid'
             component={ImageQueue}
           />
           <Route exact path='/overview'
@@ -99,7 +99,7 @@ const App = () => {
             component={Analytics}
           />
           <Route exact path='/uploadForm' 
-            component={UploadForm}
+            component={UploadForm}exact
           />
           <Route exact path='/uploaderHome'
             component={UploaderHome}
@@ -107,11 +107,10 @@ const App = () => {
           <Route exact path='/categories'
             component={Overview}/>
         </Switch>
-
       }else {
         routes = 
         <Switch>
-          <Route exact path= '/imageQueue/:category'
+          <Route path= '/imageQueue/:category/:cid'
             component={ImageQueue}
           />
           <Route exact path='/highscore'
@@ -139,6 +138,7 @@ const App = () => {
         }}>
         <Router>
           <div className="App">
+            <div className='Background'></div>
             <Menu 
               logout={logout}       // function to be called when loggin out 
               loggedIn={!!token}    // true if logged in

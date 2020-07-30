@@ -6,6 +6,7 @@ const SetOBJ = require('../models/set');
 const multer = require('multer');
 const auth = require('../middleware/auth')
 const fileUpload = require('../middleware/file-upload');
+let jsonFile = require('jsonfile');
 
 
 const upload = multer({
@@ -23,15 +24,18 @@ const upload = multer({
 router.get('/my', auth, async ( req, res) => {
     try {
         const sets = await SetOBJ.find({owner:req.user._id});
-        if (!sets || sets.length === 0){
+        if (!sets){
             res.status(404).send({error: 'No image collection found for this user'})
         }else{
+            console.log(sets)
             res.status(200).send(sets);
         }
     }catch(e){
         res.status(500).send(e)
     }
 })
+
+
 
 router.get('/labels', async (req,res) => {
     try {
@@ -88,7 +92,46 @@ router.get('/labels', async (req,res) => {
 
 
 
-router.post('/',auth, fileUpload.single('image'), async ( req, res ) => {
+
+
+
+
+router.post('/unlabeled', auth, async (req, res) => {
+    const { setId } = req.body;
+    console.log('SET ID', setId)
+    let set; 
+    try{
+        set = await SetOBJ.findById(setId);
+    }catch(e){
+        console.log('THERE WAS A PROBLEM FINDING THE SET IN THE DB');
+    }
+    if(!set){
+        res.status(400).send({ msg: 'set not found' });
+    }
+    const alreadyLabeled = req.user.labeledImagesID.map(x => {
+        return x.imageID;
+    });
+    console.log('SETIDS: ', set.imageId, set.imageId.length)
+    console.log('ALREADY LABELED: ', alreadyLabeled, alreadyLabeled.length)
+
+    const unlabeledIds = set.imageId.filter(x => {
+        return !alreadyLabeled.includes(x);
+    })
+
+    res.send(unlabeledIds);
+})
+
+
+
+
+
+
+
+
+
+
+
+router.post('/', auth, fileUpload.single('image'), async ( req, res ) => {
     if(!req.file) res.status(400).send({msg: 'no icon file attached'})
     if(!req.body.imageId) res.status(400).send({msg: 'no Image Ids given'})
     if(!req.body.label) res.status(400).send({msg:'no label definded'})
@@ -178,6 +221,30 @@ router.delete('/', async (req, res, next) => {
     }catch(e){
         res.status(500).send({message: 'something went wrong while deleting all sets'});
     }
+})
+
+
+router.get('/results/:id', async (req, res) => {
+    const setId = req.params.id;
+    try{
+        set = await SetOBJ.findById(setId);
+        if(!set){
+            res.status(400).send({ msg: 'set not found' });
+        }
+    }catch(e){
+        console.log('THERE WAS A PROBLEM FINDING THE SET IN THE DB');
+    }
+    let images;
+    try{
+        images = await Image.find().where('_id').in(set.imageId).exec();
+    }catch(e){
+        console.log('there was a Problem finding the images');
+    }
+    const result = images.map(i => {
+        console.log(i.labels[0].votes);
+        return {votes: i.labels[0].votes, filename: i.filename}
+    })
+    res.send(result);
 })
 
 module.exports = router;
