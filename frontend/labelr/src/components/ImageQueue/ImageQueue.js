@@ -50,8 +50,10 @@ class ImageQueue extends Component {
                         unused.push(id)
                     }
                   })
-                  while(queue.length < 10){
-                      queue.push({pos: 0, show: 'left', id: 'no more'});
+                  for(let i=0;i<10;i++){
+                      if(queue.length < i){
+                        queue.push({pos: i-1, show: 'middle', id: 'no more'})
+                      }
                   }
                   console.log('QUEUE', queue);
                   this.setState({unused, queue, initialLoad: 'loaded'});

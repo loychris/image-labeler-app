@@ -64,7 +64,7 @@ class ImageContainer extends Component {
     getNoMoreImages = () => {
       return(
         <div>
-          <h3>There are no more Images in this category for you to be labeled</h3>
+          <h3>There are no more Images <br/>in this category for you labeled</h3>
         </div>
       )
     }

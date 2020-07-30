@@ -27,7 +27,6 @@ router.get('/my', auth, async ( req, res) => {
         if (!sets){
             res.status(404).send({error: 'No image collection found for this user'})
         }else{
-            console.log(sets)
             res.status(200).send(sets);
         }
     }catch(e){
@@ -41,7 +40,6 @@ router.get('/labels', async (req,res) => {
     try {
         const sets = await SetOBJ.find()
         const labels = sets.map( set => {
-            //console.log(set.label);// should be taken out of final product .. i wont since this ain't mine
             return set.label
         } );
         res.status(200).send(Array.from(new Set(labels)));
@@ -98,7 +96,6 @@ router.get('/labels', async (req,res) => {
 
 router.post('/unlabeled', auth, async (req, res) => {
     const { setId } = req.body;
-    console.log('SET ID', setId)
     let set; 
     try{
         set = await SetOBJ.findById(setId);
@@ -111,8 +108,6 @@ router.post('/unlabeled', auth, async (req, res) => {
     const alreadyLabeled = req.user.labeledImagesID.map(x => {
         return x.imageID;
     });
-    console.log('SETIDS: ', set.imageId, set.imageId.length)
-    console.log('ALREADY LABELED: ', alreadyLabeled, alreadyLabeled.length)
 
     const unlabeledIds = set.imageId.filter(x => {
         return !alreadyLabeled.includes(x);
@@ -196,7 +191,6 @@ router.post('/next/:setId', auth, async  (req, res) => {
             if (toReturn.length > n){ toReturn = toReturn.slice(0,n)}
             req.user.fetchedImagesID = req.user.fetchedImagesID.concat(toReturn)
             await req.user.save();
-            console.log(req.user.fetchedImagesID);
             res.status(200).send(toReturn);
         }
     } catch (e) { res.status(500).send(e) }

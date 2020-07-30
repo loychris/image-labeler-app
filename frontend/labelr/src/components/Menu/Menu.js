@@ -137,7 +137,7 @@ class Menu extends Component {
   render() {
     return (
       <Navbar
-        style={{ zIndex: 80}}
+        style={{ zIndex: 80, position: 'fixed'}}
         fixed='top'
         collapseOnSelect
         expand='sm'
