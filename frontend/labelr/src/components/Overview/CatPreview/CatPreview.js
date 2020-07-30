@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { Link,} from 'react-router-dom';
+import {ProgressBar} from 'react-bootstrap';
+
 
 import classes from './CatPreview.module.css';
 
@@ -8,15 +11,17 @@ class CatPreview extends Component {
 
     render() {
         return (
-            <div className={classes.catPreview}>
-                <a className={classes.thumbnail}>
-                    <img src={this.props.src} alt={this.props.name} />
-                    <span className={classes.caption}>{this.props.name}</span>
-                </a>
-            </div>
-
+            <Link className={classes.link} to={'imageQueue' + this.props.route}>
+                <div className={classes.catPreview}>
+                    <div className={classes.thumbnail}>
+                        <img className={classes.Img} src={this.props.src} alt={this.props.name} />
+                        <span className={classes.caption}>{this.props.name}</span>
+                    </div>
+                    {/* <ProgressBar className={classes.progressBar} variant="success" now={this.props.progress} label={`${Math.floor(this.props.progress)}%`} />
+                    <div className= {classes.progress}>{this.props.progress}</div> */}
+                </div>
+            </Link>
         )
     }
 }
-// https://dummyimage.com/260x200/000/fff
 export default CatPreview;

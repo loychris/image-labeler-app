@@ -46,7 +46,7 @@ fetch("", requestOptions)
   .catch(error => console.log('error', error));
 ```
 
-#### Get top n labelrs
+#### Get top n labelrs (authentication required) 
 ```javascript
 const request = require("request");
 
@@ -75,6 +75,60 @@ fetch("localhost:3000/users/me/images", requestOptions)
   .then(result => console.log(result))
   .catch(error => console.log('error', error));
 ```
+
+#### Get  all labeling statistic for specific user (authenticatied)
+ - Get an object with the counters for today, this week, this month, this year and generally (counter) 
+```javascript
+const request = require("request");
+
+const options = { method: 'GET',
+  url: 'localhost:3000/users/me/labeled/statistics',
+  headers: 
+   {'cache-control': 'no-cache',
+     Authorization: ',Bearer token',
+     'Content-Type': 'application/x-www-form-urlencoded' },
+  form: { undefined: undefined } };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+
+```
+
+
+#### Get  all statistic for specific user (authenticatied)
+ - Get an object with statistics for the uploader
+ response in form of
+ ```javascript
+{
+    "loaderId": "loader id",
+    "populatedSets": [ [] ]
+}  
+````
+ 
+```javascript
+const request = require("request");
+
+const options = { method: 'GET',
+  url: 'http://127.0.0.1:3000/users/me/statistics',
+  headers: 
+   { 'cache-control': 'no-cache',
+     Authorization: 'Bearer token' } };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+
+
+```
+
+
+
+
  ### POST Routes
 
 #### Create new user
@@ -230,7 +284,7 @@ fetch("localhost:3000/images", requestOptions)
 ```
 
 
-#### Get all existing images
+#### Get all existing images (authentication required) 
 ```javascript
 var request = require("request");
 
@@ -263,7 +317,7 @@ request(options, function (error, response, body) {
 });
 ```
 
-#### Get next n images
+#### Get next n images ( NOT IN USE - PLEASE USE THE POST METHODS FOR IMAGE SET)
 - Get the next n images that the user did not labeled yet.
 - User keep list of already labeled images ID, all the returned images are not existing in this list, after an image has been labeled by the user, the ID of the image will be added to the list of the IDs, so it will not show up for the user again.
 - In case there are no n images, return 400 at the moment. Next sprint we will modify it so it will return the rest .
@@ -292,7 +346,7 @@ fetch("localhost:3000/images/next/id/:label", requestOptions)
 ```
 
 
-#### Get next image (singular)
+#### Get next image (singular) ( NOT IN USE - PLEASE USE THE POST METHODS FOR IMAGE SET)
 -	Same as next n images, but singular
 ```javascript
 const requestOptions = {  method: 'GET',  redirect: 'follow'};
@@ -338,7 +392,7 @@ request(options, function (error, response, body) {
 
 ```
 
-#### Get next n images IDs
+#### Get next n images IDs  (authentication required) ( NOT IN USE - PLEASE USE THE POST METHODS FOR IMAGE SET)
 - Get the next n images that the user did not labeled yet.
 - The images will be added to users fetched images id list
 - The images are only images will the given label (inside the req body)
@@ -361,7 +415,7 @@ request(options, function (error, response, body) {
 });
 
 ```
-#### Get next image ID
+#### Get next image ID (authentication required) ( NOT IN USE - PLEASE USE THE POST METHODS FOR IMAGE SET)
 - Get the next image that the user did not labeled yet.
 - The image id will be added to users fetched images id list
 - The image has the given label (inside the req body)
@@ -385,7 +439,7 @@ request(options, function (error, response, body) {
 
 ```
 
-#### Get images with specific label
+#### Get images with specific label (authentication required) 
 -	Get and image with given label
 ```javascript
 const request = require("request");
@@ -407,7 +461,7 @@ request(options, function (error, response, body) {
 
 ```
 
-#### Vote for an image
+#### Vote for an image (authentication required) 
 - Add the id to the labeledImgaesId in user obj.
 ```javascript
 const request = require("request");
@@ -459,12 +513,175 @@ fetch("localhost:3000/images/:imageID", requestOptions)
   .catch(error => console.log('error', error));
 ```
 
+
+## Image Set managing routes
+Routes for creating getting and removing an image sets
+
+### GET Routes
+#### Get all exisiting image sets (authentication required) 
+
+```javascript
+var request = require("request");
+
+var options = { method: 'GET',
+  url: 'http://127.0.0.1:3000/set',
+  headers: 
+   { 'cache-control': 'no-cache',
+     Authorization: 'Bearer token' } };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+```
+
+#### Get all my image sets for me (authentication required) 
+
+```javascript
+var request = require("request");
+
+var options = { method: 'GET',
+  url: 'http://127.0.0.1:3000/set/my',
+  headers: 
+   { 'cache-control': 'no-cache' } };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+```
+
+#### Get image set by ID (authentication required) 
+
+```javascript
+var request = require("request");
+
+var options = { method: 'GET',
+  url: 'http://127.0.0.1:3000/set/:id',
+  headers: 
+   { 'cache-control': 'no-cache',
+     Authorization: 'Bearer token' } };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+```
+
+
+#### Get image set by ID (authentication required) 
+
+```javascript
+var request = require("request");
+
+var options = { method: 'GET',
+  url: 'http://127.0.0.1:3000/set/labels',
+  headers: 
+   {   'cache-control': 'no-cache',
+     Authorization: 'Bearer token' } };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+
+```
+
+
+### POST Routes
+#### Create new Image Set  (authentication required) 
+
+- For the deadline, please use Moment and extract the date in form of (dd/mm/yyyy for example 01/07/2020)
+- Must be used after uploading new collection of images
+- Populate the imageSetId field in all the images, which their ID in the array
+```javascript
+var fs = require("fs");
+var request = require("request");
+
+var options = { method: 'POST',
+  url: 'http://127.0.0.1:3000/set',
+  headers: 
+   { 'cache-control': 'no-cache',
+     Authorization: 'Bearer token',
+     'Content-Type': 'application/json',
+     'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' },
+  formData: 
+   { image: 
+      { value: 'IMG',
+        options: 
+         { filename: 'filename',
+           contentType: null } },
+     label: 'label',
+     imageId: 'imageId1, imageId',
+     deadline: 'moment Obj', // IMPORTANT You have to work with Moment and extract the date in form of (dd/mm/yyyy for example 01/07/2020)
+     owner: 'Image Owner' } };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+
+```
+
+#### Get next n Images from specific Image Set 
+```javascript
+var request = require("request");
+
+var options = { method: 'POST',
+  url: 'http://127.0.0.1:3000/set/next/:setID',
+  headers: 
+   { 'Postman-Token': 'ba3308ab-220a-4f54-b75f-5548d295f662',
+     'cache-control': 'no-cache',
+     Authorization: 'Bearer token',
+     'Content-Type': 'application/json' },
+  body: { n: :n },
+  json: true };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+
+```
+
+
+### DELETE Routes
+#### Delete Image Set with given ID (DEVELOPMENT ONLY) 
+```javascript
+var request = require("request");
+
+var options = { method: 'DELETE',
+  url: 'http://127.0.0.1:3000/set/:id',
+  headers: 
+   { 'cache-control': 'no-cache' } };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+
+```
+
+
 # Using the middleware
 ### Authentication middleware
 The User must be authenticated to use the private routes like uploadingan or voting for an image,
 updating his profile and ca. otherwise, the user will get an 401 authentication response code.
 
 ### Achievements middleware
+THIS MIDDLEWARE MUST COME AFTER AUTH MIDDLEWARE
 The achievements middleware will make sure every time the user vote, log in or the fetched images list removed.
 Will attach and object to the response in case there are new achievements the user acheived in this session.
 res.newAchievments is now availble to use, in it you will find the new acheivements; this list will be attached to the response only in case there are new acheivements
+
+### Uploader middleware
+THIS MIDDLEWARE MUST COME AFTER AUTH MIDDLEWARE
+The uploader middleware make sure that the authenticated user is an uploader, otherwise expect 
+code 401 and {error: 'This user is not authorize to upload.'} back.

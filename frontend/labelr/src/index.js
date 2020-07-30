@@ -3,16 +3,17 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { BrowserRouter } from 'react-router-dom';
+import axios from 'axios'; 
 
-// // Importing the Bootstrap CSS
-// import 'bootstrap/dist/css/bootstrap.min.css';
+// Importing the Bootstrap CSS
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+axios.defaults.baseURL = 'http://127.0.0.1:3000';
+
 
 ReactDOM.render(
     <React.StrictMode>
-      <BrowserRouter>
         <App />
-      </BrowserRouter>
     </React.StrictMode>,
   document.getElementById('root')
 );

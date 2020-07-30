@@ -1,13 +1,24 @@
 .wrapper {
-    height: 100%;
-    margin-left: 200px;
+  height: 100%;
 }
 
-.overview {
-    width: 100%;
+.Spinner {
+  align-self: center;
+  margin-bottom: 10px;
 }
 
-.contentWrapper {
+.Flex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.overview a {
+    text-decoration: none !important;
+}
+
+/* .contentWrapper {
     height: 100%;
     width: 100%;
     display: flex;
@@ -18,22 +29,30 @@
 .content {
     height: 100%;
     width: 100%;
-    margin: 40px;
+    margin-top: 30px;
     display: flex;
     flex-wrap: wrap;
     list-style-type: none;
 }
 
-.categories {
-    height: 100px;
-    width: 100px;
-}
 
-h2 {
+.overview h2 {
     font-family: monospace;
     font-size: 40px;
+    padding-top: 50px;
 }
 
-a {
-    text-decoration: none;
+
+
+.column{
+    max-width: 20% !important;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
+
+.catContent {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+} */

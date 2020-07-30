@@ -1,0 +1,51 @@
+* {
+  font-family: 'Roboto';
+}
+
+.Spinner {
+  align-self: center;
+  margin-bottom: 10px;
+}
+
+td {
+  padding: 10px;
+}
+
+table {
+  display: flex;
+  flex-flow: column nowrap;
+  overflow: hidden;
+  font-size: 2vh;
+  word-wrap: break-word;
+}
+
+tr {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+tr:nth-of-type(even) {
+  background-color: #001628;
+  color: #ffffff;
+}
+
+tr:nth-of-type(odd) {
+  background-color: #e9e9e9;
+  color: #001628;
+}
+
+th {
+  background-color: #ffffff;
+}
+
+td,
+th {
+  display: flex;
+  flex-flow: row nowrap;
+  flex-grow: 1;
+  flex-basis: 0;
+  padding: 0.5em;
+  word-break: break-word;
+  overflow: hidden;
+}
+

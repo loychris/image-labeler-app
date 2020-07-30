@@ -1,9 +1,7 @@
 .authTab {
     text-align: center;
-    padding: 10px 40px; 
-    margin-left: 10px; 
-    margin-right: 10px; 
-    min-width: 100px; 
+    min-width: 50%; 
+    cursor: pointer;
 }
 
 

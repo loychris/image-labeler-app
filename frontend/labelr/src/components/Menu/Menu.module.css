@@ -1,19 +1,46 @@
-.menu {
-    background-color: red;
-    position: fixed;
-    left: 0px; 
-    bottom: 0px; 
-    top: 0px; 
+* {
+  font-family: 'Roboto';
+}
+.Menu {
+  z-index: 80;
 }
 
-.expanded {
-    width: 200px; 
+.NavLink {
+  color: #ffffff;
+  padding: 0em 0.5em;
+  text-decoration: none;
+  margin-top: 1px;
 }
 
-.collapsed {
-    width: 50px; 
+.NavLink:hover {
+  color: #ffffff;
+  text-decoration: none;
 }
 
-.menu h1 {
-    color: #ffffff;
+.Logout {
+  color: #ffffff;
+  padding: 0em 0.5em;
+  text-decoration: none;
+  border: 1px solid #ffffff;
+  border-radius: 5px;
+  /* float: right; */
+  display: inline;
 }
+
+.Icon {
+  /* display: inline; */
+  margin-top: 2px;
+  margin-right: 5px;
+  /* float: left; */
+}
+
+/* .button {
+  background-color: #001628;
+  border: 2px solid #e7e7e7;
+  color: white;
+  padding: 0em 0.5em;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+} */

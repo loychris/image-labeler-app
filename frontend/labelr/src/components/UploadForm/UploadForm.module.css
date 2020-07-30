@@ -1,0 +1,236 @@
+* {
+    font-family: 'Roboto';
+}
+
+.Dropzone {
+    min-height: 200px; 
+    background-color: rgb(0,22,40, 0.2);
+    outline: 2px dashed black;
+    outline-offset: -10px;
+    text-align: center;
+    padding-top: 40px; 
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 10px;
+    z-index: 10;
+    transition: 0.15s ease;
+    position: relative;
+}
+
+
+.Dropzone:hover {
+    outline: 2px dashed rgb(0,22,40);
+    outline-offset: -15px;
+
+}
+
+.Dropzone:hover path {
+    fill-opacity: 0.2;
+}
+
+.Dropzone:hover .ChooseFile{
+    color: rgb(0,22,40, 0.2); 
+}
+
+.ZoneText {
+    position: absolute;
+    margin: auto; 
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    font-size: 20px;
+}
+
+.ChooseFile {
+    font-weight: bold;
+}
+
+
+.IconDrop {
+    height: 100px; 
+    width: 100px;
+    margin-left: auto;
+    margin-right: auto; 
+    border-radius: 100%; 
+}
+
+.IconDrop > input, .Dropzone > input {
+    outline: none;
+}
+
+
+
+.NameLength {
+    float: right;
+}
+
+
+.uploadForm {
+    text-align: left;
+} 
+
+.uploadForm input[type=text]:focus {
+    outline: none;
+}
+
+.IconContainer div {
+    outline: none;
+}
+
+.uploadForm input[type=text] {
+    height: 40px;
+    width: 100%; 
+    font-size: 15pt; 
+    padding: 3px 15px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0px 3px 5px rgb(0,0,0,0.5);
+    margin-bottom: 4px;
+    margin-top: 5px; 
+    display: block;  
+}
+
+.uploadForm button {
+    position: absolute;
+    bottom: 30px; 
+    right: 0px;
+    color: #ffffff;
+    background: #001628;
+}
+/*
+    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    cursor: pointer; 
+    padding: 10px 50px; 
+    font-size: 16pt; 
+    border: none;
+    #001628
+}*/
+
+.uploadForm label {
+    display: block; 
+}
+
+.uploadForm hr {
+    margin-top: 30px; 
+    margin-bottom: 10px;
+}
+
+.ButtonContainer{
+    position: relative;
+    display: block; 
+    min-height: 150px;
+} 
+
+.Previews {
+    display: flex;
+    width: 100%; 
+    flex-wrap: wrap;
+    justify-content: left; 
+    z-index: 50;
+}
+
+.iconDropZone {
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #e4e4e4;
+    border-radius: 100%;
+    height: 200px; 
+    width: 200px; 
+    text-align: center;
+}
+
+.Icon {
+
+    border-radius: 100%;
+    margin: 0px; 
+    height: 200px; 
+    width: 200px; 
+    object-fit: cover;
+
+
+}
+
+h3 {
+    padding-top: 20px; 
+}
+
+.uploadIcon {
+    margin-top: 30px; 
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+}
+
+.InputContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.InputContainer, .QualityContainer, .Deadline, .NameContainer, .IconContainer{
+    max-width: 400px; 
+    padding: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.IconContainer, .NameContainer {
+    padding: 10px; 
+}
+
+
+.inputContainer div {
+    margin-left: auto; 
+    margin-right: auto ; 
+}
+
+.Deadline input {
+    width: 80%;
+    margin-left: 7%; 
+}
+
+
+
+.QualityContainer input{
+    width: 95%;
+}
+
+.Deadline .Datalist {
+    width: 95%;
+    margin-left: 7%;  
+}
+
+Datalist {
+    display: relative; 
+    width: 100%;
+    max-width: 400px; 
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: center;
+}
+
+.DeadlineResult{
+    float: right;
+    position: relative; 
+    right: 0px; 
+}
+
+
+datalist option {
+    -webkit-box-flex: 1;
+    -webkit-flex-grow: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
+    -webkit-flex-basis: 0;
+        -ms-flex-preferred-size: 0;
+            flex-basis: 0;
+}
+
+label{
+    font-weight: 500;
+    font-size: 20px;
+}

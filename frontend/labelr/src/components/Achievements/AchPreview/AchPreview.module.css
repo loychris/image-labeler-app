@@ -1,0 +1,60 @@
+.achPreview {
+    background-color: white;
+    width: 230px;
+    height: 230px;
+    display: block;
+    border-radius: 10px;
+    border: 1px solid #f3f3f3;
+    box-shadow: 0px 10px 10px rgb(0,0,0,0.3);
+    transition: 0.2s ease;
+    margin: 30px; 
+}
+
+.achPreview:hover {
+    transform: scale(1.05) translate(0, -7px);
+    box-shadow: 0px 15px 13px rgba(0,0,0,0.3);
+}
+
+.achPreview:hover .progressBar{
+ display: none !important;
+}
+
+
+.description {
+    height: 25%;
+    display: none;
+}
+
+.achPreview:hover .description{
+    display: block;
+    font-family: 'Roboto';
+    font-weight: 700;
+   }
+
+.thumbnail {
+    height: 80%;
+}
+
+.progressBar {
+    display: inline-flex !important;
+    width: 80%;
+    font-size: 10px !important;
+    height: 20%;
+    border-radius: 1.25rem !important;
+}
+
+
+img{
+    margin-top: 25px;
+    margin-bottom: 5px;
+}
+
+.caption{
+    color: black;
+    font-family: 'Roboto';
+    font-size: 20px;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-top: 20px;
+    display: block;
+}
