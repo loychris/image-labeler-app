@@ -20,7 +20,7 @@ class Highscore extends Component {
               Authorization: `Bearer ${this.props.token}` 
             }
         }
-        axios.get('http://127.0.0.1:3000/users/highscores/2', config)
+        axios.get('http://127.0.0.1:3000/users/highscores/10', config)
         .then(res => {
             this.setState({
               topUsers: res.data.map((user, i) => { return {...user, ranking: i+1}}),
