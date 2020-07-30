@@ -41,7 +41,7 @@ This application was primarily developed with MERN stack.
 ![](lable.gif)<br>
 <hr>
 
-- become on of the top labelers<br>
+- become one of the top labelers<br>
 ![](hscore.png)<br>
 <hr>
 
