@@ -27,8 +27,8 @@
 
 .achPreview:hover .description{
     display: block;
-    font-family: monospace;
-    font-weight: 800;
+    font-family: 'Roboto';
+    font-weight: 700;
    }
 
 .thumbnail {
@@ -51,9 +51,9 @@ img{
 
 .caption{
     color: black;
-    font-family: monospace;
+    font-family: 'Roboto';
     font-size: 20px;
-    font-weight: 700;
+    font-weight: 500;
     text-transform: uppercase;
     margin-top: 20px;
     display: block;

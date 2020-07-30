@@ -1,3 +1,6 @@
+* {
+    font-family: 'Roboto';
+}
 
 .Dropzone {
     min-height: 200px; 
@@ -41,7 +44,6 @@
 
 .ChooseFile {
     font-weight: bold;
-
 }
 
 
