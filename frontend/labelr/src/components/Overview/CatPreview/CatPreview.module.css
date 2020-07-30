@@ -33,7 +33,7 @@
     color: black;
     font-family: 'Roboto';
     font-size: 20px;
-    font-weight: 700;
+    font-weight: 500;
     text-transform: uppercase;
     margin-top: 15px;
     display: block;
@@ -48,7 +48,7 @@
 .catPreview:hover .progress{
     display: block;
     font-family: 'Roboto';
-    font-weight: 800;
+    font-weight: 700;
     color: black;
 }
 
