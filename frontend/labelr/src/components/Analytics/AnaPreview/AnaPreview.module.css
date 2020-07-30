@@ -71,9 +71,12 @@
     margin-top: 20px;
    float: right; 
    padding: 3px 10px; 
+   outline: none;
 }
 
 .Progress button {
     color: #ffffff!important;
     background: #001628;
+    outline: none;
+
 }
