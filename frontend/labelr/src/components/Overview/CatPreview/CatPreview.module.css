@@ -31,7 +31,6 @@
 
 .caption{
     color: black;
-    font-family: 'Roboto';
     font-size: 20px;
     font-weight: 500;
     text-transform: uppercase;
@@ -47,7 +46,6 @@
 
 .catPreview:hover .progress{
     display: block;
-    font-family: 'Roboto';
     font-weight: 700;
     color: black;
 }
