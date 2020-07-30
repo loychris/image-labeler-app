@@ -117,10 +117,14 @@ router.post('/upload', auth, fileUpload.single('image'), async (req, res) => {
   if(!req.body.label){
     res.status(400).send({message: 'No label provided'});
   }
+  if(!req.body.filename){
+    res.status(400).send({message: 'No filename provided'});
+  }
   if  (req.file !== undefined){
     const img = new Image({
       data: req.file.buffer,
       owner: req.user._id,
+      filename: req.body.filename,
       labels: [{label:req.body.label, votes:[]}]
     })
     try{

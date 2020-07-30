@@ -108,6 +108,7 @@ function  UploadForm() {
             const formData = new FormData();
             formData.append('image', files[i].file);
             formData.append('label', name);
+            formData.append('filename', files[i].file.name);
 
             axios({
                 method: 'post',
@@ -256,13 +257,9 @@ function  UploadForm() {
                 <Button 
                     onClick={onStartUpload} 
                     variant="contained"     
-                    color="#ffffff" 
                                 disabled={!checkValid()}> 
                     Upload Image Set for ${price}
                 </Button>
-                    {/* <button type='button' onClick={onStartUpload} disabled>
-                        Upload Image Set for ${images.length*0.02.toFixed(2)}
-                    </button> */}
                 </div>
             </form>
         </main >

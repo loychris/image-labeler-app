@@ -6,6 +6,7 @@ const SetOBJ = require('../models/set');
 const multer = require('multer');
 const auth = require('../middleware/auth')
 const fileUpload = require('../middleware/file-upload');
+let jsonFile = require('jsonfile');
 
 
 const upload = multer({
@@ -220,6 +221,30 @@ router.delete('/', async (req, res, next) => {
     }catch(e){
         res.status(500).send({message: 'something went wrong while deleting all sets'});
     }
+})
+
+
+router.get('/results/:id', async (req, res) => {
+    const setId = req.params.id;
+    try{
+        set = await SetOBJ.findById(setId);
+        if(!set){
+            res.status(400).send({ msg: 'set not found' });
+        }
+    }catch(e){
+        console.log('THERE WAS A PROBLEM FINDING THE SET IN THE DB');
+    }
+    let images;
+    try{
+        images = await Image.find().where('_id').in(set.imageId).exec();
+    }catch(e){
+        console.log('there was a Problem finding the images');
+    }
+    const result = images.map(i => {
+        console.log(i.labels[0].votes);
+        return {votes: i.labels[0].votes, filename: i.filename}
+    })
+    res.send(result);
 })
 
 module.exports = router;

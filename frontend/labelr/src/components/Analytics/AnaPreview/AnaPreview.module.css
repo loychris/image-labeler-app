@@ -49,9 +49,6 @@
     font-weight: 600;
 }
 
-.Progress{
-}
-
 .Progress {
     width: 100%; 
     padding: 10px; 
@@ -71,9 +68,12 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    background-color: #001628;
-    color: #ffffff;
     margin-top: 20px;
    float: right; 
    padding: 3px 10px; 
+}
+
+.Progress button {
+    color: #ffffff!important;
+    background: #001628;
 }

@@ -34,6 +34,7 @@ class Analytics extends Component {
               const sets = res.data.map(set => {
                   console.log(set); 
                   return {
+                      id: set._id,
                       deadline: set.deadline.split(',')[0],
                       name: set.label,
                       src: this.imageEncode(set.icon.data),

@@ -186,7 +186,8 @@ class ImageQueue extends Component {
 
     render(){
         const imageContainers = this.state.queue.map(i => {
-            return <ImageContainer {...i} key={i.id} queueStatus={this.state.initialLoad}/>
+            const key = i.id === 'no more' ? `${Math.random()}` : i.id
+            return <ImageContainer {...i} key={key} queueStatus={this.state.initialLoad}/>
         })
         const leftButtonClasses = [classes.leftButton, classes.button]
         const rightButtonClasses = [classes.rightButton, classes.button]

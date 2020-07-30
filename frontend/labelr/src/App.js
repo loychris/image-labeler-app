@@ -138,6 +138,7 @@ const App = () => {
         }}>
         <Router>
           <div className="App">
+            <div className='Background'></div>
             <Menu 
               logout={logout}       // function to be called when loggin out 
               loggedIn={!!token}    // true if logged in

@@ -15,7 +15,8 @@ const imageSchema = new mongoose.Schema({
     }],
     imageSetId: {type: String },
     counter: { type: Number, default: 0 },
-    goal: { require: true, type: Number, default: 5 },
+    goal: { required: true, type: Number, default: 5 },
+    filename: { required: true, type: String }
 });
 
 const Image = mongoose.model('Image', imageSchema);
