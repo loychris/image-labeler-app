@@ -1,36 +1,73 @@
 # Labelr
-image-labeler-app
 
-##  Prototype:
-https://www.figma.com/file/KI38Cp8RIuItgtvGHzqqc3/Labelr?node-id=0%3A1
+## Introduction
+`Lablr` is a web application, which makes it possible to categorize large image data sets for machine learning models.
+Customers can upload their data sets to the platform and have them labeled by the community.
+It was developed as part of the course "Scalable Systems" at the Technical University of Berlin.
 
-##  Tech Stack: 
-React, Node, Express, MongoDB
+## Installation
+1. Clone project
+```
+$ git clone https://github.com/loychris/image-labeler-app.git
+```
+2. Install dependencies and run backend
+```
+$ cd backend && npm install
+$ npm start
+```
+3. Install dependencies and run frontend
+```
+$ cd frontend && npm install
+$ npm start
+```
+4. Open localhost:<port>
 
-## User Stories:
-As an uploader I can create an account.  
-As an uploader I can login.  
-As an uploader I can delete my account.  
-As an uploader I can upload a set of images to label and definte the category.  
-As an uploader I can choose a pricing model (including pay by labeling as a user).  
-As an uploader I can see the progress of my my data set. 
-As an uploader I cab also select categories and label pics.   
-As an uploader I can download the result once my dataset has been labeled.   
-As an uploader I can download the results.  
+For database interaction make sure MongoDB is running and configure a connection string in `/backend/src/db/mongoose.js`
 
-As a user I can create an account.  
-As a user I can log in.  
-As a user I can delete my account.  
-As a user I can choose a category to label.   
-As a user I can label the first picture in the queue (true/false). 
-As a user I can open the user-menu.
-As a user I can lookup the highscore of labelrs.  
-As a user I can unlock achievements for challenges.  
-As a user I can see the achievements I unlocked and the progress of the achevements I didn't unlock yet.    
+## Development
+This application was primarily developed with MERN stack.  
 
-## Time per week  
-7 * 8h * = 56h  
-first sprint 60% learning frameworks  
-56h * 40% = 26h of of work
+**Backend**
+- Express
+- Node
+- MongoDB
 
+**Frontend**
+- React.js
+- Bootstrap
 
+## Demo
+- lable images<br>
+![](lable.gif)<br>
+<hr>
+
+- become one of the top labelers<br>
+![](hscore.png)<br>
+<hr>
+
+- unlock achievments<br>
+![](achievment.png)<br>
+
+## Project Organization
+**Backend**
+- [@duanitamir]( https://github.com/duanitamir )
+- [@m-31415926535]( https://github.com/m-31415926535 )
+- [@antoniapriesnitz]( https://github.com/antoniapriesnitz)
+
+**Frontend**
+- [@loychris]( https://github.com/loychris )
+- [@morixn]( https://github.com/morixn )
+- [@mbnbln]( https://github.com/mbnbln )
+- [@phofmn]( https://github.com/phofmn )
+
+**DevOps**
+- [@phofmn]( https://github.com/phofmn )
+
+**Scrum Master**
+- [@antoniapriesnitz]( https://github.com/antoniapriesnitz )
+
+**Product Owner**
+- [@loychris]( https://github.com/loychris )
+
+**QA**
+- [@morixn]( https://github.com/morixn )
