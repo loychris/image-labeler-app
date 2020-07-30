@@ -34,6 +34,8 @@ router.get('/my', auth, async ( req, res) => {
     }
 })
 
+
+
 router.get('/labels', async (req,res) => {
     try {
         const sets = await SetOBJ.find()
@@ -89,7 +91,46 @@ router.get('/labels', async (req,res) => {
 
 
 
-router.post('/',auth, fileUpload.single('image'), async ( req, res ) => {
+
+
+
+
+router.post('/unlabeled', auth, async (req, res) => {
+    const { setId } = req.body;
+    console.log('SET ID', setId)
+    let set; 
+    try{
+        set = await SetOBJ.findById(setId);
+    }catch(e){
+        console.log('THERE WAS A PROBLEM FINDING THE SET IN THE DB');
+    }
+    if(!set){
+        res.status(400).send({ msg: 'set not found' });
+    }
+    const alreadyLabeled = req.user.labeledImagesID.map(x => {
+        return x.imageID;
+    });
+    console.log('SETIDS: ', set.imageId, set.imageId.length)
+    console.log('ALREADY LABELED: ', alreadyLabeled, alreadyLabeled.length)
+
+    const unlabeledIds = set.imageId.filter(x => {
+        return !alreadyLabeled.includes(x);
+    })
+
+    res.send({unlabeledIds});
+})
+
+
+
+
+
+
+
+
+
+
+
+router.post('/', auth, fileUpload.single('image'), async ( req, res ) => {
     if(!req.file) res.status(400).send({msg: 'no icon file attached'})
     if(!req.body.imageId) res.status(400).send({msg: 'no Image Ids given'})
     if(!req.body.label) res.status(400).send({msg:'no label definded'})
