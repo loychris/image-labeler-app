@@ -214,7 +214,6 @@ const achievements = async (req, res, next) => {
     }
 
     if (acheivements.length > 0 ){
-        console.log('achievements', acheivements);
         req.user.achievements = req.user.achievements.concat(acheivements);
         res.newAchievments = acheivements;
         await req.user.save();

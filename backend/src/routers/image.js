@@ -95,7 +95,6 @@ router.get('/images/next', auth, async (req, res) => {
     if (!images) { res.status(400).send('no images found'); }
 
     images = images.map(image => !labeledImagesID.includes(image._id) && image);
-    console.log(images);
 
     if (!images.length) {return res.status(400).send(`no image left to label`); }
 
@@ -145,7 +144,7 @@ router.post('/upload', auth, fileUpload.single('image'), async (req, res) => {
 
 
 // Vote for image
-router.post('/images/:id', auth, async (req, res) => {
+router.post('/images/:id', auth, achievements, async (req, res) => {
 
   const vote = req.body.vote === 'left';
   let err = null;
@@ -153,22 +152,17 @@ router.post('/images/:id', auth, async (req, res) => {
 
   let image;
   let setObj;
-  console.log('###############1')
-
-
   try {
     image = await Image.findOne({_id: req.params.id});
   } catch(e){
     err = 'There was a problem while finding the set or iamge';
   }
-  console.log('###############2')
 
   try{
     setObj = await SetOBJ.findOne({_id: image.imageSetId})
   } catch(e){
     err = 'There was a problem finding the image';
   }
-  console.log('###############3')
 
   if (!image) {
     err = 'No image found for Id'
@@ -176,8 +170,6 @@ router.post('/images/:id', auth, async (req, res) => {
   if (!setObj) {
     err = 'No set found for id'
   }
-  console.log('###############4')
-
     image.labels[0].votes.push(vote);
     user.labeledImagesID.push({ imageID: req.params.id, timestamp: moment().format('L') });
     image.counter = image.counter + 1;
@@ -194,17 +186,12 @@ router.post('/images/:id', auth, async (req, res) => {
     res.status(500).send();
     
   }
-
-
-
-
 })
 
 // Get next n Images IDS - only images that the user did not voted for yet
 router.post('/images/next/:n/id', auth, async (req, res) => {
 
 
-  if(!req.body.label) console.log('NO LABEL PROVIDED');
   const labeledImagesIDs = req.user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
   const label = req.body.label;
   const n = req.params.n;
@@ -274,7 +261,6 @@ router.post('/images/next/id', auth, async (req, res) => {
     if (toReturn.length < 1) { res.status(400).send('no images found'); }
     else {
       const image = toReturn.pop();
-      console.log(image)
       req.user.fetchedImagesID.push(image)
       await req.user.save();
       console.log(req.user.fetchedImagesID);
@@ -291,7 +277,6 @@ router.post('/images', async (req, res) => {
 
   try {
     const images = await Image.find({ "labels.label": req.body.label })
-    console.log(images); //for debugging i guess, needs to be removed when not in use TODO
 
     res.status(200).send(images);
   } catch (e) {
