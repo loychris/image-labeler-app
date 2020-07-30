@@ -17,7 +17,7 @@ const achievements = async (req, res, next) => {
         const startOfTheYear = moment().startOf('year').format('l');
         const endOfTheYear = moment().endOf('year').format('l');
 
-        const labeled = req.user.labeledImagesID.map( image => moment(image.timestamp).format('l') );
+        //const labeled = req.user.labeledImagesID.map( image => moment(image.timestamp).format('l') );
 
         const counter = req.user.counter+1;
         const today = labeled.filter(image => image === moment().format('l') ) + 1;
@@ -26,7 +26,7 @@ const achievements = async (req, res, next) => {
         const year = labeled.filter(image => moment(image).isBetween(startOfTheYear, endOfTheYear, undefined, [])) + 1;
 
         // Switch case for counter ( first section of the demand list )
-        switch (newCount) {
+        switch (counter) {
             case 100000:
                 achievement = {
                     achievement: "Master of the universe",
@@ -101,7 +101,7 @@ const achievements = async (req, res, next) => {
         }
 
         // 100 in a day
-        if((labeledToday >= 100) && !exsistingAcheivements.includes("Too Fast!")){
+        if((today >= 100) && !exsistingAcheivements.includes("Too Fast!")){
             achievement = {
                 achievement: "Too Fast!",
                 date: moment().format().substr(0,10)

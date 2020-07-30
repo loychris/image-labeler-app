@@ -117,7 +117,7 @@ router.post('/unlabeled', auth, async (req, res) => {
         return !alreadyLabeled.includes(x);
     })
 
-    res.send({unlabeledIds});
+    res.send(unlabeledIds);
 })
 
 

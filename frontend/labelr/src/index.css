@@ -18,11 +18,13 @@ main {
   margin-right: auto;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap'); 
+
+
 h2, h3, h4 {
   font-family: 'Ubuntu', sans-serif;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap'); 
 
 h1 {
   font-family: 'Roboto';

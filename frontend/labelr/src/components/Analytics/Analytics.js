@@ -5,6 +5,7 @@ import { Spinner } from 'react-bootstrap';
 import no_internet from '../no_internet.svg';
 import AnaPreview from './AnaPreview/AnaPreview';
 import classes from './Analytics.module.css';
+import { Link } from 'react-router-dom';
 
 
 class Analytics extends Component {
@@ -29,7 +30,7 @@ class Analytics extends Component {
         .then(res => {
           console.log(res.data);
           if(res.data){
-            if(res.data.length > 0){
+            // if(res.data.length > 0){
               const sets = res.data.map(set => {
                   console.log(set); 
                   return {
@@ -40,9 +41,8 @@ class Analytics extends Component {
                       progress: Math.floor(set.counter / set.goal * 100)
                   }
               })
-
               this.setState({ imageSets: sets, status: 'loaded' });
-            }
+            // }
           } 
         })
         .catch((e) => {
@@ -70,6 +70,14 @@ class Analytics extends Component {
           </div>;
     }
 
+    generateNoSetsNotice(){
+      return <div>
+          <span><img src={no_internet}/></span>
+          <span><br/>You don't have any sets yet</span>
+          <span><br/><Link to='/uploadForm'>Upload Set</Link></span>
+      </div>
+    }
+
     imageEncode = (arrayBuffer) => {
       let u8 = new Uint8Array(arrayBuffer)
       let b64encoded = btoa([].reduce.call(new Uint8Array(arrayBuffer),function(p,c){return p+String.fromCharCode(c)},''))
@@ -89,6 +97,7 @@ class Analytics extends Component {
             <main>
                 <h1>Your Image Sets</h1>
                 <hr/>
+                {this.state.status === 'loaded' && this.state.imageSets.length === 0 ? this.generateNoSetsNotice() : null}
                 {this.state.status === 'failed' ? this.generateNoInternetNotice() : null}
                 {this.state.status === 'loading' ? this.generateSpinner() : null}
                 {this.state.status === 'loaded' ? <div className={classes.Flex}>{anaPreviews}</div> : null }

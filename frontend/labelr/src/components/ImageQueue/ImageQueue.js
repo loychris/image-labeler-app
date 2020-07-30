@@ -18,12 +18,15 @@ class ImageQueue extends Component {
         queue: [],
         lable: '',
         timeStampLastLabel: 0,
-        initialLoad: 'loading'
+        initialLoad: 'loading',
+        unused: null
     }
 
     componentDidMount() {
         if(this.state.initialLoad === 'loading'){
             const category = this.props.match.params.category; 
+            const cid = this.props.match.params.cid; 
+            console.log('PARAMS', this.props.match.params);
             const currentToken = JSON.parse(localStorage.getItem('userData')).token;
             const config = {
               headers: { 
@@ -32,20 +35,26 @@ class ImageQueue extends Component {
                 }
             }
             const body = {
-                label: category
+                setId: cid
             }
-            axios.post('http://127.0.0.1:3000/images/next/9/id', body, config)
+            axios.post('http://127.0.0.1:3000/set/unlabeled', body, config)
             .then(res => {
               console.log('DATA', res.data);
+              let queue = [{pos: 0, show: 'left', id: 'no more'}];
+              let unused = [];
               if(res.data){
-                if(res.data.length > 0){
-                  let queue = [{pos: 0, show: 'left', id: 'no more'}];
                   res.data.forEach((id, i) => {
-                      queue.push({ pos: i+1, show: 'middle', id })
+                    if(i < 10){
+                    queue.push({ pos: i+1, show: 'middle', id });
+                    }else {
+                        unused.push(id)
+                    }
                   })
+                  while(queue.length < 10){
+                      queue.push({pos: 0, show: 'left', id: 'no more'});
+                  }
                   console.log('QUEUE', queue);
-                  this.setState({ queue: queue, initialLoad: 'loaded'});
-                }
+                  this.setState({unused, queue, initialLoad: 'loaded'});
               } 
             })
             .catch((e) => {
@@ -133,14 +142,21 @@ class ImageQueue extends Component {
         console.log('CURRENT ID', currentId);
         if(currentTimeStamp - 700 > this.state.timeStampLastLabel && currentId !== 'no more'){
             // update Queue & insert next element stored in State
-            const newQueue = this.state.queue
+            let unused = this.state.unused;
+            let newQueue = this.state.queue
                 .map(x => {
                     const newPos = x.pos-1;
                     const show = newPos === 0 ? direction : 'middle'
                     return ({ ...x, show, pos: newPos });
                 })
-                .filter( x => x.pos >= 0 )
+                .filter( x => x.pos >= 0 );
+            if(unused.length > 0){
+                newQueue.push({id: unused.pop(), show: 'middle', pos: newQueue.length});
+            }else {
+                newQueue.push({id:'no more', pos: newQueue.length, show: 'middle' });
+            }
             this.setState({
+                unused,
                 queue: newQueue, 
                 timeStampLastLabel: currentTimeStamp
             });
@@ -157,12 +173,7 @@ class ImageQueue extends Component {
                                 Authorization: `Bearer ${currentToken}`
                             }})
                         .then(res => {
-                            console.log('DATA', res.data);
-                            if(res.data){
-                                let queue = this.state.queue;
-                                queue.push({ pos: queue.length, show: 'middle', id: res.data })
-                                this.setState({ queue: queue });
-                            }
+                            console.log(res.body)
                         })
                         .catch((e) => {
                             this.setState({initialLoad: 'failed'})

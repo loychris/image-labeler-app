@@ -141,68 +141,58 @@ router.post('/upload', auth, fileUpload.single('image'), async (req, res) => {
 
 
 // Vote for image
-router.post('/images/:id', auth, achievements, async (req, res) => {
+router.post('/images/:id', auth, async (req, res) => {
 
   const vote = req.body.vote === 'left';
   const { label } = req.body;
-
+  let err = null;
   let user = req.user;
 
   let image;
   let setObj;
+  console.log('###############1')
 
-  console.log(label);
 
   try {
     image = await Image.findOne({_id: req.params.id});
-    setObj = await SetOBJ.findOne({_id: image.imageSetId})
-    console.log(image._id)
+  } catch(e){
+    err = 'There was a problem while finding the set or iamge';
+  }
+  console.log('###############2')
 
-    if (!image) {
-      return res.status(401).send({ error: 'No image with this ID was found' })
-    }
-    if (!setObj) {
-      return res.status(401).send({error: 'No image with this ID was found'})
-    }
-    console.log(vote)
+  try{
+    setObj = await SetOBJ.findOne({_id: image.imageSetId})
+  } catch(e){
+    err = 'There was a problem finding the image';
+  }
+  console.log('###############3')
+
+  if (!image) {
+    err = 'No image found for Id'
+  }
+  if (!setObj) {
+    err = 'No set found for id'
+  }
+  console.log('###############4')
+
     image.labels[0].votes.push(vote);
     user.labeledImagesID.push({ imageID: req.params.id, timestamp: moment().format('L') });
-    await user.save();
-
-
     image.counter = image.counter + 1;
     req.user.counter = req.user.counter + 1;
     setObj.counter = setObj.counter +1;
-    await user.save();
-
-
-    let fetchedImagesIDs = user.fetchedImagesID;
-    const labeledImagesIDs = user.labeledImagesID.map(img => img.imageID); // images the user already have been labeled
-
-
-    const notToLoad = labeledImagesIDs.concat(fetchedImagesIDs);
-
-    nextImage = await Image.findOne({
-      $and: [
-        {_id: { $nin: notToLoad}},
-        {imageSetId: setObj._id},
-      ]
-    })
-
-    const nextId = nextImage ? nextImage._id : 'no more';
-    console.log('NEXT IMAGE ID', nextId);
-    req.user.fetchedImagesID.push(nextId);
-    console.log(labeledImagesIDs);
 
     await user.save();
     await image.save();
     await setObj.save();
-
-    res.status(200).send(nextId);
-
-  } catch(e){
-    console.log('There was a problem while finding the set or iamge');
+  if(!err){
+    res.status(200).send({msg: 'labeled successfully'});
+  }else {
+    console.log('###############', err)
+    res.status(500).send();
+    
   }
+
+
 
 
 })

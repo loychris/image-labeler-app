@@ -222,6 +222,7 @@ function  UploadForm() {
                     </datalist> 
                 </div>
                 <hr/>
+                <h3>Images</h3>
                 <div className={classes.Previews}>
                         {
                             files.length > 0 ? 
