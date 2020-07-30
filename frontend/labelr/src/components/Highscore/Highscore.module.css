@@ -1,3 +1,7 @@
+* {
+  font-family: 'Roboto';
+}
+
 .Spinner {
   align-self: center;
   margin-bottom: 10px;
