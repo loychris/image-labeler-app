@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {ProgressBar, DropdownButton, Dropdown} from 'react-bootstrap';
+import {Button, ProgressBar } from 'react-bootstrap';
 
 
 import classes from './AnaPreview.module.css';
@@ -10,34 +10,24 @@ import img2 from './CategorieImages/download-solid.svg';
 
 class AnaPreview extends Component {
 
-
     
     render() {
         var currentValue = 100;
         return (
             <div className={classes.anaPreview}>
-                <div className={classes.thumbnail}>
-                    <div className ={classes.image}> 
-                        <img src={this.props.src} alt={this.props.name} className={classes.Icon}/>
-                    </div>
-                    <div className={classes.info}>
-                        <div className={classes.caption}>{this.props.name}</div>
-                        <div className={classes.description}>Uploaded: {this.props.uploaded}</div>
-                        <div className={classes.description}>Deadline: {this.props.deadline}</div>
-                    </div>
-                    <div className={classes.progress}>
-                        <div className={classes.progressLabel}>{`${this.props.progress}%`} complete</div>
-                        {this.props.progress === 100 ? <img className={classes.check} src={img1} /> : null}
-                        <ProgressBar className={classes.progressBar} variant="success" now={this.props.progress}/>
-                        {this.props.progress === 100 ? 
-                            <DropdownButton className={classes.download} id="download-button" title={
-                                <span><i className="fas fa-download"></i>DOWNLOAD</span>
-                              }>
-                                <Dropdown.Item href="#/download-json">As JSON</Dropdown.Item>
-                                <Dropdown.Item href="#/download-csv">As CSV</Dropdown.Item>
-                            </DropdownButton>
-                        : null}
-                    </div>
+                <img src={this.props.src} alt={this.props.name} className={classes.Icon}/>
+                <div className={classes.Info}>
+                    <div className={classes.caption}>{this.props.name}</div>
+                    <div className={classes.description}>Uploaded: {this.props.uploaded}</div>
+                    <div className={classes.description}>Deadline: {this.props.deadline}</div>
+                </div>
+                <div className={classes.Progress}>
+                    <div className={classes.progressLabel}>{`${this.props.progress}%`} complete</div>
+                    {this.props.progress === 100 ? <img className={classes.check} src={img1} /> : null}
+                    <ProgressBar className={classes.ProgressBar} variant="success" now={this.props.progress}/>
+                    {this.props.progress === 100 ? 
+                        <button className={classes.Download} onClick={() => this.onDownloadFile()}>Download Results</button>
+                    : null}
                 </div>
             </div>
         )

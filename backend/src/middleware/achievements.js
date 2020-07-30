@@ -17,7 +17,7 @@ const achievements = async (req, res, next) => {
         const startOfTheYear = moment().startOf('year').format('l');
         const endOfTheYear = moment().endOf('year').format('l');
 
-        //const labeled = req.user.labeledImagesID.map( image => moment(image.timestamp).format('l') );
+        const labeled = req.user.labeledImagesID.map( image => moment(image.timestamp).format('l') );
 
         const counter = req.user.counter+1;
         const today = labeled.filter(image => image === moment().format('l') ) + 1;

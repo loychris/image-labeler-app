@@ -144,7 +144,6 @@ router.post('/upload', auth, fileUpload.single('image'), async (req, res) => {
 router.post('/images/:id', auth, async (req, res) => {
 
   const vote = req.body.vote === 'left';
-  const { label } = req.body;
   let err = null;
   let user = req.user;
 
